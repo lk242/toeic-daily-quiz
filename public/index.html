@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOEIC 450 每日練習</title>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --card-hover: #263548;
+    --accent: #3b82f6;
+    --accent-light: #60a5fa;
+    --correct: #22c55e;
+    --correct-bg: rgba(34,197,94,0.1);
+    --wrong: #ef4444;
+    --wrong-bg: rgba(239,68,68,0.1);
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #334155;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  .container { max-width: 780px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 32px 0 24px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-light), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header .subtitle {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  /* Day tabs */
+  .day-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 0 16px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .day-tabs::-webkit-scrollbar { height: 4px; }
+  .day-tabs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .day-tab {
+    flex-shrink: 0;
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .day-tab:hover { border-color: var(--accent); color: var(--text); }
+  .day-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .day-tab .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .day-tab .dot.done { background: var(--correct); }
+  .day-tab .dot.partial { background: #f59e0b; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1;
+    min-width: 100px;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .stat-card .num {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-light);
+  }
+  .stat-card .label {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  /* Section header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header .badge {
+    background: var(--accent);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .section-header .tip {
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  /* Question card */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+    transition: border-color 0.3s;
+  }
+  .q-card.correct { border-color: var(--correct); background: var(--correct-bg); }
+  .q-card.wrong { border-color: var(--wrong); background: var(--wrong-bg); }
+
+  .q-num {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .q-stem {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+  .q-stem .blank {
+    display: inline-block;
+    min-width: 100px;
+    border-bottom: 2px solid var(--accent);
+    margin: 0 4px;
+  }
+  .q-context {
+    font-size: 13px;
+    color: var(--text-dim);
+    background: rgba(255,255,255,0.03);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 15px;
+  }
+  .option:hover { border-color: var(--accent); background: rgba(59,130,246,0.08); }
+  .option.selected {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.15);
+  }
+  .option.show-correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+  }
+  .option.show-wrong {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+  }
+  .option input { display: none; }
+  .option .radio {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .option.selected .radio {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .option.selected .radio::after {
+    content: '';
+    width: 8px; height: 8px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .option.show-correct .radio { border-color: var(--correct); background: var(--correct); }
+  .option.show-correct .radio::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+  .option.show-wrong .radio { border-color: var(--wrong); background: var(--wrong); }
+  .option.show-wrong .radio::after { content: '✗'; color: #fff; font-size: 12px; font-weight: 700; }
+  .option .letter {
+    font-weight: 600;
+    color: var(--text-dim);
+    min-width: 20px;
+  }
+  .option.locked { pointer-events: none; }
+
+  /* Explanation */
+  .explanation {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 14px;
+    color: var(--text-dim);
+    display: none;
+    animation: fadeIn 0.3s;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--text); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+  /* Result tag */
+  .result-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .result-tag.correct-tag { background: var(--correct-bg); color: var(--correct); }
+  .result-tag.wrong-tag { background: var(--wrong-bg); color: var(--wrong); }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    padding: 14px 32px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover { border-color: var(--accent); }
+
+  /* Score modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid var(--border);
+  }
+  .modal .score-ring {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    border: 6px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 36px;
+    font-weight: 700;
+  }
+  .modal .score-ring.great { border-color: var(--correct); color: var(--correct); }
+  .modal .score-ring.ok { border-color: #f59e0b; color: #f59e0b; }
+  .modal .score-ring.bad { border-color: var(--wrong); color: var(--wrong); }
+  .modal h2 { font-size: 22px; margin-bottom: 8px; }
+  .modal p { color: var(--text-dim); font-size: 14px; margin-bottom: 24px; }
+
+  /* Vocab section */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  @media (max-width: 600px) { .vocab-grid { grid-template-columns: 1fr; } }
+  .vocab-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .vocab-item:hover { border-color: var(--accent); }
+  .vocab-item .word { font-weight: 600; font-size: 15px; }
+  .vocab-item .pos { font-size: 12px; color: var(--accent-light); margin-left: 4px; }
+
+  /* Speak button */
+  .speak-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(59,130,246,0.1);
+    color: var(--accent-light);
+    cursor: pointer;
+    font-size: 15px;
+    margin-left: 8px;
+    vertical-align: middle;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .speak-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: scale(1.1); }
+  .speak-btn.speaking { background: var(--accent); color: #fff; border-color: var(--accent); animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+  .vocab-item .word-row { display: flex; align-items: center; justify-content: space-between; }
+  .vocab-item .word-left { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px; }
+  .speak-btn-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(59,130,246,0.08);
+    color: var(--accent-light);
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 6px;
+    vertical-align: middle;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .speak-btn-sm:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .speak-btn-sm.speaking { background: var(--accent); color: #fff; animation: pulse 0.8s infinite; }
+  .vocab-item .meaning {
+    font-size: 14px;
+    color: var(--text-dim);
+    margin-top: 4px;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .vocab-item.revealed .meaning { opacity: 1; height: auto; margin-top: 6px; }
+  .vocab-item .example {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .vocab-item.revealed .example { opacity: 0.7; height: auto; margin-top: 4px; }
+
+  .vocab-controls {
+    display: flex; gap: 8px; margin-bottom: 12px; justify-content: flex-end;
+  }
+  .vocab-controls .btn { padding: 8px 16px; font-size: 13px; }
+
+  /* Tab content */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .inner-tabs { display: flex; gap: 0; margin-bottom: 20px; }
+  .inner-tab {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-dim);
+    transition: all 0.2s;
+  }
+  .inner-tab:hover { color: var(--text); }
+  .inner-tab.active {
+    border-bottom-color: var(--accent);
+    color: var(--accent-light);
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #a78bfa);
+    border-radius: 2px;
+    transition: width 0.5s;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h3 { color: var(--text); margin-bottom: 8px; }
+
+  /* Wrong answers notebook */
+  .wrong-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+  .wrong-item .wrong-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .wrong-item .wrong-meta .badge { background: var(--wrong); color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .wrong-item .wrong-meta .badge.mastered { background: var(--correct); }
+  .wrong-item .wrong-meta .day-label { font-size: 12px; color: var(--text-dim); }
+  .wrong-item .wrong-meta .attempt-count { font-size: 12px; color: var(--wrong); font-weight: 600; margin-left: auto; }
+  .wrong-item .wrong-meta .attempt-count.ok { color: var(--correct); }
+  .wrong-item .wrong-stem { font-size: 15px; margin-bottom: 10px; line-height: 1.6; }
+  .wrong-item .wrong-choices { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+  .wrong-item .wrong-choices .choice { padding: 6px 12px; border-radius: 6px; }
+  .wrong-item .wrong-choices .choice.your-pick { background: var(--wrong-bg); color: var(--wrong); text-decoration: line-through; }
+  .wrong-item .wrong-choices .choice.correct-pick { background: var(--correct-bg); color: var(--correct); font-weight: 600; }
+  .wrong-item .wrong-explanation { margin-top: 10px; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 8px; border-left: 3px solid var(--accent); font-size: 13px; color: var(--text-dim); }
+  .wrong-item .wrong-explanation strong { color: var(--text); }
+
+  .wrong-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .wrong-filter {
+    padding: 6px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+  .wrong-filter:hover { border-color: var(--accent); }
+  .wrong-filter.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .wrong-summary {
+    display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .wrong-summary .ws-card {
+    flex: 1; min-width: 80px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px; text-align: center;
+  }
+  .wrong-summary .ws-card .ws-num { font-size: 22px; font-weight: 700; }
+  .wrong-summary .ws-card .ws-num.red { color: var(--wrong); }
+  .wrong-summary .ws-card .ws-num.green { color: var(--correct); }
+  .wrong-summary .ws-card .ws-num.yellow { color: #f59e0b; }
+  .wrong-summary .ws-card .ws-label { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  /* Auth UI */
+  .auth-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 8px 0;
+  }
+  .auth-bar .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .auth-bar .user-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    object-fit: cover;
+  }
+  .auth-bar .user-name { font-weight: 600; color: var(--text); }
+  .auth-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .auth-btn:hover { border-color: var(--accent); background: rgba(59,130,246,0.1); }
+  .auth-btn.google {
+    background: #fff;
+    color: #333;
+    border-color: #ddd;
+  }
+  .auth-btn.google:hover { background: #f1f5f9; }
+  .auth-btn .g-icon { width: 16px; height: 16px; }
+  .auth-btn.logout { font-size: 12px; padding: 5px 12px; }
+  .sync-status {
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .sync-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--correct);
+  }
+  .sync-dot.syncing { background: #f59e0b; animation: pulse 1s infinite; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="auth-bar" id="authBar">
+    <div id="authLoading" class="sync-status">載入中...</div>
+  </div>
+  <div class="header">
+    <h1>TOEIC 450 每日練習</h1>
+    <div class="subtitle">目標 450 · 距離考試 <span id="countdown"></span> 天</div>
+  </div>
+
+  <div class="day-tabs" id="dayTabs"></div>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-card"><div class="num" id="statAnswered">0</div><div class="label">已作答</div></div>
+    <div class="stat-card"><div class="num" id="statCorrect">0</div><div class="label">答對</div></div>
+    <div class="stat-card"><div class="num" id="statAccuracy">-</div><div class="label">正確率</div></div>
+    <div class="stat-card"><div class="num" id="statStreak">0</div><div class="label">連續答對</div></div>
+  </div>
+
+  <div class="inner-tabs">
+    <div class="inner-tab active" onclick="switchInnerTab('vocab')">單字卡</div>
+    <div class="inner-tab" onclick="switchInnerTab('quiz')">練習題</div>
+    <div class="inner-tab" onclick="switchInnerTab('wrong')">錯題本 <span id="wrongBadge" style="background:var(--wrong);color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;margin-left:4px;display:none">0</span></div>
+  </div>
+
+  <div class="tab-content active" id="vocabTab"></div>
+  <div class="tab-content" id="quizTab"></div>
+  <div class="tab-content" id="wrongTab"></div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="score-ring" id="scoreRing">0%</div>
+    <h2 id="modalTitle">完成！</h2>
+    <p id="modalMsg"></p>
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="closeModal()">查看錯題</button>
+      <button class="btn btn-primary" onclick="resetDay()">重新作答</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================================
+// TOEIC QUIZ DATA — 新增天數只要在這裡加資料就好
+// =====================================================
+const QUIZ_DATA = {
+  days: [
+    {
+      id: 1,
+      date: "6/7",
+      title: "辦公室與工作",
+      vocab: [
+        { word: "appointment", pos: "n.", meaning: "預約、約會", example: "I have an appointment at 3 p.m." },
+        { word: "colleague", pos: "n.", meaning: "同事", example: "My colleague helped me with the report." },
+        { word: "department", pos: "n.", meaning: "部門", example: "She works in the marketing department." },
+        { word: "document", pos: "n.", meaning: "文件", example: "Please sign this document." },
+        { word: "employee", pos: "n.", meaning: "員工", example: "The company has 200 employees." },
+        { word: "experience", pos: "n.", meaning: "經驗", example: "He has five years of experience." },
+        { word: "manager", pos: "n.", meaning: "經理", example: "The manager approved the plan." },
+        { word: "meeting", pos: "n.", meaning: "會議", example: "The meeting starts at 10 a.m." },
+        { word: "position", pos: "n.", meaning: "職位", example: "She applied for the position." },
+        { word: "schedule", pos: "n./v.", meaning: "行程/安排", example: "Let me check my schedule." },
+        { word: "submit", pos: "v.", meaning: "提交", example: "Please submit your report by Friday." },
+        { word: "deadline", pos: "n.", meaning: "截止日期", example: "The deadline is next Monday." },
+        { word: "approve", pos: "v.", meaning: "批准", example: "The boss approved our budget." },
+        { word: "available", pos: "adj.", meaning: "可用的、有空的", example: "Is the room available tomorrow?" },
+        { word: "attend", pos: "v.", meaning: "參加、出席", example: "Will you attend the conference?" },
+        { word: "responsibility", pos: "n.", meaning: "責任", example: "It's my responsibility to train new staff." },
+        { word: "organize", pos: "v.", meaning: "組織、安排", example: "She organized the event." },
+        { word: "postpone", pos: "v.", meaning: "延期", example: "We need to postpone the meeting." },
+        { word: "confirm", pos: "v.", meaning: "確認", example: "Please confirm your reservation." },
+        { word: "supervisor", pos: "n.", meaning: "主管", example: "Talk to your supervisor about it." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "先看選項判斷考什麼（詞性/時態/單字），再看空格前後",
+          questions: [
+            {
+              stem: "The marketing ______ will hold a meeting this Friday.",
+              options: ["depart", "department", "departing", "departed"],
+              answer: 1,
+              explanation: "空格需要名詞當主詞，department（部門）是名詞。"
+            },
+            {
+              stem: "All employees must ______ their reports before the deadline.",
+              options: ["submit", "submits", "submitted", "submitting"],
+              answer: 0,
+              explanation: "must 後面接原形動詞，所以選 submit。"
+            },
+            {
+              stem: "The manager asked his ______ to prepare the presentation.",
+              options: ["colleague", "colleagues", "colleague's", "colleaguing"],
+              answer: 1,
+              explanation: "asked 的對象應該是複數同事（his colleagues）。"
+            },
+            {
+              stem: "Ms. Chen is not ______ for the meeting tomorrow.",
+              options: ["avail", "available", "availability", "availably"],
+              answer: 1,
+              explanation: "is not 後面接形容詞，available（有空的）是形容詞。"
+            },
+            {
+              stem: "The conference has been ______ until next week.",
+              options: ["postpone", "postponing", "postponed", "postpones"],
+              answer: 2,
+              explanation: "has been + 過去分詞 = 現在完成被動語態。"
+            },
+            {
+              stem: "Please ______ your reservation at least 24 hours in advance.",
+              options: ["confirm", "confirmed", "confirming", "confirmation"],
+              answer: 0,
+              explanation: "Please 開頭的祈使句，後面接原形動詞。"
+            },
+            {
+              stem: "All new employees are required to ______ the orientation session.",
+              options: ["attending", "attends", "attend", "attended"],
+              answer: 2,
+              explanation: "required to 後面接原形動詞。"
+            },
+            {
+              stem: "The ______ approved the new budget plan yesterday.",
+              options: ["supervise", "supervisory", "supervision", "supervisor"],
+              answer: 3,
+              explanation: "The 後面需要名詞當主詞，supervisor（主管）是人的名詞。"
+            },
+            {
+              stem: "She has ten years of ______ in project management.",
+              options: ["experienced", "experiencing", "experience", "experiences"],
+              answer: 2,
+              explanation: "years of 後面接不可數名詞，experience（經驗）不可數。"
+            },
+            {
+              stem: "The deadline for the project is ______ Friday.",
+              options: ["in", "on", "at", "by"],
+              answer: 3,
+              explanation: "by Friday 表示「在星期五之前」，是截止日期的常用介系詞。"
+            },
+            {
+              stem: "We need to ______ a meeting to discuss the new product.",
+              options: ["organize", "organizes", "organized", "organizing"],
+              answer: 0,
+              explanation: "need to 後面接原形動詞。"
+            },
+            {
+              stem: "Mr. Kim was ______ to the position of regional manager.",
+              options: ["appointment", "appointed", "appointing", "appoints"],
+              answer: 1,
+              explanation: "was + 過去分詞 = 被動語態，was appointed（被任命）。"
+            },
+            {
+              stem: "The company ______ over 500 people worldwide.",
+              options: ["employ", "employs", "employing", "employed"],
+              answer: 1,
+              explanation: "主詞 The company 是第三人稱單數，現在式動詞加 s。"
+            },
+            {
+              stem: "Each team member has specific ______ for the project.",
+              options: ["responsible", "responsibly", "responsibilities", "responsiveness"],
+              answer: 2,
+              explanation: "specific 後面接名詞，responsibilities（責任）是名詞複數。"
+            },
+            {
+              stem: "The ______ has been moved to Conference Room B.",
+              options: ["meet", "met", "meets", "meeting"],
+              answer: 3,
+              explanation: "The 後面需要名詞，meeting（會議）是名詞。"
+            }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "描述要和圖片完全吻合，注意動作、位置、人數",
+          questions: [
+            {
+              stem: "【情境】一位女性坐在辦公桌前使用電腦",
+              options: [
+                "The woman is standing by the window.",
+                "The woman is sitting at a desk.",
+                "The woman is talking on the phone.",
+                "The woman is leaving the office."
+              ],
+              answer: 1,
+              explanation: "女性坐在辦公桌前，sitting at a desk 正確描述動作和位置。"
+            },
+            {
+              stem: "【情境】兩個人在會議室裡握手",
+              options: [
+                "They are eating lunch.",
+                "They are shaking hands.",
+                "They are waving goodbye.",
+                "They are writing on the board."
+              ],
+              answer: 1,
+              explanation: "兩人握手，shaking hands 正確。"
+            },
+            {
+              stem: "【情境】一個男人正在影印機旁邊操作",
+              options: [
+                "The man is using the copy machine.",
+                "The man is drinking coffee.",
+                "The man is reading a newspaper.",
+                "The man is cleaning the floor."
+              ],
+              answer: 0,
+              explanation: "男人在操作影印機，using the copy machine 正確。"
+            }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "注意問句開頭的疑問詞，答案要對應問題類型",
+          questions: [
+            {
+              stem: "When is the meeting scheduled?",
+              options: [
+                "In the conference room.",
+                "At 2 o'clock this afternoon.",
+                "Yes, I attended the meeting."
+              ],
+              answer: 1,
+              explanation: "When 問時間，(B) 回答了具體時間。(A) 是地點，(C) 答非所問。"
+            },
+            {
+              stem: "Who is responsible for this project?",
+              options: [
+                "It's due next Friday.",
+                "Ms. Park is in charge.",
+                "The project is going well."
+              ],
+              answer: 1,
+              explanation: "Who 問人，(B) 回答了具體人名。"
+            },
+            {
+              stem: "Where should I submit this document?",
+              options: [
+                "By the end of the day.",
+                "It's a financial report.",
+                "To the front desk on the second floor."
+              ],
+              answer: 2,
+              explanation: "Where 問地點，(C) 回答了具體地點。"
+            },
+            {
+              stem: "Would you like to attend the conference?",
+              options: [
+                "It was held last week.",
+                "Yes, I'd be happy to.",
+                "The conference room is upstairs."
+              ],
+              answer: 1,
+              explanation: "Would you like 是邀請句型，(B) Yes 回應是合理的。"
+            },
+            {
+              stem: "How many employees are in the department?",
+              options: [
+                "The department is on the third floor.",
+                "About twenty-five.",
+                "Yes, they are all employees."
+              ],
+              answer: 1,
+              explanation: "How many 問數量，(B) 回答了具體數字。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// =====================================================
+// FIREBASE INIT
+// =====================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyBf0Ye4tXR-MuzoPGKFvTIYqSJjWbU78U4",
+  authDomain: "toeic-daily-quiz.firebaseapp.com",
+  projectId: "toeic-daily-quiz",
+  storageBucket: "toeic-daily-quiz.firebasestorage.app",
+  messagingSenderId: "504717793268",
+  appId: "1:504717793268:web:1ed8f5b6c733042c5ecba1"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+let currentUser = null;
+let syncTimeout = null;
+
+// =====================================================
+// APP STATE
+// =====================================================
+let currentDay = 0;
+let answers = {};
+let submitted = {};
+let streaks = {};
+let wrongLog = {};
+
+function loadState() {
+  // always load from localStorage first (instant)
+  try {
+    const s = localStorage.getItem('toeic-quiz-state');
+    if (s) {
+      const d = JSON.parse(s);
+      answers = d.answers || {};
+      submitted = d.submitted || {};
+      streaks = d.streaks || {};
+      wrongLog = d.wrongLog || {};
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  // save to localStorage (instant)
+  localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog }));
+  // debounced sync to Firestore
+  if (currentUser) {
+    clearTimeout(syncTimeout);
+    setSyncStatus('syncing');
+    syncTimeout = setTimeout(() => syncToFirestore(), 800);
+  }
+}
+
+// =====================================================
+// FIRESTORE SYNC
+// =====================================================
+async function syncToFirestore() {
+  if (!currentUser) return;
+  try {
+    await db.collection('users').doc(currentUser.uid).set({
+      answers, submitted, streaks, wrongLog,
+      displayName: currentUser.displayName || '',
+      email: currentUser.email || '',
+      photoURL: currentUser.photoURL || '',
+      lastSync: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    setSyncStatus('synced');
+  } catch(e) {
+    console.error('Firestore sync error:', e);
+    setSyncStatus('error');
+  }
+}
+
+async function loadFromFirestore() {
+  if (!currentUser) return;
+  try {
+    const doc = await db.collection('users').doc(currentUser.uid).get();
+    if (doc.exists) {
+      const d = doc.data();
+      answers = d.answers || {};
+      submitted = d.submitted || {};
+      streaks = d.streaks || {};
+      wrongLog = d.wrongLog || {};
+      // also update localStorage
+      localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog }));
+      render();
+      setSyncStatus('synced');
+    } else {
+      // first login: push current localStorage data to Firestore
+      await syncToFirestore();
+    }
+  } catch(e) {
+    console.error('Firestore load error:', e);
+    setSyncStatus('error');
+  }
+}
+
+function setSyncStatus(status) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  if (status === 'syncing') {
+    el.innerHTML = '<span class="sync-dot syncing"></span> 同步中...';
+  } else if (status === 'synced') {
+    el.innerHTML = '<span class="sync-dot"></span> 已同步';
+    setTimeout(() => { if (el) el.innerHTML = '<span class="sync-dot"></span> 已同步'; }, 2000);
+  } else {
+    el.innerHTML = '<span class="sync-dot" style="background:var(--wrong)"></span> 同步失敗';
+  }
+}
+
+// =====================================================
+// AUTH UI
+// =====================================================
+function renderAuthBar() {
+  const bar = document.getElementById('authBar');
+  if (currentUser) {
+    const photo = currentUser.photoURL
+      ? `<img class="user-avatar" src="${currentUser.photoURL}" alt="avatar">`
+      : `<div class="user-avatar" style="background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">${(currentUser.displayName || currentUser.email || '?')[0].toUpperCase()}</div>`;
+    bar.innerHTML = `
+      <div class="user-info">
+        ${photo}
+        <span class="user-name">${currentUser.displayName || currentUser.email}</span>
+      </div>
+      <div class="sync-status" id="syncStatus"><span class="sync-dot"></span> 已同步</div>
+      <button class="auth-btn logout" onclick="doLogout()">登出</button>
+    `;
+  } else {
+    bar.innerHTML = `
+      <div class="sync-status" style="margin-right:auto">未登入 · 資料僅存本機</div>
+      <button class="auth-btn google" onclick="doGoogleLogin()">
+        <svg class="g-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google 登入
+      </button>
+    `;
+  }
+}
+
+async function doGoogleLogin() {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await auth.signInWithPopup(provider);
+  } catch(e) {
+    if (e.code !== 'auth/popup-closed-by-user') {
+      alert('登入失敗: ' + e.message);
+    }
+  }
+}
+
+async function doLogout() {
+  await auth.signOut();
+}
+
+// Listen for auth state changes
+auth.onAuthStateChanged(async (user) => {
+  currentUser = user;
+  renderAuthBar();
+  if (user) {
+    await loadFromFirestore();
+  }
+  render();
+});
+
+// =====================================================
+// RENDER
+// =====================================================
+function render() {
+  renderCountdown();
+  renderDayTabs();
+  renderVocab();
+  renderQuiz();
+  renderWrong();
+  renderStats();
+}
+
+function renderCountdown() {
+  const exam = new Date(2026, 5, 28);
+  const now = new Date();
+  const diff = Math.ceil((exam - now) / (1000*60*60*24));
+  document.getElementById('countdown').textContent = diff > 0 ? diff : 0;
+}
+
+function renderDayTabs() {
+  const c = document.getElementById('dayTabs');
+  c.innerHTML = QUIZ_DATA.days.map((d, i) => {
+    const isActive = i === currentDay ? 'active' : '';
+    const dayKey = d.id;
+    let dot = '';
+    if (submitted[dayKey]) {
+      const { correct, total } = getDayScore(d);
+      const pct = correct / total;
+      dot = `<span class="dot ${pct >= 0.7 ? 'done' : 'partial'}"></span>`;
+    }
+    return `<div class="day-tab ${isActive}" onclick="switchDay(${i})">Day ${d.id}${dot}<br><span style="font-size:11px;opacity:0.6">${d.title}</span></div>`;
+  }).join('');
+}
+
+function renderVocab() {
+  const day = QUIZ_DATA.days[currentDay];
+  if (!day) return;
+  const c = document.getElementById('vocabTab');
+  c.innerHTML = `
+    <div class="vocab-controls">
+      <button class="btn btn-outline" onclick="speakAllVocab()" id="speakAllBtn">&#128264; 連續播放</button>
+      <button class="btn btn-outline" onclick="toggleAllVocab(true)">全部顯示</button>
+      <button class="btn btn-outline" onclick="toggleAllVocab(false)">全部隱藏</button>
+    </div>
+    <div class="vocab-grid">
+      ${day.vocab.map((v, i) => `
+        <div class="vocab-item" id="vocab-${i}">
+          <div class="word-row">
+            <div class="word-left" onclick="document.getElementById('vocab-${i}').classList.toggle('revealed')">
+              <span class="word">${v.word}</span><span class="pos">${v.pos}</span>
+            </div>
+            <button class="speak-btn" onclick="event.stopPropagation(); speak('${v.word}', this)" title="播放發音">&#128264;</button>
+          </div>
+          <div class="meaning" onclick="document.getElementById('vocab-${i}').classList.toggle('revealed')">${v.meaning}</div>
+          <div class="example">${v.example}
+            <button class="speak-btn-sm" onclick="event.stopPropagation(); speak(\`${v.example.replace(/`/g,'\\`').replace(/'/g,"\\'")}\`, this)" title="播放例句">&#128264;</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function toggleAllVocab(show) {
+  document.querySelectorAll('.vocab-item').forEach(el => {
+    if (show) el.classList.add('revealed');
+    else el.classList.remove('revealed');
+  });
+}
+
+function renderQuiz() {
+  const day = QUIZ_DATA.days[currentDay];
+  if (!day) return;
+  const dayKey = day.id;
+  const isSubmitted = submitted[dayKey];
+  const c = document.getElementById('quizTab');
+
+  const totalQ = day.sections.reduce((s, sec) => s + sec.questions.length, 0);
+  const answeredQ = day.sections.reduce((s, sec, si) =>
+    s + sec.questions.filter((_, qi) => answers[`${dayKey}-${si}-${qi}`] !== undefined).length, 0);
+
+  let html = `<div class="progress-bar"><div class="fill" style="width:${(answeredQ/totalQ)*100}%"></div></div>`;
+
+  day.sections.forEach((sec, si) => {
+    html += `
+      <div class="section-header">
+        <span class="badge">${sec.type}</span>
+        <span style="font-weight:600">${sec.name}</span>
+        <span class="tip">${sec.tip}</span>
+      </div>
+    `;
+    sec.questions.forEach((q, qi) => {
+      const key = `${dayKey}-${si}-${qi}`;
+      const chosen = answers[key];
+      const isCorrect = chosen === q.answer;
+      let cardClass = '';
+      if (isSubmitted && chosen !== undefined) cardClass = isCorrect ? 'correct' : 'wrong';
+
+      const letters = ['A', 'B', 'C', 'D'];
+      html += `<div class="q-card ${cardClass}">`;
+      html += `<div class="q-num">Question ${qi + 1}`;
+      if (isSubmitted && chosen !== undefined) {
+        html += isCorrect
+          ? `<span class="result-tag correct-tag">&#10003; 正確</span>`
+          : `<span class="result-tag wrong-tag">&#10007; 錯誤</span>`;
+      }
+      html += `</div>`;
+      const stemText = q.stem.replace(/______/g, 'blank').replace(/【.*?】/g, '');
+      html += `<div class="q-stem">${formatStem(q.stem)} <button class="speak-btn-sm" onclick="speak(\`${stemText.replace(/`/g,'')}\`, this)" title="播放題目">&#128264;</button></div>`;
+      html += `<div class="options">`;
+      q.options.forEach((opt, oi) => {
+        let optClass = '';
+        if (chosen === oi) optClass += ' selected';
+        if (isSubmitted) {
+          optClass += ' locked';
+          if (oi === q.answer) optClass += ' show-correct';
+          else if (chosen === oi && !isCorrect) optClass += ' show-wrong';
+        }
+        html += `
+          <div class="option${optClass}" onclick="selectOption('${key}', ${oi})">
+            <div class="radio"></div>
+            <span class="letter">(${letters[oi]})</span>
+            <span>${opt}</span>
+            <button class="speak-btn-sm" onclick="event.stopPropagation(); speak('${opt.replace(/'/g,"\\'")}', this)" title="播放選項" style="margin-left:auto">&#128264;</button>
+          </div>
+        `;
+      });
+      html += `</div>`;
+      if (isSubmitted) {
+        html += `<div class="explanation show"><strong>解析：</strong>${q.explanation}</div>`;
+      }
+      html += `</div>`;
+    });
+  });
+
+  if (!isSubmitted) {
+    html += `<div class="btn-row">
+      <button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()" ${answeredQ < totalQ ? 'disabled' : ''}>
+        交卷批改（${answeredQ}/${totalQ}）
+      </button>
+    </div>`;
+  } else {
+    html += `<div class="btn-row">
+      <button class="btn btn-outline" onclick="resetDay()">重新作答</button>
+    </div>`;
+  }
+
+  c.innerHTML = html;
+}
+
+function formatStem(s) {
+  return s.replace(/______/g, '<span class="blank">&nbsp;</span>');
+}
+
+// =====================================================
+// TEXT-TO-SPEECH
+// =====================================================
+let currentUtterance = null;
+function speak(text, btn) {
+  // stop any ongoing speech
+  window.speechSynthesis.cancel();
+
+  // remove speaking class from all buttons
+  document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  utter.rate = 0.85;  // slightly slower for learners
+  utter.pitch = 1;
+
+  // try to pick a good English voice
+  const voices = window.speechSynthesis.getVoices();
+  const enVoice = voices.find(v => v.lang === 'en-US' && v.name.includes('Female'))
+    || voices.find(v => v.lang === 'en-US')
+    || voices.find(v => v.lang.startsWith('en'));
+  if (enVoice) utter.voice = enVoice;
+
+  if (btn) btn.classList.add('speaking');
+  utter.onend = () => { if (btn) btn.classList.remove('speaking'); };
+  utter.onerror = () => { if (btn) btn.classList.remove('speaking'); };
+
+  window.speechSynthesis.speak(utter);
+}
+
+// preload voices (some browsers load async)
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+
+let speakingAll = false;
+function speakAllVocab() {
+  const day = QUIZ_DATA.days[currentDay];
+  if (!day) return;
+  const btn = document.getElementById('speakAllBtn');
+
+  if (speakingAll) {
+    speakingAll = false;
+    window.speechSynthesis.cancel();
+    btn.innerHTML = '&#128264; 連續播放';
+    return;
+  }
+
+  speakingAll = true;
+  btn.innerHTML = '&#9724; 停止播放';
+  let i = 0;
+
+  function next() {
+    if (!speakingAll || i >= day.vocab.length) {
+      speakingAll = false;
+      btn.innerHTML = '&#128264; 連續播放';
+      document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+      return;
+    }
+    const v = day.vocab[i];
+    const card = document.getElementById('vocab-' + i);
+    if (card) {
+      card.classList.add('revealed');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const speakBtn = card.querySelector('.speak-btn');
+      if (speakBtn) speakBtn.classList.add('speaking');
+    }
+
+    const utter = new SpeechSynthesisUtterance(v.word);
+    utter.lang = 'en-US';
+    utter.rate = 0.8;
+    const voices = window.speechSynthesis.getVoices();
+    const enVoice = voices.find(v => v.lang === 'en-US') || voices.find(v => v.lang.startsWith('en'));
+    if (enVoice) utter.voice = enVoice;
+
+    utter.onend = () => {
+      if (card) {
+        const speakBtn = card.querySelector('.speak-btn');
+        if (speakBtn) speakBtn.classList.remove('speaking');
+      }
+      i++;
+      setTimeout(next, 600);
+    };
+    utter.onerror = () => { i++; setTimeout(next, 300); };
+    window.speechSynthesis.speak(utter);
+  }
+  next();
+}
+
+function selectOption(key, oi) {
+  const dayKey = QUIZ_DATA.days[currentDay].id;
+  if (submitted[dayKey]) return;
+  answers[key] = oi;
+  saveState();
+  renderQuiz();
+}
+
+function submitQuiz() {
+  const day = QUIZ_DATA.days[currentDay];
+  const dayKey = day.id;
+  submitted[dayKey] = true;
+
+  const { correct, total } = getDayScore(day);
+  const pct = Math.round((correct / total) * 100);
+
+  // streak + record wrong answers
+  let streak = 0;
+  const today = `${new Date().getMonth()+1}/${new Date().getDate()}`;
+  day.sections.forEach((sec, si) => {
+    sec.questions.forEach((q, qi) => {
+      const key = `${dayKey}-${si}-${qi}`;
+      const chosen = answers[key];
+      if (chosen === q.answer) {
+        streak++;
+        // if previously wrong, mark a correct attempt
+        if (wrongLog[key]) {
+          wrongLog[key].correctCount = (wrongLog[key].correctCount || 0) + 1;
+          wrongLog[key].lastCorrect = today;
+        }
+      } else {
+        streak = 0;
+        // record wrong answer
+        if (!wrongLog[key]) {
+          wrongLog[key] = { wrongCount: 0, correctCount: 0, firstWrong: today };
+        }
+        wrongLog[key].wrongCount++;
+        wrongLog[key].lastWrong = today;
+        wrongLog[key].yourPick = chosen;
+      }
+    });
+  });
+  streaks[dayKey] = streak;
+
+  saveState();
+  render();
+
+  // show modal
+  const ring = document.getElementById('scoreRing');
+  ring.textContent = pct + '%';
+  ring.className = 'score-ring ' + (pct >= 80 ? 'great' : pct >= 60 ? 'ok' : 'bad');
+  document.getElementById('modalTitle').textContent =
+    pct >= 80 ? '太棒了！' : pct >= 60 ? '不錯喔！' : '繼續加油！';
+  document.getElementById('modalMsg').textContent =
+    `答對 ${correct}/${total} 題（${pct}%）` +
+    (pct < 80 ? '\n看看解析，搞懂錯的題目再來一次！' : '\n基礎很穩，明天繼續！');
+  document.getElementById('modal').classList.add('show');
+
+  switchInnerTab('quiz');
+}
+
+function getDayScore(day) {
+  let correct = 0, total = 0;
+  day.sections.forEach((sec, si) => {
+    sec.questions.forEach((q, qi) => {
+      total++;
+      if (answers[`${day.id}-${si}-${qi}`] === q.answer) correct++;
+    });
+  });
+  return { correct, total };
+}
+
+function resetDay() {
+  const day = QUIZ_DATA.days[currentDay];
+  const dayKey = day.id;
+  day.sections.forEach((sec, si) => {
+    sec.questions.forEach((_, qi) => {
+      delete answers[`${dayKey}-${si}-${qi}`];
+    });
+  });
+  delete submitted[dayKey];
+  delete streaks[dayKey];
+  saveState();
+  closeModal();
+  render();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+function switchDay(i) {
+  currentDay = i;
+  render();
+}
+
+function switchInnerTab(tab) {
+  const tabs = ['vocab', 'quiz', 'wrong'];
+  document.querySelectorAll('.inner-tab').forEach((el, i) => {
+    el.classList.toggle('active', tab === tabs[i]);
+  });
+  document.getElementById('vocabTab').classList.toggle('active', tab === 'vocab');
+  document.getElementById('quizTab').classList.toggle('active', tab === 'quiz');
+  document.getElementById('wrongTab').classList.toggle('active', tab === 'wrong');
+}
+
+// =====================================================
+// WRONG ANSWERS NOTEBOOK
+// =====================================================
+let wrongFilter = 'all'; // 'all' | 'active' | 'mastered'
+
+function renderWrong() {
+  const c = document.getElementById('wrongTab');
+  const letters = ['A', 'B', 'C', 'D'];
+
+  // collect all wrong entries
+  const entries = [];
+  Object.keys(wrongLog).forEach(key => {
+    const log = wrongLog[key];
+    const parts = key.split('-');
+    const dayId = parseInt(parts[0]);
+    const si = parseInt(parts[1]);
+    const qi = parseInt(parts[2]);
+    const day = QUIZ_DATA.days.find(d => d.id === dayId);
+    if (!day) return;
+    const sec = day.sections[si];
+    if (!sec) return;
+    const q = sec.questions[qi];
+    if (!q) return;
+
+    const isMastered = log.correctCount > 0;
+    entries.push({
+      key, log, dayId, day, sec, q, qi, isMastered,
+      yourPick: log.yourPick
+    });
+  });
+
+  // update badge
+  const badge = document.getElementById('wrongBadge');
+  const activeCount = entries.filter(e => !e.isMastered).length;
+  if (activeCount > 0) {
+    badge.style.display = 'inline';
+    badge.textContent = activeCount;
+  } else {
+    badge.style.display = entries.length > 0 ? 'inline' : 'none';
+    badge.textContent = '0';
+    if (entries.length > 0) { badge.style.background = 'var(--correct)'; }
+  }
+
+  if (entries.length === 0) {
+    c.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">&#9989;</div>
+        <h3>還沒有錯題</h3>
+        <p>完成練習題後，答錯的題目會自動記錄在這裡。<br>重新作答答對後會標記為「已掌握」。</p>
+      </div>
+    `;
+    return;
+  }
+
+  // filter
+  const filtered = wrongFilter === 'all' ? entries
+    : wrongFilter === 'active' ? entries.filter(e => !e.isMastered)
+    : entries.filter(e => e.isMastered);
+
+  const masteredCount = entries.filter(e => e.isMastered).length;
+  const repeatOffenders = entries.filter(e => e.log.wrongCount >= 2).length;
+
+  let html = `
+    <div class="wrong-summary">
+      <div class="ws-card"><div class="ws-num red">${activeCount}</div><div class="ws-label">待加強</div></div>
+      <div class="ws-card"><div class="ws-num green">${masteredCount}</div><div class="ws-label">已掌握</div></div>
+      <div class="ws-card"><div class="ws-num yellow">${repeatOffenders}</div><div class="ws-label">反覆錯 2+</div></div>
+      <div class="ws-card"><div class="ws-num" style="color:var(--text)">${entries.length}</div><div class="ws-label">累計錯題</div></div>
+    </div>
+    <div class="wrong-filters">
+      <div class="wrong-filter ${wrongFilter==='all'?'active':''}" onclick="setWrongFilter('all')">全部 (${entries.length})</div>
+      <div class="wrong-filter ${wrongFilter==='active'?'active':''}" onclick="setWrongFilter('active')">待加強 (${activeCount})</div>
+      <div class="wrong-filter ${wrongFilter==='mastered'?'active':''}" onclick="setWrongFilter('mastered')">已掌握 (${masteredCount})</div>
+    </div>
+  `;
+
+  if (filtered.length === 0) {
+    html += `<div class="empty-state"><div class="icon">${wrongFilter==='active' ? '&#127881;' : '&#128218;'}</div>
+      <h3>${wrongFilter==='active' ? '全部都掌握了！' : '還沒有已掌握的題目'}</h3>
+      <p>${wrongFilter==='active' ? '太棒了，所有錯題都已重新答對！' : '重新作答答對錯題後，就會顯示在這裡。'}</p></div>`;
+  }
+
+  // sort: active first, then by wrongCount desc
+  filtered.sort((a, b) => {
+    if (a.isMastered !== b.isMastered) return a.isMastered ? 1 : -1;
+    return b.log.wrongCount - a.log.wrongCount;
+  });
+
+  filtered.forEach(e => {
+    const statusBadge = e.isMastered
+      ? '<span class="badge mastered">&#10003; 已掌握</span>'
+      : (e.log.wrongCount >= 2 ? '<span class="badge">&#9888; 反覆錯</span>' : '<span class="badge">&#10007; 待加強</span>');
+    const attemptText = e.isMastered
+      ? `<span class="attempt-count ok">&#10003; 重做答對</span>`
+      : `<span class="attempt-count">錯 ${e.log.wrongCount} 次</span>`;
+
+    html += `
+      <div class="wrong-item" style="${e.isMastered ? 'opacity:0.65' : ''}">
+        <div class="wrong-meta">
+          ${statusBadge}
+          <span class="day-label">Day ${e.dayId} · ${e.sec.type} · Q${e.qi + 1}</span>
+          ${attemptText}
+        </div>
+        <div class="wrong-stem">${formatStem(e.q.stem)}
+          <button class="speak-btn-sm" onclick="speak(\`${e.q.stem.replace(/______/g,'blank').replace(/【.*?】/g,'').replace(/`/g,'')}\`, this)" title="播放題目">&#128264;</button>
+        </div>
+        <div class="wrong-choices">
+          ${e.q.options.map((opt, oi) => {
+            let cls = '';
+            if (oi === e.yourPick && oi !== e.q.answer) cls = 'your-pick';
+            if (oi === e.q.answer) cls = 'correct-pick';
+            const label = oi === e.yourPick && oi !== e.q.answer ? ' ← 你的答案' : (oi === e.q.answer ? ' ← 正確答案' : '');
+            return `<div class="choice ${cls}">(${letters[oi]}) ${opt}${label}</div>`;
+          }).join('')}
+        </div>
+        <div class="wrong-explanation"><strong>解析：</strong>${e.q.explanation}</div>
+      </div>
+    `;
+  });
+
+  c.innerHTML = html;
+}
+
+function setWrongFilter(f) {
+  wrongFilter = f;
+  renderWrong();
+}
+
+function renderStats() {
+  let totalAnswered = 0, totalCorrect = 0, maxStreak = 0;
+  QUIZ_DATA.days.forEach(day => {
+    if (submitted[day.id]) {
+      const s = getDayScore(day);
+      totalAnswered += s.total;
+      totalCorrect += s.correct;
+    }
+    if (streaks[day.id] > maxStreak) maxStreak = streaks[day.id];
+  });
+  document.getElementById('statAnswered').textContent = totalAnswered;
+  document.getElementById('statCorrect').textContent = totalCorrect;
+  document.getElementById('statAccuracy').textContent = totalAnswered > 0 ? Math.round((totalCorrect/totalAnswered)*100)+'%' : '-';
+  document.getElementById('statStreak').textContent = maxStreak;
+}
+
+// =====================================================
+// INIT
+// =====================================================
+loadState();
+render();
+</script>
+
+</body>
+</html>
