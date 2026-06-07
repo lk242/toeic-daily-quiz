@@ -858,6 +858,450 @@ const QUIZ_DATA = {
           ]
         }
       ]
+    },
+    // ========== DAY 2 ==========
+    {
+      id: 2,
+      date: "6/8",
+      title: "商業與交易",
+      vocab: [
+        { word: "customer", pos: "n.", meaning: "顧客", example: "The customer asked for a refund." },
+        { word: "purchase", pos: "v./n.", meaning: "購買", example: "She purchased a new laptop." },
+        { word: "discount", pos: "n.", meaning: "折扣", example: "We offer a 20% discount." },
+        { word: "invoice", pos: "n.", meaning: "發票、帳單", example: "The invoice was sent yesterday." },
+        { word: "profit", pos: "n.", meaning: "利潤", example: "The company made a big profit." },
+        { word: "budget", pos: "n.", meaning: "預算", example: "We need to stay within the budget." },
+        { word: "contract", pos: "n.", meaning: "合約", example: "He signed a two-year contract." },
+        { word: "negotiate", pos: "v.", meaning: "協商", example: "They negotiated a better price." },
+        { word: "deliver", pos: "v.", meaning: "遞送", example: "The package will be delivered tomorrow." },
+        { word: "order", pos: "n./v.", meaning: "訂單/訂購", example: "I'd like to order 100 units." },
+        { word: "payment", pos: "n.", meaning: "付款", example: "Payment is due in 30 days." },
+        { word: "receipt", pos: "n.", meaning: "收據", example: "Keep the receipt for your records." },
+        { word: "refund", pos: "n./v.", meaning: "退款", example: "Can I get a refund?" },
+        { word: "supply", pos: "n./v.", meaning: "供應", example: "The supply chain was disrupted." },
+        { word: "inventory", pos: "n.", meaning: "庫存", example: "We need to check the inventory." },
+        { word: "wholesale", pos: "adj./n.", meaning: "批發", example: "We sell at wholesale prices." },
+        { word: "expense", pos: "n.", meaning: "費用、開銷", example: "Travel expenses are covered." },
+        { word: "estimate", pos: "n./v.", meaning: "估計", example: "Can you give me an estimate?" },
+        { word: "guarantee", pos: "n./v.", meaning: "保證", example: "This product has a one-year guarantee." },
+        { word: "transaction", pos: "n.", meaning: "交易", example: "The transaction was completed." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "注意動詞時態和主被動語態",
+          questions: [
+            { stem: "The ______ complained about the late delivery.", options: ["custom", "customer", "customize", "customary"], answer: 1, explanation: "The 後面需要名詞當主詞，customer（顧客）是人的名詞。" },
+            { stem: "She ______ a new printer for the office.", options: ["purchase", "purchased", "purchasing", "purchaser"], answer: 1, explanation: "句子需要過去式動詞，purchased 是 purchase 的過去式。" },
+            { stem: "The company offers a 15% ______ on bulk orders.", options: ["discount", "discounts", "discounted", "discounting"], answer: 0, explanation: "a 15% 後面接名詞單數，discount（折扣）。" },
+            { stem: "Please send the ______ to our accounting department.", options: ["invoke", "invoice", "invest", "involve"], answer: 1, explanation: "invoice（發票）是寄給會計部門的文件，語意正確。" },
+            { stem: "The package will be ______ by Friday.", options: ["deliver", "delivers", "delivered", "delivering"], answer: 2, explanation: "will be + 過去分詞 = 未來被動語態。" },
+            { stem: "All ______ must be made within 30 days.", options: ["pay", "paying", "payments", "payable"], answer: 2, explanation: "All 後面接可數名詞複數，payments（付款）。" },
+            { stem: "We need to ______ the terms of the contract.", options: ["negotiate", "negotiates", "negotiated", "negotiation"], answer: 0, explanation: "need to 後面接原形動詞。" },
+            { stem: "The annual ______ for marketing was increased.", options: ["budget", "budgets", "budgeted", "budgeting"], answer: 0, explanation: "The annual 後面接名詞單數，budget（預算）。" },
+            { stem: "Mr. Lee signed a three-year ______ with the supplier.", options: ["contract", "contact", "contrast", "contraction"], answer: 0, explanation: "簽的是 contract（合約），注意不要和 contact（聯繫）搞混。" },
+            { stem: "The store will ______ your money if you are not satisfied.", options: ["refund", "refunds", "refunded", "refunding"], answer: 0, explanation: "will 後面接原形動詞。" },
+            { stem: "We need to check the ______ before placing a new order.", options: ["invent", "inventory", "invention", "inventor"], answer: 1, explanation: "check the inventory（檢查庫存）是商業常用語。" },
+            { stem: "The total ______ for the project exceeded expectations.", options: ["expend", "expense", "expensive", "expenses"], answer: 1, explanation: "The total 後面接不可數名詞，expense（費用）。" },
+            { stem: "Could you provide a cost ______ for the renovation?", options: ["estimate", "estimated", "estimating", "estimation"], answer: 0, explanation: "a cost estimate（成本估價）是固定搭配。" },
+            { stem: "This product comes with a two-year ______.", options: ["guarantee", "guaranteed", "guaranteeing", "guarantees"], answer: 0, explanation: "a two-year 後面接名詞單數。" },
+            { stem: "The ______ was completed successfully online.", options: ["transact", "transaction", "transitional", "transacting"], answer: 1, explanation: "The 後面需要名詞，transaction（交易）。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "注意物品的位置和人的動作",
+          questions: [
+            { stem: "【情境】一位店員正在幫顧客結帳", options: ["The clerk is helping a customer.", "The clerk is stocking shelves.", "The clerk is cleaning the counter.", "The clerk is locking the door."], answer: 0, explanation: "店員在幫顧客結帳，helping a customer 正確。" },
+            { stem: "【情境】箱子堆放在倉庫的架子上", options: ["The boxes are being opened.", "The boxes are stacked on shelves.", "The boxes are being loaded onto a truck.", "The boxes are scattered on the floor."], answer: 1, explanation: "箱子堆放在架子上，stacked on shelves 正確。" },
+            { stem: "【情境】一個人正在簽署文件", options: ["The man is reading a book.", "The man is typing on a keyboard.", "The man is signing a document.", "The man is making a phone call."], answer: 2, explanation: "正在簽署文件，signing a document 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "Yes/No 問句和 Wh- 問句的回答方式不同",
+          questions: [
+            { stem: "Have you received the invoice yet?", options: ["Yes, it arrived this morning.", "The office is on the second floor.", "I'll have the fish, please."], answer: 0, explanation: "Have you 問是否收到，(A) Yes 回答合理。" },
+            { stem: "Where can I find the sales report?", options: ["About 200 pages.", "It's on the shared drive.", "Yes, sales were good."], answer: 1, explanation: "Where 問地點，(B) 回答了具體位置。" },
+            { stem: "How much does this item cost?", options: ["At the department store.", "It's $49.99.", "About three hours."], answer: 1, explanation: "How much 問價格，(B) 回答了具體金額。" },
+            { stem: "Could you send me a copy of the contract?", options: ["Sure, I'll email it to you.", "The contract expires in March.", "It's a two-year agreement."], answer: 0, explanation: "Could you 是請求句型，(A) Sure 回應合理。" },
+            { stem: "Why was the shipment delayed?", options: ["It should arrive tomorrow.", "Because of bad weather.", "Yes, it was delayed."], answer: 1, explanation: "Why 問原因，(B) Because 回答原因。" }
+          ]
+        }
+      ]
+    },
+    // ========== DAY 3 ==========
+    {
+      id: 3,
+      date: "6/9",
+      title: "旅行與交通",
+      vocab: [
+        { word: "reservation", pos: "n.", meaning: "預訂", example: "I made a reservation for two." },
+        { word: "departure", pos: "n.", meaning: "出發", example: "The departure time is 8 a.m." },
+        { word: "arrival", pos: "n.", meaning: "到達", example: "The arrival gate has changed." },
+        { word: "luggage", pos: "n.", meaning: "行李", example: "Please collect your luggage." },
+        { word: "passenger", pos: "n.", meaning: "乘客", example: "All passengers must board now." },
+        { word: "destination", pos: "n.", meaning: "目的地", example: "What is your destination?" },
+        { word: "boarding pass", pos: "n.", meaning: "登機證", example: "Show your boarding pass, please." },
+        { word: "delay", pos: "n./v.", meaning: "延誤", example: "The flight was delayed by two hours." },
+        { word: "accommodation", pos: "n.", meaning: "住宿", example: "The hotel offers great accommodation." },
+        { word: "itinerary", pos: "n.", meaning: "行程表", example: "Here is your travel itinerary." },
+        { word: "cancel", pos: "v.", meaning: "取消", example: "I need to cancel my reservation." },
+        { word: "round-trip", pos: "adj.", meaning: "來回的", example: "A round-trip ticket costs $500." },
+        { word: "transfer", pos: "n./v.", meaning: "轉乘/轉帳", example: "You need to transfer at Station B." },
+        { word: "fare", pos: "n.", meaning: "車費/票價", example: "The bus fare is $2.50." },
+        { word: "check in", pos: "v.", meaning: "辦理入住/報到", example: "You can check in online." },
+        { word: "check out", pos: "v.", meaning: "退房", example: "Check out is at 11 a.m." },
+        { word: "terminal", pos: "n.", meaning: "航站/航廈", example: "Go to Terminal 2." },
+        { word: "commute", pos: "n./v.", meaning: "通勤", example: "My commute takes 40 minutes." },
+        { word: "scenic", pos: "adj.", meaning: "風景優美的", example: "We took the scenic route." },
+        { word: "direct", pos: "adj.", meaning: "直達的", example: "Is this a direct flight?" }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "注意介系詞搭配和名詞單複數",
+          questions: [
+            { stem: "I'd like to make a ______ for two nights.", options: ["reserve", "reserved", "reservation", "reserving"], answer: 2, explanation: "make a reservation（預訂）是固定搭配。" },
+            { stem: "The ______ time has been changed to 9 a.m.", options: ["depart", "departure", "departing", "departed"], answer: 1, explanation: "The ______ time 需要名詞修飾 time，departure time（出發時間）。" },
+            { stem: "All ______ are requested to board at Gate 5.", options: ["passage", "passengers", "passing", "passenger"], answer: 1, explanation: "All 後面接可數名詞複數，passengers（乘客們）。" },
+            { stem: "The flight was ______ due to heavy rain.", options: ["delay", "delays", "delayed", "delaying"], answer: 2, explanation: "was + 過去分詞 = 被動語態，was delayed（被延誤）。" },
+            { stem: "Please collect your ______ at the baggage claim.", options: ["lugging", "luggage", "lug", "lugged"], answer: 1, explanation: "luggage（行李）是不可數名詞，用於 baggage claim 場景。" },
+            { stem: "The hotel ______ was comfortable and clean.", options: ["accommodate", "accommodating", "accommodation", "accommodated"], answer: 2, explanation: "The hotel 後面接名詞，accommodation（住宿）。" },
+            { stem: "We need to ______ the reservation before noon.", options: ["cancel", "cancels", "canceled", "canceling"], answer: 0, explanation: "need to 後面接原形動詞。" },
+            { stem: "A ______ ticket to Tokyo costs about $800.", options: ["round-trip", "round-tripping", "round-tripped", "rounds-trip"], answer: 0, explanation: "round-trip 是形容詞，修飾 ticket。" },
+            { stem: "What is the bus ______ to the airport?", options: ["fair", "fare", "fear", "far"], answer: 1, explanation: "fare（票價）是交通費用。注意不要和 fair（公平的）搞混。" },
+            { stem: "Guests must ______ by 11 a.m.", options: ["check out", "check in", "check up", "check off"], answer: 0, explanation: "check out（退房）時間通常是上午。" },
+            { stem: "You can ______ online 24 hours before the flight.", options: ["check out", "check in", "check up", "check off"], answer: 1, explanation: "飛行前辦理報到是 check in。" },
+            { stem: "My daily ______ to work takes about 45 minutes.", options: ["commuter", "commuting", "commute", "commuted"], answer: 2, explanation: "My daily 後面接名詞，commute（通勤）。" },
+            { stem: "Is this a ______ flight, or do I need to transfer?", options: ["direction", "directly", "direct", "directed"], answer: 2, explanation: "direct flight（直達航班）是固定搭配。" },
+            { stem: "Please go to ______ 3 for international flights.", options: ["terminal", "terminate", "termination", "terminals"], answer: 0, explanation: "Terminal 3（第三航廈），名詞單數。" },
+            { stem: "Here is your travel ______ for the business trip.", options: ["iterate", "itinerary", "literary", "iteration"], answer: 1, explanation: "travel itinerary（旅行行程表）是固定搭配。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "注意交通工具和場景細節",
+          questions: [
+            { stem: "【情境】旅客們在機場排隊等候登機", options: ["Passengers are boarding a train.", "Passengers are waiting in line at the gate.", "Passengers are picking up luggage.", "Passengers are exiting the plane."], answer: 1, explanation: "在機場排隊等候登機，waiting in line at the gate 正確。" },
+            { stem: "【情境】一輛計程車停在飯店門口", options: ["A taxi is parked in front of a hotel.", "A bus is leaving the station.", "A car is being repaired.", "A train is arriving at the platform."], answer: 0, explanation: "計程車停在飯店門口，parked in front of a hotel 正確。" },
+            { stem: "【情境】一位女性在櫃台辦理入住手續", options: ["The woman is checking out.", "The woman is checking in at the front desk.", "The woman is waiting for a taxi.", "The woman is eating at a restaurant."], answer: 1, explanation: "在櫃台辦理入住，checking in at the front desk 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "注意選擇題和建議句型的回答",
+          questions: [
+            { stem: "What time does the train depart?", options: ["At platform 3.", "At 7:30 in the morning.", "It was very crowded."], answer: 1, explanation: "What time 問時間，(B) 回答具體時間。" },
+            { stem: "Do you have a reservation?", options: ["Yes, under the name Kim.", "The restaurant is closed.", "I reserved my opinion."], answer: 0, explanation: "Do you have 問有沒有預訂，(A) Yes 並給出名字。" },
+            { stem: "How long is the flight to New York?", options: ["About 14 hours.", "At Kennedy Airport.", "Yes, it's a long flight."], answer: 0, explanation: "How long 問時間長度，(A) 回答具體時數。" },
+            { stem: "Would you prefer a window or aisle seat?", options: ["The flight was comfortable.", "A window seat, please.", "I'll arrive at noon."], answer: 1, explanation: "A or B 的選擇問句，直接選其中一個回答。" },
+            { stem: "Where is the nearest bus stop?", options: ["Every 15 minutes.", "It's just around the corner.", "The bus fare is $2."], answer: 1, explanation: "Where 問地點，(B) 回答具體位置。" }
+          ]
+        }
+      ]
+    },
+    // ========== DAY 4 ==========
+    {
+      id: 4,
+      date: "6/10",
+      title: "人事與招募",
+      vocab: [
+        { word: "applicant", pos: "n.", meaning: "申請者", example: "We received 50 applicants." },
+        { word: "resume", pos: "n.", meaning: "履歷", example: "Please send your resume." },
+        { word: "interview", pos: "n./v.", meaning: "面試", example: "The interview is on Wednesday." },
+        { word: "qualify", pos: "v.", meaning: "具備資格", example: "She qualifies for the position." },
+        { word: "recruit", pos: "v.", meaning: "招募", example: "We are recruiting new staff." },
+        { word: "salary", pos: "n.", meaning: "薪水", example: "The salary is competitive." },
+        { word: "benefit", pos: "n.", meaning: "福利", example: "The job offers great benefits." },
+        { word: "promote", pos: "v.", meaning: "升遷/推廣", example: "He was promoted to director." },
+        { word: "resign", pos: "v.", meaning: "辭職", example: "She resigned last month." },
+        { word: "retire", pos: "v.", meaning: "退休", example: "He will retire next year." },
+        { word: "hire", pos: "v.", meaning: "僱用", example: "We hired three new people." },
+        { word: "training", pos: "n.", meaning: "訓練", example: "New employees receive training." },
+        { word: "performance", pos: "n.", meaning: "表現/績效", example: "Her performance was excellent." },
+        { word: "evaluation", pos: "n.", meaning: "評估", example: "The annual evaluation is in December." },
+        { word: "reference", pos: "n.", meaning: "推薦人/參考", example: "Can you provide two references?" },
+        { word: "requirement", pos: "n.", meaning: "要求/條件", example: "The job requirements are listed." },
+        { word: "orientation", pos: "n.", meaning: "新人訓練", example: "Orientation is on Monday." },
+        { word: "compensation", pos: "n.", meaning: "薪酬/補償", example: "The compensation package is good." },
+        { word: "candidate", pos: "n.", meaning: "候選人", example: "We have three strong candidates." },
+        { word: "vacancy", pos: "n.", meaning: "職缺", example: "There is a vacancy in sales." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "注意人稱名詞和動詞的搭配",
+          questions: [
+            { stem: "The ______ submitted her resume last week.", options: ["apply", "applicant", "application", "applied"], answer: 1, explanation: "The 後面需要名詞（人），applicant（申請者）。" },
+            { stem: "Please attach your ______ to the application form.", options: ["resume", "resumes", "resumed", "resuming"], answer: 0, explanation: "your 後面接名詞單數，resume（履歷）。" },
+            { stem: "He was ______ to the position of vice president.", options: ["promote", "promoted", "promoting", "promotion"], answer: 1, explanation: "was + 過去分詞 = 被動語態，was promoted（被升遷）。" },
+            { stem: "The company is currently ______ new engineers.", options: ["recruit", "recruits", "recruiting", "recruited"], answer: 2, explanation: "is currently + V-ing = 現在進行式。" },
+            { stem: "Ms. Park ______ from the company after 20 years.", options: ["retired", "retire", "retires", "retiring"], answer: 0, explanation: "after 20 years 表示過去的事，用過去式 retired。" },
+            { stem: "All new ______ must complete a training program.", options: ["hire", "hires", "hired", "hiring"], answer: 1, explanation: "All new hires（所有新進人員）是常用語。" },
+            { stem: "Her job ______ was rated as excellent.", options: ["perform", "performing", "performance", "performed"], answer: 2, explanation: "Her job 後面接名詞，performance（表現）。" },
+            { stem: "The annual ______ will take place in December.", options: ["evaluate", "evaluating", "evaluation", "evaluated"], answer: 2, explanation: "The annual 後面接名詞，evaluation（評估）。" },
+            { stem: "Please provide two professional ______ with your application.", options: ["refer", "reference", "references", "referred"], answer: 2, explanation: "two 後面接可數名詞複數，references（推薦人）。" },
+            { stem: "The ______ for this position include a bachelor's degree.", options: ["require", "requirements", "required", "requiring"], answer: 1, explanation: "The 後面需要名詞複數（因為 include），requirements（要求）。" },
+            { stem: "She ______ her position to pursue further education.", options: ["resign", "resigned", "resigning", "resignation"], answer: 1, explanation: "過去式語境，resigned（辭職了）。" },
+            { stem: "The ______ package includes health insurance.", options: ["compensate", "compensated", "compensation", "compensating"], answer: 2, explanation: "The ______ package 需要名詞修飾，compensation package（薪酬福利）。" },
+            { stem: "We have several strong ______ for the manager position.", options: ["candidate", "candidates", "candidacy", "candidly"], answer: 1, explanation: "several 後面接可數名詞複數。" },
+            { stem: "There is a ______ in the marketing department.", options: ["vacant", "vacancy", "vacantly", "vacate"], answer: 1, explanation: "There is a 後面接名詞單數，vacancy（職缺）。" },
+            { stem: "The starting ______ for this position is $50,000.", options: ["salary", "salaries", "salaried", "salable"], answer: 0, explanation: "The starting salary（起薪）是固定搭配。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "注意人物的動作和身分",
+          questions: [
+            { stem: "【情境】面試官正在和應徵者對話", options: ["They are having a job interview.", "They are eating lunch together.", "They are signing a contract.", "They are leaving the office."], answer: 0, explanation: "面試場景，having a job interview 正確。" },
+            { stem: "【情境】一群人在會議室裡看簡報", options: ["People are watching a presentation.", "People are leaving the building.", "People are having a party.", "People are eating at a restaurant."], answer: 0, explanation: "看簡報，watching a presentation 正確。" },
+            { stem: "【情境】一位女性正在整理辦公桌上的文件", options: ["The woman is organizing files on her desk.", "The woman is making coffee.", "The woman is talking to a colleague.", "The woman is typing on her computer."], answer: 0, explanation: "整理文件，organizing files on her desk 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "注意 Which 和 What 問句的回答方式",
+          questions: [
+            { stem: "When does the new employee start?", options: ["She seems very qualified.", "Next Monday morning.", "In the HR department."], answer: 1, explanation: "When 問時間，(B) 回答具體日期。" },
+            { stem: "Have you finished the performance reviews?", options: ["Yes, I submitted them yesterday.", "The reviews were positive.", "She performs very well."], answer: 0, explanation: "Have you finished 問是否完成，(A) Yes 回答合理。" },
+            { stem: "Which candidate did you choose?", options: ["We chose Ms. Johnson.", "There are five candidates.", "The interview went well."], answer: 0, explanation: "Which 問選了哪個，(A) 回答了具體人選。" },
+            { stem: "What benefits does the company offer?", options: ["The company is growing fast.", "Health insurance and paid vacation.", "I benefit from the training."], answer: 1, explanation: "What benefits 問福利內容，(B) 列出具體福利。" },
+            { stem: "Why did Mr. Chen resign?", options: ["He resigned on Friday.", "To start his own business.", "Yes, he submitted his resignation."], answer: 1, explanation: "Why 問原因，(B) To 開頭回答目的/原因。" }
+          ]
+        }
+      ]
+    },
+    // ========== DAY 5 ==========
+    {
+      id: 5,
+      date: "6/11",
+      title: "日常生活與購物",
+      vocab: [
+        { word: "grocery", pos: "n.", meaning: "雜貨", example: "I need to buy groceries." },
+        { word: "aisle", pos: "n.", meaning: "走道/通道", example: "The milk is in aisle 3." },
+        { word: "cashier", pos: "n.", meaning: "收銀員", example: "Pay at the cashier." },
+        { word: "complaint", pos: "n.", meaning: "投訴", example: "She filed a complaint." },
+        { word: "exchange", pos: "v./n.", meaning: "交換/兌換", example: "Can I exchange this shirt?" },
+        { word: "warranty", pos: "n.", meaning: "保固", example: "The warranty lasts two years." },
+        { word: "merchandise", pos: "n.", meaning: "商品", example: "The merchandise is on sale." },
+        { word: "coupon", pos: "n.", meaning: "優惠券", example: "Do you have any coupons?" },
+        { word: "register", pos: "v./n.", meaning: "登記/收銀台", example: "Please register at the front desk." },
+        { word: "pharmacy", pos: "n.", meaning: "藥局", example: "The pharmacy closes at 9 p.m." },
+        { word: "convenient", pos: "adj.", meaning: "方便的", example: "This location is very convenient." },
+        { word: "selection", pos: "n.", meaning: "選擇/品項", example: "They have a wide selection." },
+        { word: "quantity", pos: "n.", meaning: "數量", example: "What quantity do you need?" },
+        { word: "affordable", pos: "adj.", meaning: "負擔得起的", example: "The prices are affordable." },
+        { word: "browse", pos: "v.", meaning: "瀏覽", example: "I'm just browsing, thanks." },
+        { word: "recommend", pos: "v.", meaning: "推薦", example: "I recommend this restaurant." },
+        { word: "ingredient", pos: "n.", meaning: "成分/食材", example: "Check the ingredients list." },
+        { word: "expire", pos: "v.", meaning: "到期/過期", example: "The milk expires tomorrow." },
+        { word: "fragile", pos: "adj.", meaning: "易碎的", example: "Be careful, it's fragile." },
+        { word: "receipt", pos: "n.", meaning: "收據", example: "May I have the receipt?" }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "注意形容詞和名詞的搭配",
+          questions: [
+            { stem: "The ______ store is open until 10 p.m.", options: ["grocer", "grocery", "groceries", "grocer's"], answer: 1, explanation: "grocery store（雜貨店）是固定搭配。" },
+            { stem: "You can find the cereal in ______ 5.", options: ["aisle", "isle", "aisles", "island"], answer: 0, explanation: "aisle（走道）後接數字表示位置。注意不要和 isle（島嶼）搞混。" },
+            { stem: "The customer filed a ______ about the service.", options: ["complain", "complaint", "complaining", "complained"], answer: 1, explanation: "filed a complaint（提出投訴）是固定搭配。" },
+            { stem: "This product is covered by a one-year ______.", options: ["warrant", "warranty", "warranted", "warranting"], answer: 1, explanation: "a one-year warranty（一年保固）是固定搭配。" },
+            { stem: "The store has a wide ______ of organic products.", options: ["select", "selected", "selection", "selective"], answer: 2, explanation: "a wide selection of（多樣的品項）是固定搭配。" },
+            { stem: "Please pay at the ______ near the exit.", options: ["register", "registered", "registering", "registration"], answer: 0, explanation: "register（收銀台）是購物場景用語。" },
+            { stem: "I'd like to ______ this jacket for a larger size.", options: ["exchange", "exchanges", "exchanged", "exchanging"], answer: 0, explanation: "I'd like to 後面接原形動詞。" },
+            { stem: "This coupon ______ at the end of this month.", options: ["expire", "expires", "expired", "expiring"], answer: 1, explanation: "主詞 This coupon 第三人稱單數，現在式加 s。" },
+            { stem: "The prices here are very ______.", options: ["afford", "affords", "affordable", "affordably"], answer: 2, explanation: "are very 後面接形容詞，affordable（負擔得起的）。" },
+            { stem: "I ______ trying the new Italian restaurant.", options: ["recommend", "recommends", "recommended", "recommendation"], answer: 0, explanation: "I 後面接原形動詞（recommend + V-ing 是固定用法）。" },
+            { stem: "Please handle with care — the items are ______.", options: ["fragility", "fragile", "fragilely", "fragment"], answer: 1, explanation: "are 後面接形容詞，fragile（易碎的）。" },
+            { stem: "The ______ is located next to the hospital.", options: ["pharmacy", "pharmacist", "pharmaceutical", "pharmacies"], answer: 0, explanation: "The 後面接名詞單數，pharmacy（藥局）。" },
+            { stem: "What ______ do you need?", options: ["quantify", "quantity", "quantities", "quantitative"], answer: 1, explanation: "What quantity（什麼數量）問數量多少。" },
+            { stem: "This location is very ______ for commuters.", options: ["convenience", "convenient", "conveniently", "convene"], answer: 1, explanation: "is very 後面接形容詞，convenient（方便的）。" },
+            { stem: "All ______ is 30% off this weekend.", options: ["merchant", "merchandise", "merchandising", "mercantile"], answer: 1, explanation: "All merchandise（所有商品）是不可數名詞。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "注意購物場景的細節",
+          questions: [
+            { stem: "【情境】一位女性正在超市推購物車", options: ["The woman is pushing a shopping cart.", "The woman is carrying a briefcase.", "The woman is sitting on a bench.", "The woman is waiting at a bus stop."], answer: 0, explanation: "推購物車，pushing a shopping cart 正確。" },
+            { stem: "【情境】收銀員正在掃描商品條碼", options: ["The cashier is counting money.", "The cashier is scanning an item.", "The cashier is stacking boxes.", "The cashier is mopping the floor."], answer: 1, explanation: "掃描商品，scanning an item 正確。" },
+            { stem: "【情境】架子上擺滿了各種水果", options: ["The shelves are empty.", "Fruits are displayed on the shelves.", "The store is closed.", "Boxes are stacked on the floor."], answer: 1, explanation: "水果擺在架子上，displayed on the shelves 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "注意禮貌請求和提議的回答",
+          questions: [
+            { stem: "Do you accept credit cards?", options: ["Yes, we accept Visa and Mastercard.", "The total is $35.", "I paid in cash."], answer: 0, explanation: "Do you accept 問接不接受，(A) Yes 回答合理。" },
+            { stem: "Can I return this item?", options: ["It costs $29.99.", "Yes, within 30 days with a receipt.", "The item is on sale."], answer: 1, explanation: "Can I 問能不能退貨，(B) Yes 並說明條件。" },
+            { stem: "Where is the electronics section?", options: ["It's on the second floor.", "We close at 9.", "The prices are reasonable."], answer: 0, explanation: "Where 問地點，(A) 回答具體位置。" },
+            { stem: "Would you like a bag?", options: ["I like shopping here.", "No, thank you. I brought my own.", "The bag is very nice."], answer: 1, explanation: "Would you like 是提議，(B) No, thank you 婉拒。" },
+            { stem: "How would you like to pay?", options: ["By credit card, please.", "The payment is due Monday.", "Yes, I'd like to pay."], answer: 0, explanation: "How would you like to pay 問付款方式，(A) 回答具體方式。" }
+          ]
+        }
+      ]
+    },
+    // ========== DAY 6 ==========
+    {
+      id: 6,
+      date: "6/12",
+      title: "設施與維修",
+      vocab: [
+        { word: "equipment", pos: "n.", meaning: "設備", example: "The equipment needs repair." },
+        { word: "maintenance", pos: "n.", meaning: "維修/保養", example: "Regular maintenance is important." },
+        { word: "facility", pos: "n.", meaning: "設施", example: "The facility is open 24 hours." },
+        { word: "renovate", pos: "v.", meaning: "翻新", example: "They renovated the office." },
+        { word: "install", pos: "v.", meaning: "安裝", example: "We installed new software." },
+        { word: "repair", pos: "v./n.", meaning: "修理", example: "The elevator is under repair." },
+        { word: "replace", pos: "v.", meaning: "更換", example: "We need to replace the printer." },
+        { word: "inspect", pos: "v.", meaning: "檢查", example: "The building was inspected." },
+        { word: "construction", pos: "n.", meaning: "施工/建設", example: "The road is under construction." },
+        { word: "tenant", pos: "n.", meaning: "租戶", example: "The tenant signed a lease." },
+        { word: "landlord", pos: "n.", meaning: "房東", example: "Contact the landlord for repairs." },
+        { word: "lease", pos: "n./v.", meaning: "租約/租賃", example: "The lease expires in March." },
+        { word: "property", pos: "n.", meaning: "房產/財產", example: "The property is for sale." },
+        { word: "location", pos: "n.", meaning: "地點", example: "The location is near the station." },
+        { word: "permit", pos: "n./v.", meaning: "許可證/允許", example: "You need a building permit." },
+        { word: "plumber", pos: "n.", meaning: "水管工", example: "Call the plumber." },
+        { word: "electrician", pos: "n.", meaning: "電工", example: "The electrician fixed the wiring." },
+        { word: "warehouse", pos: "n.", meaning: "倉庫", example: "The goods are in the warehouse." },
+        { word: "occupy", pos: "v.", meaning: "佔用/入住", example: "The office is fully occupied." },
+        { word: "spacious", pos: "adj.", meaning: "寬敞的", example: "The new office is spacious." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "注意被動語態和介系詞片語",
+          questions: [
+            { stem: "The office ______ needs to be updated.", options: ["equip", "equipment", "equipped", "equipping"], answer: 1, explanation: "The office 後面接名詞，equipment（設備）是不可數名詞。" },
+            { stem: "Regular ______ helps extend the life of the machine.", options: ["maintain", "maintenance", "maintained", "maintaining"], answer: 1, explanation: "Regular 後面接名詞，maintenance（保養）。" },
+            { stem: "The building was ______ last year.", options: ["renovate", "renovated", "renovating", "renovation"], answer: 1, explanation: "was + 過去分詞 = 被動語態，was renovated（被翻新）。" },
+            { stem: "A new security system will be ______ next week.", options: ["install", "installed", "installing", "installation"], answer: 1, explanation: "will be + 過去分詞 = 未來被動語態。" },
+            { stem: "The elevator is currently under ______.", options: ["repair", "repaired", "repairing", "repairable"], answer: 0, explanation: "under repair（維修中）是固定片語。" },
+            { stem: "We need to ______ the old computers.", options: ["replace", "replaces", "replaced", "replacement"], answer: 0, explanation: "need to 後面接原形動詞。" },
+            { stem: "The building was ______ by a safety officer.", options: ["inspect", "inspected", "inspecting", "inspection"], answer: 1, explanation: "was + 過去分詞 = 被動語態。" },
+            { stem: "The road is closed due to ______.", options: ["construct", "constructed", "construction", "constructing"], answer: 2, explanation: "due to 後面接名詞，construction（施工）。" },
+            { stem: "The ______ renewed the lease for another year.", options: ["tend", "tenant", "tenancy", "tending"], answer: 1, explanation: "The 後面接名詞（人），tenant（租戶）。" },
+            { stem: "The ______ expires at the end of December.", options: ["lease", "leased", "leasing", "leaser"], answer: 0, explanation: "The 後面接名詞，lease（租約）。" },
+            { stem: "The ______ is located near the train station.", options: ["proper", "property", "properly", "properties"], answer: 1, explanation: "The 後面接名詞，property（房產）。" },
+            { stem: "You need a ______ to start construction.", options: ["permit", "permits", "permitted", "permitting"], answer: 0, explanation: "a 後面接名詞單數，permit（許可證）。" },
+            { stem: "Call the ______ to fix the water leak.", options: ["plumber", "plumbing", "plumbed", "plumbers"], answer: 0, explanation: "the 後面接名詞單數（人），plumber（水管工）。" },
+            { stem: "The new office is very ______.", options: ["space", "spacious", "spaciously", "spacing"], answer: 1, explanation: "is very 後面接形容詞，spacious（寬敞的）。" },
+            { stem: "All goods are stored in the ______.", options: ["warehouse", "warehousing", "warehoused", "warehouses"], answer: 0, explanation: "the 後面接名詞單數，warehouse（倉庫）。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "注意施工場景和設備狀態",
+          questions: [
+            { stem: "【情境】工人正在修理屋頂", options: ["Workers are repairing the roof.", "Workers are painting a wall.", "Workers are planting trees.", "Workers are cleaning the windows."], answer: 0, explanation: "修理屋頂，repairing the roof 正確。" },
+            { stem: "【情境】一台挖土機停在工地旁", options: ["A truck is being unloaded.", "An excavator is parked at a construction site.", "A car is parked in a garage.", "A bus is waiting at the stop."], answer: 1, explanation: "挖土機停在工地旁，parked at a construction site 正確。" },
+            { stem: "【情境】一間空的辦公室裡有新的桌椅", options: ["The office is fully occupied.", "New furniture has been placed in the office.", "People are working at their desks.", "The office is being demolished."], answer: 1, explanation: "新桌椅已擺放，new furniture has been placed 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "注意問題的主題和回答的相關性",
+          questions: [
+            { stem: "When will the renovation be completed?", options: ["By the end of next month.", "The building is very old.", "Yes, it has been renovated."], answer: 0, explanation: "When 問時間，(A) By 回答截止時間。" },
+            { stem: "Who should I contact about the broken printer?", options: ["It was printed yesterday.", "Call the IT department.", "The printer is on the third floor."], answer: 1, explanation: "Who 問找誰，(B) 回答了具體對象。" },
+            { stem: "Is the parking lot available?", options: ["About 50 spaces.", "Yes, there are spaces on level B2.", "I parked near the entrance."], answer: 1, explanation: "Is 問是否可用，(B) Yes 並補充資訊。" },
+            { stem: "What floor is the conference room on?", options: ["The meeting is at 3 p.m.", "On the fifth floor.", "Yes, the room is available."], answer: 1, explanation: "What floor 問樓層，(B) 回答具體樓層。" },
+            { stem: "Has the air conditioning been fixed?", options: ["Not yet, the technician is coming tomorrow.", "The temperature is 25 degrees.", "I prefer the window open."], answer: 0, explanation: "Has... been fixed 問是否修好了，(A) Not yet 回答還沒。" }
+          ]
+        }
+      ]
+    },
+    // ========== DAY 7 ==========
+    {
+      id: 7,
+      date: "6/13",
+      title: "溝通與會議（複習日）",
+      vocab: [
+        { word: "announce", pos: "v.", meaning: "宣布", example: "They announced the new policy." },
+        { word: "agenda", pos: "n.", meaning: "議程", example: "Here is today's agenda." },
+        { word: "discuss", pos: "v.", meaning: "討論", example: "Let's discuss the plan." },
+        { word: "suggestion", pos: "n.", meaning: "建議", example: "Do you have any suggestions?" },
+        { word: "presentation", pos: "n.", meaning: "簡報", example: "She gave a great presentation." },
+        { word: "proposal", pos: "n.", meaning: "提案", example: "The proposal was accepted." },
+        { word: "feedback", pos: "n.", meaning: "回饋意見", example: "We welcome your feedback." },
+        { word: "update", pos: "n./v.", meaning: "更新", example: "I'll update you on the project." },
+        { word: "brief", pos: "v./adj.", meaning: "簡報/簡短的", example: "Let me brief you on the situation." },
+        { word: "inquire", pos: "v.", meaning: "詢問", example: "I'd like to inquire about the price." },
+        { word: "inform", pos: "v.", meaning: "通知", example: "Please inform the team." },
+        { word: "participate", pos: "v.", meaning: "參與", example: "Everyone should participate." },
+        { word: "cooperation", pos: "n.", meaning: "合作", example: "Thank you for your cooperation." },
+        { word: "instructions", pos: "n.", meaning: "指示/說明", example: "Follow the instructions carefully." },
+        { word: "negotiate", pos: "v.", meaning: "談判/協商", example: "We need to negotiate the terms." },
+        { word: "clarify", pos: "v.", meaning: "澄清", example: "Can you clarify this point?" },
+        { word: "memorandum", pos: "n.", meaning: "備忘錄", example: "A memorandum was sent to all staff." },
+        { word: "minutes", pos: "n.", meaning: "會議紀錄", example: "She took the meeting minutes." },
+        { word: "adjourn", pos: "v.", meaning: "休會/散會", example: "The meeting was adjourned at 4 p.m." },
+        { word: "consensus", pos: "n.", meaning: "共識", example: "We reached a consensus on the issue." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "這是複習日，綜合前六天的文法重點",
+          questions: [
+            { stem: "The company ______ the merger yesterday.", options: ["announce", "announced", "announcing", "announcement"], answer: 1, explanation: "yesterday 表示過去，用過去式 announced。" },
+            { stem: "Please review the ______ before the meeting.", options: ["agenda", "agendas", "agendered", "agending"], answer: 0, explanation: "the 後面接名詞單數，agenda（議程）。" },
+            { stem: "We need to ______ this issue at the next meeting.", options: ["discuss", "discusses", "discussed", "discussion"], answer: 0, explanation: "need to 後面接原形動詞。" },
+            { stem: "Her ______ was very impressive.", options: ["present", "presenting", "presentation", "presented"], answer: 2, explanation: "Her 後面接名詞，presentation（簡報）。" },
+            { stem: "The ______ was submitted to the board for approval.", options: ["propose", "proposal", "proposed", "proposing"], answer: 1, explanation: "The 後面接名詞，proposal（提案）。" },
+            { stem: "We appreciate your ______ on the new design.", options: ["feed", "feedback", "fed", "feeding"], answer: 1, explanation: "your 後面接名詞，feedback（回饋意見）是不可數名詞。" },
+            { stem: "I'd like to ______ about the available positions.", options: ["inquire", "inquires", "inquired", "inquiry"], answer: 0, explanation: "I'd like to 後面接原形動詞。" },
+            { stem: "Please ______ all staff about the schedule change.", options: ["inform", "informs", "informed", "information"], answer: 0, explanation: "Please 後面接原形動詞（祈使句）。" },
+            { stem: "All employees are encouraged to ______ in the survey.", options: ["participate", "participates", "participated", "participation"], answer: 0, explanation: "to 後面接原形動詞。" },
+            { stem: "Thank you for your ______ during the project.", options: ["cooperate", "cooperated", "cooperation", "cooperative"], answer: 2, explanation: "your 後面接名詞，cooperation（合作）。" },
+            { stem: "Could you ______ what you mean?", options: ["clarify", "clarifies", "clarified", "clarification"], answer: 0, explanation: "Could you 後面接原形動詞。" },
+            { stem: "A ______ was distributed to all departments.", options: ["memo", "memorandum", "memorable", "memorial"], answer: 1, explanation: "A 後面接名詞單數，memorandum（備忘錄）。" },
+            { stem: "She was responsible for taking the meeting ______.", options: ["minute", "minutes", "minuted", "minuting"], answer: 1, explanation: "meeting minutes（會議紀錄）是固定搭配，用複數。" },
+            { stem: "The meeting was ______ at 5 p.m.", options: ["adjourn", "adjourned", "adjourning", "adjournment"], answer: 1, explanation: "was + 過去分詞 = 被動語態，was adjourned（被散會）。" },
+            { stem: "The team reached a ______ on the budget plan.", options: ["consent", "consensus", "conscious", "consequence"], answer: 1, explanation: "reached a consensus（達成共識）是固定搭配。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "注意多人場景中每個人的動作",
+          questions: [
+            { stem: "【情境】一位男性站在白板前做簡報", options: ["The man is giving a presentation.", "The man is cleaning the whiteboard.", "The man is sitting at his desk.", "The man is leaving the room."], answer: 0, explanation: "站在白板前做簡報，giving a presentation 正確。" },
+            { stem: "【情境】幾個人圍坐在會議桌旁討論", options: ["People are having a discussion around a table.", "People are eating lunch.", "People are watching a movie.", "People are waiting in a lobby."], answer: 0, explanation: "圍坐討論，having a discussion around a table 正確。" },
+            { stem: "【情境】一位女性正在用電話講話並做筆記", options: ["The woman is reading a book.", "The woman is talking on the phone and taking notes.", "The woman is typing an email.", "The woman is drinking coffee."], answer: 1, explanation: "講電話做筆記，talking on the phone and taking notes 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "綜合複習各種問句類型",
+          questions: [
+            { stem: "Shall we postpone the meeting to next week?", options: ["The meeting room is booked.", "That sounds like a good idea.", "We met last Tuesday."], answer: 1, explanation: "Shall we 是提議句型，(B) 回應同意。" },
+            { stem: "Who will lead the discussion?", options: ["About the new marketing strategy.", "Mr. Wang has volunteered.", "The discussion was productive."], answer: 1, explanation: "Who 問人，(B) 回答具體人名。" },
+            { stem: "What was the main topic of the meeting?", options: ["It lasted about two hours.", "The quarterly sales review.", "In the main conference room."], answer: 1, explanation: "What was the main topic 問主題，(B) 回答具體主題。" },
+            { stem: "Have you sent the memo to all departments?", options: ["Yes, it was emailed this morning.", "The memo is about the holiday schedule.", "All departments are on the same floor."], answer: 0, explanation: "Have you sent 問是否寄出，(A) Yes 回答合理。" },
+            { stem: "How often does the team meet?", options: ["In the conference room.", "Every other Wednesday.", "There are eight members."], answer: 1, explanation: "How often 問頻率，(B) 回答具體頻率。" }
+          ]
+        }
+      ]
     }
   ]
 };
