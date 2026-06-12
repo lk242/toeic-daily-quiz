@@ -498,6 +498,33 @@
   .wrong-item .wrong-explanation { margin-top: 10px; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 8px; border-left: 3px solid var(--accent); font-size: 13px; color: var(--text-dim); }
   .wrong-item .wrong-explanation strong { color: var(--text); }
 
+  /* Wrong practice mode */
+  .wrong-practice-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .wrong-practice-bar .btn { padding: 10px 22px; font-size: 14px; }
+  .wrong-practice-bar .practice-hint {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .wrong-practice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wrong-practice-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-light);
+  }
+
   .wrong-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .wrong-filter {
     padding: 6px 14px;
@@ -1869,12 +1896,27 @@ function renderWrong() {
   }
 
   // filter
-  const filtered = wrongFilter === 'all' ? entries
-    : wrongFilter === 'active' ? entries.filter(e => !e.isMastered)
-    : entries.filter(e => e.isMastered);
-
   const masteredCount = entries.filter(e => e.isMastered).length;
   const repeatOffenders = entries.filter(e => e.log.wrongCount >= 2).length;
+  const repeatActive = entries.filter(e => e.log.wrongCount >= 2 && !e.isMastered).length;
+
+  const filtered = wrongFilter === 'all' ? entries
+    : wrongFilter === 'active' ? entries.filter(e => !e.isMastered)
+    : wrongFilter === 'repeat' ? entries.filter(e => e.log.wrongCount >= 2)
+    : entries.filter(e => e.isMastered);
+
+  let practiceHtml = '';
+  if (wrongFilter === 'repeat' && repeatActive > 0) {
+    practiceHtml = `<div class="wrong-practice-bar">
+      <button class="btn btn-primary" onclick="startWrongPractice('repeat')">&#9998; 練習反覆錯題 (${repeatActive} 題)</button>
+      <span class="practice-hint">針對錯 2 次以上且未掌握的題目重做</span>
+    </div>`;
+  } else if (wrongFilter !== 'repeat' && activeCount > 0) {
+    practiceHtml = `<div class="wrong-practice-bar">
+      <button class="btn btn-primary" onclick="startWrongPractice('active')">&#9998; 練習待加強 (${activeCount} 題)</button>
+      <span class="practice-hint">直接重做錯題，答對即標記為已掌握</span>
+    </div>`;
+  }
 
   let html = `
     <div class="wrong-summary">
@@ -1886,14 +1928,19 @@ function renderWrong() {
     <div class="wrong-filters">
       <div class="wrong-filter ${wrongFilter==='all'?'active':''}" onclick="setWrongFilter('all')">全部 (${entries.length})</div>
       <div class="wrong-filter ${wrongFilter==='active'?'active':''}" onclick="setWrongFilter('active')">待加強 (${activeCount})</div>
+      <div class="wrong-filter ${wrongFilter==='repeat'?'active':''}" onclick="setWrongFilter('repeat')">反覆錯 (${repeatOffenders})</div>
       <div class="wrong-filter ${wrongFilter==='mastered'?'active':''}" onclick="setWrongFilter('mastered')">已掌握 (${masteredCount})</div>
     </div>
+    ${practiceHtml}
   `;
 
   if (filtered.length === 0) {
-    html += `<div class="empty-state"><div class="icon">${wrongFilter==='active' ? '&#127881;' : '&#128218;'}</div>
-      <h3>${wrongFilter==='active' ? '全部都掌握了！' : '還沒有已掌握的題目'}</h3>
-      <p>${wrongFilter==='active' ? '太棒了，所有錯題都已重新答對！' : '重新作答答對錯題後，就會顯示在這裡。'}</p></div>`;
+    const emptyIcon = wrongFilter==='active' ? '&#127881;' : wrongFilter==='repeat' ? '&#127881;' : '&#128218;';
+    const emptyTitle = wrongFilter==='active' ? '全部都掌握了！' : wrongFilter==='repeat' ? '沒有反覆錯的題目' : '還沒有已掌握的題目';
+    const emptyMsg = wrongFilter==='active' ? '太棒了，所有錯題都已重新答對！' : wrongFilter==='repeat' ? '目前沒有錯 2 次以上的題目，繼續保持！' : '重新作答答對錯題後，就會顯示在這裡。';
+    html += `<div class="empty-state"><div class="icon">${emptyIcon}</div>
+      <h3>${emptyTitle}</h3>
+      <p>${emptyMsg}</p></div>`;
   }
 
   // sort: active first, then by wrongCount desc
@@ -1956,6 +2003,205 @@ function renderStats() {
   document.getElementById('statCorrect').textContent = totalCorrect;
   document.getElementById('statAccuracy').textContent = totalAnswered > 0 ? Math.round((totalCorrect/totalAnswered)*100)+'%' : '-';
   document.getElementById('statStreak').textContent = maxStreak;
+}
+
+// =====================================================
+// WRONG PRACTICE MODE
+// =====================================================
+let wrongPracticeActive = false;
+let wrongPracticeItems = [];
+let wrongPracticeAnswers = {};
+
+function startWrongPractice(filter) {
+  const items = [];
+  Object.keys(wrongLog).forEach(key => {
+    const log = wrongLog[key];
+    const isMastered = log.correctCount > 0;
+    if (filter === 'active' && isMastered) return;
+    if (filter === 'repeat' && (log.wrongCount < 2 || isMastered)) return;
+    const parts = key.split('-');
+    const dayId = parseInt(parts[0]);
+    const si = parseInt(parts[1]);
+    const qi = parseInt(parts[2]);
+    const day = QUIZ_DATA.days.find(d => d.id === dayId);
+    if (!day) return;
+    const sec = day.sections[si];
+    if (!sec) return;
+    const q = sec.questions[qi];
+    if (!q) return;
+    items.push({ key, log, dayId, si, qi, day, sec, q });
+  });
+
+  if (items.length === 0) return;
+
+  wrongPracticeActive = true;
+  wrongPracticeItems = items;
+  wrongPracticeAnswers = {};
+  renderWrongPractice();
+}
+
+function renderWrongPractice() {
+  const c = document.getElementById('wrongTab');
+  const letters = ['A', 'B', 'C', 'D'];
+  const total = wrongPracticeItems.length;
+  const answered = Object.keys(wrongPracticeAnswers).length;
+
+  let html = `
+    <div class="wrong-practice-header">
+      <h3>&#9998; 錯題練習 (${total} 題)</h3>
+      <button class="btn btn-outline" onclick="exitWrongPractice()" style="padding:8px 16px;font-size:13px">&#10005; 離開練習</button>
+    </div>
+    <div class="progress-bar"><div class="fill" style="width:${(answered/total)*100}%"></div></div>
+  `;
+
+  wrongPracticeItems.forEach((item, idx) => {
+    const pKey = 'wp-' + idx;
+    const chosen = wrongPracticeAnswers[pKey];
+    const q = item.q;
+
+    html += `<div class="q-card">`;
+    html += `<div class="q-num">
+      <span style="color:var(--text-dim);font-size:11px">Day ${item.dayId} · ${item.sec.type}</span>
+      &nbsp; Question ${idx + 1} / ${total}
+    </div>`;
+    const stemText = q.stem.replace(/______/g, 'blank').replace(/【.*?】/g, '');
+    html += `<div class="q-stem">${formatStem(q.stem)} <button class="speak-btn-sm" onclick="speak(\`${stemText.replace(/`/g,'')}\`, this)" title="播放題目">&#128264;</button></div>`;
+    html += `<div class="options">`;
+    q.options.forEach((opt, oi) => {
+      let optClass = chosen === oi ? ' selected' : '';
+      html += `
+        <div class="option${optClass}" onclick="selectWrongPracticeOption('${pKey}', ${oi})">
+          <div class="radio"></div>
+          <span class="letter">(${letters[oi]})</span>
+          <span>${opt}</span>
+          <button class="speak-btn-sm" onclick="event.stopPropagation(); speak('${opt.replace(/'/g,"\\'")}', this)" title="播放選項" style="margin-left:auto">&#128264;</button>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+  });
+
+  html += `<div class="btn-row">
+    <button class="btn btn-primary" onclick="submitWrongPractice()" ${answered < total ? 'disabled' : ''}>
+      交卷批改（${answered}/${total}）
+    </button>
+  </div>`;
+
+  c.innerHTML = html;
+}
+
+function selectWrongPracticeOption(pKey, oi) {
+  wrongPracticeAnswers[pKey] = oi;
+  renderWrongPractice();
+}
+
+function submitWrongPractice() {
+  const today = `${new Date().getMonth()+1}/${new Date().getDate()}`;
+  let correct = 0;
+  const total = wrongPracticeItems.length;
+
+  wrongPracticeItems.forEach((item, idx) => {
+    const pKey = 'wp-' + idx;
+    const chosen = wrongPracticeAnswers[pKey];
+    const q = item.q;
+    const key = item.key;
+
+    if (chosen === q.answer) {
+      correct++;
+      wrongLog[key].correctCount = (wrongLog[key].correctCount || 0) + 1;
+      wrongLog[key].lastCorrect = today;
+    } else {
+      wrongLog[key].wrongCount++;
+      wrongLog[key].lastWrong = today;
+      wrongLog[key].yourPick = chosen;
+    }
+  });
+
+  saveState();
+
+  // show results inline
+  const c = document.getElementById('wrongTab');
+  const letters = ['A', 'B', 'C', 'D'];
+  const pct = Math.round((correct / total) * 100);
+
+  let html = `
+    <div class="wrong-practice-header">
+      <h3>&#9998; 練習結果</h3>
+      <button class="btn btn-outline" onclick="exitWrongPractice()" style="padding:8px 16px;font-size:13px">返回錯題本</button>
+    </div>
+    <div class="wrong-summary">
+      <div class="ws-card"><div class="ws-num ${pct >= 80 ? 'green' : pct >= 60 ? 'yellow' : 'red'}">${pct}%</div><div class="ws-label">正確率</div></div>
+      <div class="ws-card"><div class="ws-num green">${correct}</div><div class="ws-label">答對 → 已掌握</div></div>
+      <div class="ws-card"><div class="ws-num red">${total - correct}</div><div class="ws-label">仍待加強</div></div>
+    </div>
+  `;
+
+  wrongPracticeItems.forEach((item, idx) => {
+    const pKey = 'wp-' + idx;
+    const chosen = wrongPracticeAnswers[pKey];
+    const q = item.q;
+    const isCorrect = chosen === q.answer;
+
+    html += `<div class="q-card ${isCorrect ? 'correct' : 'wrong'}">`;
+    html += `<div class="q-num">
+      <span style="color:var(--text-dim);font-size:11px">Day ${item.dayId} · ${item.sec.type}</span>
+      &nbsp; Question ${idx + 1}
+      ${isCorrect
+        ? '<span class="result-tag correct-tag">&#10003; 已掌握</span>'
+        : '<span class="result-tag wrong-tag">&#10007; 仍待加強</span>'}
+    </div>`;
+    html += `<div class="q-stem">${formatStem(q.stem)}</div>`;
+    html += `<div class="options">`;
+    q.options.forEach((opt, oi) => {
+      let optClass = ' locked';
+      if (chosen === oi) optClass += ' selected';
+      if (oi === q.answer) optClass += ' show-correct';
+      else if (chosen === oi && !isCorrect) optClass += ' show-wrong';
+      html += `
+        <div class="option${optClass}">
+          <div class="radio"></div>
+          <span class="letter">(${letters[oi]})</span>
+          <span>${opt}</span>
+        </div>
+      `;
+    });
+    html += `</div>`;
+    html += `<div class="explanation show"><strong>解析：</strong>${q.explanation}</div>`;
+    html += `</div>`;
+  });
+
+  const remaining = wrongPracticeItems.filter((item, idx) => {
+    return wrongPracticeAnswers['wp-' + idx] !== item.q.answer;
+  }).length;
+
+  if (remaining > 0) {
+    html += `<div class="btn-row">
+      <button class="btn btn-outline" onclick="exitWrongPractice()">返回錯題本</button>
+      <button class="btn btn-primary" onclick="retryWrongFromResult()">再練一次仍待加強 (${remaining} 題)</button>
+    </div>`;
+  } else {
+    html += `<div class="btn-row">
+      <button class="btn btn-primary" onclick="exitWrongPractice()">&#127881; 全部掌握！返回錯題本</button>
+    </div>`;
+  }
+
+  c.innerHTML = html;
+}
+
+function retryWrongFromResult() {
+  const stillWrong = wrongPracticeItems.filter((item, idx) => {
+    return wrongPracticeAnswers['wp-' + idx] !== item.q.answer;
+  });
+  wrongPracticeItems = stillWrong;
+  wrongPracticeAnswers = {};
+  renderWrongPractice();
+}
+
+function exitWrongPractice() {
+  wrongPracticeActive = false;
+  wrongPracticeItems = [];
+  wrongPracticeAnswers = {};
+  renderWrong();
 }
 
 // =====================================================
