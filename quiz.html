@@ -3250,6 +3250,7 @@ function renderWrong() {
       <div class="ws-card"><div class="ws-num yellow">${repeatOffenders}</div><div class="ws-label">反覆錯 2+</div></div>
       <div class="ws-card"><div class="ws-num" style="color:var(--text)">${entries.length}</div><div class="ws-label">累計錯題</div></div>
     </div>
+    ${activeCount > 0 ? `<button class="btn btn-primary" style="width:100%;margin-bottom:16px;padding:14px;font-size:16px;" onclick="startBatchRetry()">&#128170; 重新作答全部待加強 (${activeCount} 題)</button>` : ''}
     <div class="wrong-filters">
       <div class="wrong-filter ${wrongFilter==='all'?'active':''}" onclick="setWrongFilter('all')">全部 (${entries.length})</div>
       <div class="wrong-filter ${wrongFilter==='active'?'active':''}" onclick="setWrongFilter('active')">待加強 (${activeCount})</div>
@@ -3417,6 +3418,187 @@ function submitRetry(key, pick) {
 function setWrongFilter(f) {
   wrongFilter = f;
   renderWrong();
+}
+
+let batchRetryAnswers = {};
+
+function startBatchRetry() {
+  const entries = [];
+  Object.keys(wrongLog).forEach(key => {
+    const log = wrongLog[key];
+    if (log.correctCount > 0) return;
+    const parts = key.split('-');
+    const dayId = parseInt(parts[0]);
+    const si = parseInt(parts[1]);
+    const qi = parseInt(parts[2]);
+    const day = QUIZ_DATA.days.find(d => d.id === dayId);
+    if (!day) return;
+    const sec = day.sections[si];
+    if (!sec) return;
+    const q = sec.questions[qi];
+    if (!q) return;
+    entries.push({ key, log, dayId, si, qi, day, sec, q });
+  });
+  if (entries.length === 0) return;
+
+  batchRetryAnswers = {};
+  const c = document.getElementById('wrongTab');
+  const letters = ['A', 'B', 'C', 'D'];
+  const total = entries.length;
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <h3 style="font-size:18px;">&#128170; 錯題重新作答 (${total} 題)</h3>
+      <button class="btn btn-outline" onclick="renderWrong()" style="font-size:13px;">返回錯題本</button>
+    </div>
+    <div class="progress-bar"><div class="fill" id="batchProgress" style="width:0%"></div></div>
+  `;
+
+  entries.forEach((e, idx) => {
+    html += `
+      <div class="section-header" style="margin-top:${idx > 0 ? '12px' : '0'}">
+        <span class="badge">${e.sec.type}</span>
+        <span style="font-weight:600">Day ${e.dayId}</span>
+        <span class="tip">錯 ${e.log.wrongCount} 次</span>
+      </div>
+      <div class="q-card" id="batch-${e.key}">
+        <div class="q-num">Question ${idx + 1} / ${total}</div>
+        <div class="q-stem">${formatStem(e.q.stem)}
+          <button class="speak-btn-sm" onclick="speak(\`${e.q.stem.replace(/______/g,'blank').replace(/【.*?】/g,'').replace(/`/g,'')}\`, this)">&#128264;</button>
+        </div>
+        <div class="options">
+          ${e.q.options.map((opt, oi) => `
+            <div class="option" onclick="selectBatchOption('${e.key}', ${oi})" id="bopt-${e.key}-${oi}">
+              <div class="radio"></div>
+              <span class="letter">(${letters[oi]})</span>
+              <span>${opt}</span>
+              <button class="speak-btn-sm" onclick="event.stopPropagation(); speak('${opt.replace(/'/g,"\\'")}', this)" style="margin-left:auto">&#128264;</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="btn-row">
+      <button class="btn btn-primary" id="batchSubmitBtn" onclick="submitBatchRetry()" disabled style="padding:14px 32px;font-size:16px;">
+        交卷批改（0/${total}）
+      </button>
+    </div>
+  `;
+  c.innerHTML = html;
+  c.scrollTop = 0;
+}
+
+function selectBatchOption(key, oi) {
+  const prev = batchRetryAnswers[key];
+  if (prev !== undefined) {
+    const prevEl = document.getElementById('bopt-' + key + '-' + prev);
+    if (prevEl) prevEl.classList.remove('selected');
+  }
+  batchRetryAnswers[key] = oi;
+  const el = document.getElementById('bopt-' + key + '-' + oi);
+  if (el) el.classList.add('selected');
+
+  const activeKeys = Object.keys(wrongLog).filter(k => wrongLog[k].correctCount === 0 && wrongLog[k]);
+  const total = activeKeys.length;
+  const answered = Object.keys(batchRetryAnswers).length;
+  const pct = (answered / total) * 100;
+  const prog = document.getElementById('batchProgress');
+  if (prog) prog.style.width = pct + '%';
+  const btn = document.getElementById('batchSubmitBtn');
+  if (btn) {
+    btn.textContent = `交卷批改（${answered}/${total}）`;
+    btn.disabled = answered < total;
+  }
+}
+
+function submitBatchRetry() {
+  const entries = [];
+  Object.keys(wrongLog).forEach(key => {
+    const log = wrongLog[key];
+    if (log.correctCount > 0) return;
+    const parts = key.split('-');
+    const dayId = parseInt(parts[0]);
+    const si = parseInt(parts[1]);
+    const qi = parseInt(parts[2]);
+    const day = QUIZ_DATA.days.find(d => d.id === dayId);
+    if (!day) return;
+    const sec = day.sections[si];
+    if (!sec) return;
+    const q = sec.questions[qi];
+    if (!q) return;
+    entries.push({ key, log, dayId, si, qi, day, sec, q });
+  });
+
+  let correctCount = 0;
+  const letters = ['A', 'B', 'C', 'D'];
+
+  entries.forEach(e => {
+    const pick = batchRetryAnswers[e.key];
+    if (pick === undefined) return;
+    const isCorrect = pick === e.q.answer;
+    const card = document.getElementById('batch-' + e.key);
+    if (!card) return;
+
+    if (isCorrect) {
+      e.log.correctCount = (e.log.correctCount || 0) + 1;
+      correctCount++;
+      card.classList.add('correct');
+    } else {
+      e.log.wrongCount = (e.log.wrongCount || 0) + 1;
+      e.log.yourPick = pick;
+      card.classList.add('wrong');
+    }
+
+    e.q.options.forEach((opt, oi) => {
+      const optEl = document.getElementById('bopt-' + e.key + '-' + oi);
+      if (!optEl) return;
+      optEl.classList.add('locked');
+      optEl.onclick = null;
+      if (oi === e.q.answer) optEl.classList.add('show-correct');
+      else if (pick === oi && !isCorrect) optEl.classList.add('show-wrong');
+    });
+
+    const resultTag = isCorrect
+      ? `<span class="result-tag correct-tag">&#10003; 正確</span>`
+      : `<span class="result-tag wrong-tag">&#10007; 錯誤</span>`;
+    const qNum = card.querySelector('.q-num');
+    if (qNum) qNum.innerHTML += resultTag;
+
+    const expDiv = document.createElement('div');
+    expDiv.className = 'explanation show';
+    expDiv.innerHTML = `<strong>解析：</strong>${e.q.explanation}`;
+    card.appendChild(expDiv);
+  });
+
+  saveState();
+
+  const total = entries.length;
+  const pct = Math.round((correctCount / total) * 100);
+  const btn = document.getElementById('batchSubmitBtn');
+  if (btn) btn.remove();
+
+  const resultHtml = `
+    <div style="text-align:center;padding:24px;margin:20px 0;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+      <div class="score-ring" style="width:100px;height:100px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;
+        background:conic-gradient(${pct >= 70 ? 'var(--correct)' : 'var(--wrong)'} ${pct * 3.6}deg, var(--border) 0deg);color:var(--text);">
+        <span style="background:var(--bg);width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;">${pct}%</span>
+      </div>
+      <h2 style="margin-top:16px;font-size:20px;">${pct >= 70 ? '&#127881; 進步很多！' : '&#128170; 繼續加油！'}</h2>
+      <p style="color:var(--text-dim);margin-top:8px;">${total} 題中答對 ${correctCount} 題${correctCount > 0 ? '，已掌握的題目不會再出現' : ''}</p>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-outline" onclick="renderWrong()">返回錯題本</button>
+        ${total - correctCount > 0 ? `<button class="btn btn-primary" onclick="startBatchRetry()">再做一次剩餘錯題</button>` : ''}
+      </div>
+    </div>
+  `;
+
+  const c = document.getElementById('wrongTab');
+  const existing = c.querySelector('.btn-row');
+  if (existing) existing.outerHTML = resultHtml;
+  else c.insertAdjacentHTML('beforeend', resultHtml);
 }
 
 function renderStats() {
