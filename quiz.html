@@ -428,9 +428,12 @@
   /* Tab content */
   .tab-content { display: none; }
   .tab-content.active { display: block; }
-  .inner-tabs { display: flex; gap: 0; margin-bottom: 20px; }
+  .inner-tabs { display: flex; gap: 0; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+  .inner-tabs::-webkit-scrollbar { display: none; }
   .inner-tab {
     flex: 1;
+    flex-shrink: 0;
+    min-width: 64px;
     padding: 12px;
     text-align: center;
     font-size: 14px;
@@ -585,6 +588,92 @@
     background: var(--correct);
   }
   .sync-dot.syncing { background: #f59e0b; animation: pulse 1s infinite; }
+
+  /* Grammar & Phrase reference */
+  .ref-container { display: flex; flex-direction: column; gap: 12px; }
+  .ref-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .ref-title {
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .ref-title:hover { background: var(--card-hover); }
+  .ref-arrow {
+    font-size: 14px;
+    transition: transform 0.2s;
+    color: var(--text-dim);
+  }
+  .ref-section.open .ref-arrow { transform: rotate(90deg); }
+  .ref-body {
+    display: none;
+    padding: 0 20px 18px;
+  }
+  .ref-section.open .ref-body { display: block; }
+  .ref-rule {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ref-rule:last-child { border-bottom: none; }
+  .ref-rule-head {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent-light);
+    margin-bottom: 8px;
+  }
+  .ref-examples { display: flex; flex-direction: column; gap: 4px; }
+  .ref-ex {
+    font-size: 14px;
+    color: var(--text-dim);
+    padding: 4px 0 4px 14px;
+    border-left: 2px solid var(--border);
+    line-height: 1.6;
+  }
+  .ref-ex b { color: var(--correct); font-weight: 600; }
+
+  .phrase-grid { display: flex; flex-direction: column; gap: 10px; }
+  .phrase-card {
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .phrase-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .phrase-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent-light);
+  }
+  .phrase-meaning {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .phrase-example {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
 </style>
 </head>
 <body>
@@ -611,11 +700,15 @@
     <div class="inner-tab active" onclick="switchInnerTab('vocab')">單字卡</div>
     <div class="inner-tab" onclick="switchInnerTab('quiz')">練習題</div>
     <div class="inner-tab" onclick="switchInnerTab('wrong')">錯題本 <span id="wrongBadge" style="background:var(--wrong);color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;margin-left:4px;display:none">0</span></div>
+    <div class="inner-tab" onclick="switchInnerTab('grammar')">文法</div>
+    <div class="inner-tab" onclick="switchInnerTab('phrase')">片語</div>
   </div>
 
   <div class="tab-content active" id="vocabTab"></div>
   <div class="tab-content" id="quizTab"></div>
   <div class="tab-content" id="wrongTab"></div>
+  <div class="tab-content" id="grammarTab"></div>
+  <div class="tab-content" id="phraseTab"></div>
 </div>
 
 <div class="modal-overlay" id="modal">
@@ -1813,9 +1906,741 @@ const QUIZ_DATA = {
           ]
         }
       ]
+    },
+    {
+      id: 15,
+      date: "6/21",
+      title: "娛樂與媒體",
+      vocab: [
+        { word: "audience", pos: "n.", meaning: "觀眾/聽眾", example: "The audience applauded loudly." },
+        { word: "broadcast", pos: "v./n.", meaning: "播放/廣播", example: "The news is broadcast at 7 p.m." },
+        { word: "entertainment", pos: "n.", meaning: "娛樂", example: "There is plenty of entertainment here." },
+        { word: "performance", pos: "n.", meaning: "表演/演出", example: "The performance was outstanding." },
+        { word: "admission", pos: "n.", meaning: "入場費/入場", example: "Admission is free on Sundays." },
+        { word: "exhibit", pos: "n./v.", meaning: "展覽/展示", example: "The museum has a new exhibit." },
+        { word: "feature", pos: "n./v.", meaning: "特色/以…為特色", example: "The magazine features local artists." },
+        { word: "critic", pos: "n.", meaning: "評論家", example: "The critics praised the film." },
+        { word: "publish", pos: "v.", meaning: "出版/發表", example: "The book was published last year." },
+        { word: "subscribe", pos: "v.", meaning: "訂閱", example: "I subscribe to several magazines." },
+        { word: "documentary", pos: "n.", meaning: "紀錄片", example: "We watched a documentary about nature." },
+        { word: "editorial", pos: "n./adj.", meaning: "社論/編輯的", example: "She wrote an editorial for the paper." },
+        { word: "genre", pos: "n.", meaning: "類型/風格", example: "What genre of music do you like?" },
+        { word: "release", pos: "v./n.", meaning: "發行/發布", example: "The movie will be released next month." },
+        { word: "rehearsal", pos: "n.", meaning: "排練/彩排", example: "The rehearsal starts at 3 p.m." },
+        { word: "venue", pos: "n.", meaning: "場地", example: "The venue holds 500 people." },
+        { word: "celebrity", pos: "n.", meaning: "名人", example: "Many celebrities attended the event." },
+        { word: "review", pos: "n./v.", meaning: "評論/評價", example: "The restaurant received great reviews." },
+        { word: "headline", pos: "n.", meaning: "頭條新聞", example: "The scandal made the headlines." },
+        { word: "sponsor", pos: "n./v.", meaning: "贊助者/贊助", example: "The event was sponsored by a bank." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "娛樂媒體詞彙常考名詞/動詞轉換",
+          questions: [
+            { stem: "The ______ enjoyed the concert very much.", options: ["audio", "audience", "audition", "auditorium"], answer: 1, explanation: "audience（觀眾）語意正確。" },
+            { stem: "The show will be ______ live on television.", options: ["broadcast", "broadcasted", "broadcasting", "broadcaster"], answer: 0, explanation: "will be broadcast（將被播放），broadcast 過去分詞同原形。" },
+            { stem: "______ to the museum is free for children.", options: ["Admit", "Admitted", "Admission", "Admitting"], answer: 2, explanation: "Admission（入場費）是名詞，當主詞。" },
+            { stem: "The book was ______ by a famous author.", options: ["publish", "published", "publishing", "publisher"], answer: 1, explanation: "was published（被出版），被動語態。" },
+            { stem: "She ______ to three online newspapers.", options: ["subscribe", "subscribes", "subscribed", "subscription"], answer: 1, explanation: "第三人稱單數現在式加 s。" },
+            { stem: "The new film will be ______ next Friday.", options: ["release", "releases", "released", "releasing"], answer: 2, explanation: "will be released（將被發行），被動語態。" },
+            { stem: "The ______ for the play begins at 2 p.m.", options: ["rehearse", "rehearsal", "rehearsed", "rehearsing"], answer: 1, explanation: "The 後面接名詞 rehearsal（排練）。" },
+            { stem: "The ______ can accommodate up to 1,000 guests.", options: ["venue", "venture", "vendor", "value"], answer: 0, explanation: "venue（場地）可容納客人。" },
+            { stem: "The movie received positive ______ from critics.", options: ["review", "reviews", "reviewed", "reviewing"], answer: 1, explanation: "positive reviews（正面評價），用複數。" },
+            { stem: "A local company ______ the sports event.", options: ["sponsor", "sponsored", "sponsoring", "sponsorship"], answer: 1, explanation: "描述過去的動作，用過去式 sponsored。" },
+            { stem: "The ______ was about the history of jazz music.", options: ["document", "documentary", "documentation", "documented"], answer: 1, explanation: "documentary（紀錄片）語意正確。" },
+            { stem: "What ______ of movies do you prefer?", options: ["general", "genre", "generous", "generate"], answer: 1, explanation: "genre（類型）用於詢問偏好。" },
+            { stem: "Her ______ in the musical was incredible.", options: ["perform", "performed", "performance", "performing"], answer: 2, explanation: "Her 後面接名詞 performance（表演）。" },
+            { stem: "The art ______ will run until the end of August.", options: ["exhibit", "exhibited", "exhibiting", "exhibition"], answer: 0, explanation: "art exhibit（藝術展覽）是固定搭配。" },
+            { stem: "The story made ______ in all the major newspapers.", options: ["heads", "heading", "headlines", "headlights"], answer: 2, explanation: "made headlines（上了頭條）是固定搭配。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "娛樂場景注意表演者與觀眾的互動",
+          questions: [
+            { stem: "【情境】舞台上有一群人在表演", options: ["A group is performing on stage.", "The stage is empty.", "People are buying tickets.", "The lights are turned off."], answer: 0, explanation: "舞台上表演，performing on stage 正確。" },
+            { stem: "【情境】觀眾坐在電影院裡看螢幕", options: ["The audience is watching a movie.", "The theater is being cleaned.", "People are leaving the cinema.", "The screen is blank."], answer: 0, explanation: "觀眾看電影，watching a movie 正確。" },
+            { stem: "【情境】一位女性在書店裡看書", options: ["The woman is browsing books in a bookstore.", "The woman is buying groceries.", "The woman is reading a menu.", "The store is closed."], answer: 0, explanation: "在書店看書，browsing books in a bookstore 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "娛樂場景常考時間、票價、評價",
+          questions: [
+            { stem: "What time does the show start?", options: ["It starts at 8 p.m.", "The show was great.", "I bought two tickets."], answer: 0, explanation: "What time 問時間，(A) 回答具體時間。" },
+            { stem: "How much are the tickets?", options: ["There are two tickets left.", "They're $25 each.", "The movie was excellent."], answer: 1, explanation: "How much 問金額，(B) 回答具體價格。" },
+            { stem: "Have you seen the new exhibition?", options: ["Yes, it was very impressive.", "The museum is on 5th Avenue.", "I like modern art."], answer: 0, explanation: "Have you seen 問是否看過，(A) Yes 回答。" },
+            { stem: "Who directed this film?", options: ["It won several awards.", "Steven Lee directed it.", "I prefer action movies."], answer: 1, explanation: "Who 問人，(B) 回答具體人名。" },
+            { stem: "Would you like to subscribe to our newsletter?", options: ["The news was surprising.", "Sure, what's the cost?", "I read the paper every day."], answer: 1, explanation: "問是否要訂閱，(B) 回應表示有興趣。" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 16,
+      date: "6/22",
+      title: "環境與天氣",
+      vocab: [
+        { word: "forecast", pos: "n./v.", meaning: "預報/預測", example: "The weather forecast says it will rain." },
+        { word: "pollution", pos: "n.", meaning: "污染", example: "Air pollution is a serious problem." },
+        { word: "recycle", pos: "v.", meaning: "回收", example: "Please recycle paper and plastic." },
+        { word: "conservation", pos: "n.", meaning: "保育/節約", example: "Water conservation is important." },
+        { word: "sustainable", pos: "adj.", meaning: "永續的", example: "We need sustainable energy sources." },
+        { word: "drought", pos: "n.", meaning: "乾旱", example: "The drought lasted for months." },
+        { word: "flood", pos: "n./v.", meaning: "洪水/淹水", example: "The flood damaged many homes." },
+        { word: "climate", pos: "n.", meaning: "氣候", example: "The climate here is mild." },
+        { word: "emissions", pos: "n.", meaning: "排放物", example: "We must reduce carbon emissions." },
+        { word: "renewable", pos: "adj.", meaning: "可再生的", example: "Solar power is a renewable energy source." },
+        { word: "habitat", pos: "n.", meaning: "棲息地", example: "The forest is a natural habitat for bears." },
+        { word: "endangered", pos: "adj.", meaning: "瀕危的", example: "The panda is an endangered species." },
+        { word: "solar", pos: "adj.", meaning: "太陽能的", example: "We installed solar panels." },
+        { word: "humid", pos: "adj.", meaning: "潮濕的", example: "It's very humid in summer." },
+        { word: "temperature", pos: "n.", meaning: "溫度", example: "The temperature dropped suddenly." },
+        { word: "dispose", pos: "v.", meaning: "處理/丟棄", example: "Dispose of waste properly." },
+        { word: "preserve", pos: "v.", meaning: "保護/保存", example: "We must preserve the environment." },
+        { word: "ecosystem", pos: "n.", meaning: "生態系統", example: "The ecosystem is very fragile." },
+        { word: "hazardous", pos: "adj.", meaning: "危險的/有害的", example: "Hazardous materials must be handled carefully." },
+        { word: "vegetation", pos: "n.", meaning: "植被", example: "The area has dense vegetation." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "環境主題注意形容詞與名詞搭配",
+          questions: [
+            { stem: "The weather ______ predicts heavy rain tomorrow.", options: ["foreclose", "forecast", "forehead", "foresee"], answer: 1, explanation: "weather forecast（天氣預報）是固定搭配。" },
+            { stem: "Air ______ has become a major concern in cities.", options: ["pollute", "polluted", "pollution", "polluting"], answer: 2, explanation: "Air pollution（空氣污染），名詞。" },
+            { stem: "Please ______ bottles and cans.", options: ["recycle", "recycles", "recycled", "recycling"], answer: 0, explanation: "Please 後面接原形動詞（祈使句）。" },
+            { stem: "The company uses ______ energy sources.", options: ["renew", "renewed", "renewable", "renewably"], answer: 2, explanation: "renewable energy（再生能源），形容詞修飾名詞。" },
+            { stem: "The ______ caused serious damage to the farmland.", options: ["drought", "draft", "draught", "drape"], answer: 0, explanation: "drought（乾旱）造成農田損害。" },
+            { stem: "Several ______ species live in this forest.", options: ["endanger", "endangered", "endangering", "endangerment"], answer: 1, explanation: "endangered species（瀕危物種），過去分詞當形容詞。" },
+            { stem: "We installed ______ panels on the roof.", options: ["solar", "sole", "solid", "solo"], answer: 0, explanation: "solar panels（太陽能板）是固定搭配。" },
+            { stem: "The ______ in this region is tropical.", options: ["climate", "climb", "clinic", "client"], answer: 0, explanation: "climate（氣候）語意正確。" },
+            { stem: "______ waste must be disposed of carefully.", options: ["Hazard", "Hazardous", "Hazardously", "Hazarding"], answer: 1, explanation: "Hazardous waste（有害廢物），形容詞修飾名詞。" },
+            { stem: "Water ______ is essential during the dry season.", options: ["conserve", "conserved", "conservation", "conservative"], answer: 2, explanation: "Water conservation（節約用水），名詞。" },
+            { stem: "The ______ is very fragile and must be protected.", options: ["ecology", "ecosystem", "economy", "economic"], answer: 1, explanation: "ecosystem（生態系統）語意正確。" },
+            { stem: "Carbon ______ must be reduced by 2030.", options: ["emit", "emitted", "emissions", "emitting"], answer: 2, explanation: "Carbon emissions（碳排放），名詞。" },
+            { stem: "It is important to ______ natural resources.", options: ["preserve", "preserves", "preserved", "preservation"], answer: 0, explanation: "to 後面接原形動詞 preserve。" },
+            { stem: "The summer here is hot and ______.", options: ["humidity", "humid", "humidly", "humidify"], answer: 1, explanation: "hot and humid（又熱又潮濕），形容詞。" },
+            { stem: "Please ______ of the garbage in the designated bins.", options: ["dispose", "dispose of", "disposal", "disposed"], answer: 0, explanation: "Please dispose of...（請處理掉…），dispose 接 of。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "環境場景注意自然景觀與人為活動",
+          questions: [
+            { stem: "【情境】工人正在安裝太陽能板", options: ["Workers are installing solar panels.", "Workers are painting the roof.", "Workers are repairing the road.", "Workers are planting trees."], answer: 0, explanation: "安裝太陽能板，installing solar panels 正確。" },
+            { stem: "【情境】一條河流旁的垃圾", options: ["There is litter along the riverbank.", "The river is clean and clear.", "People are swimming in the river.", "Boats are on the water."], answer: 0, explanation: "河流旁有垃圾，litter along the riverbank 正確。" },
+            { stem: "【情境】公園裡的人們在回收物品分類", options: ["People are sorting recyclables in the park.", "People are having a picnic.", "People are playing sports.", "The park is empty."], answer: 0, explanation: "分類回收物，sorting recyclables 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "環境場景常考原因、措施與建議",
+          questions: [
+            { stem: "What's the weather forecast for tomorrow?", options: ["It's supposed to be sunny and warm.", "I forgot my umbrella.", "The weather was nice yesterday."], answer: 0, explanation: "問天氣預報，(A) 回答具體天氣狀況。" },
+            { stem: "Where should I dispose of these batteries?", options: ["The battery is dead.", "In the hazardous waste bin near the exit.", "I bought new batteries."], answer: 1, explanation: "Where 問地點，(B) 回答具體地點。" },
+            { stem: "Has the company reduced its emissions?", options: ["Yes, by 20% since last year.", "The company produces electronics.", "Emissions are harmful."], answer: 0, explanation: "Has...reduced 問是否降低，(A) Yes 並說明程度。" },
+            { stem: "Why are we switching to solar energy?", options: ["Solar panels are on the roof.", "To reduce costs and protect the environment.", "The sun rises early in summer."], answer: 1, explanation: "Why 問原因，(B) 回答具體原因。" },
+            { stem: "Do you recycle at home?", options: ["Yes, I separate paper, plastic, and glass.", "The recycling center is nearby.", "I threw it away."], answer: 0, explanation: "問是否回收，(A) Yes 並說明具體做法。" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 17,
+      date: "6/23",
+      title: "製造與工廠",
+      vocab: [
+        { word: "manufacture", pos: "v./n.", meaning: "製造", example: "The company manufactures electronics." },
+        { word: "assembly", pos: "n.", meaning: "組裝/裝配", example: "The assembly line runs 24 hours." },
+        { word: "warehouse", pos: "n.", meaning: "倉庫", example: "The goods are stored in the warehouse." },
+        { word: "shipment", pos: "n.", meaning: "出貨/貨物", example: "The shipment arrived on time." },
+        { word: "quality", pos: "n.", meaning: "品質", example: "Quality control is very strict." },
+        { word: "inspect", pos: "v.", meaning: "檢驗/檢查", example: "Each product is inspected before shipping." },
+        { word: "defect", pos: "n.", meaning: "缺陷/瑕疵", example: "The product was returned due to a defect." },
+        { word: "capacity", pos: "n.", meaning: "產能/容量", example: "The factory is running at full capacity." },
+        { word: "raw materials", pos: "n.", meaning: "原料", example: "We import raw materials from abroad." },
+        { word: "specification", pos: "n.", meaning: "規格", example: "The product meets all specifications." },
+        { word: "output", pos: "n.", meaning: "產出/產量", example: "Daily output has increased by 10%." },
+        { word: "efficiency", pos: "n.", meaning: "效率", example: "We need to improve efficiency." },
+        { word: "supplier", pos: "n.", meaning: "供應商", example: "The supplier delivered the parts." },
+        { word: "inventory", pos: "n.", meaning: "存貨/庫存", example: "Check the inventory before ordering." },
+        { word: "distribution", pos: "n.", meaning: "配送/分銷", example: "The distribution center is in Taoyuan." },
+        { word: "automate", pos: "v.", meaning: "自動化", example: "We plan to automate the process." },
+        { word: "comply", pos: "v.", meaning: "遵守/符合", example: "All products must comply with safety standards." },
+        { word: "prototype", pos: "n.", meaning: "原型/樣品", example: "The prototype will be ready next week." },
+        { word: "recall", pos: "v./n.", meaning: "召回", example: "The company recalled the product." },
+        { word: "streamline", pos: "v.", meaning: "精簡/簡化流程", example: "We streamlined the production process." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "製造業詞彙注意被動語態與名詞修飾語",
+          questions: [
+            { stem: "The factory ______ electronic components.", options: ["manufacture", "manufactures", "manufactured", "manufacturing"], answer: 1, explanation: "第三人稱單數現在式加 s。" },
+            { stem: "Each product is ______ before it leaves the factory.", options: ["inspect", "inspected", "inspecting", "inspection"], answer: 1, explanation: "is inspected（被檢查），被動語態。" },
+            { stem: "The ______ arrived at the warehouse this morning.", options: ["ship", "shipped", "shipment", "shipping"], answer: 2, explanation: "The 後面接名詞 shipment（貨物）。" },
+            { stem: "The factory is running at full ______.", options: ["capable", "capacity", "capitalize", "capture"], answer: 1, explanation: "at full capacity（滿產能）是固定搭配。" },
+            { stem: "We import ______ materials from Southeast Asia.", options: ["raw", "rare", "row", "rough"], answer: 0, explanation: "raw materials（原料）是固定搭配。" },
+            { stem: "The product was ______ due to a safety issue.", options: ["recall", "recalls", "recalled", "recalling"], answer: 2, explanation: "was recalled（被召回），被動語態。" },
+            { stem: "All products must ______ with international standards.", options: ["comply", "complies", "complied", "compliance"], answer: 0, explanation: "must 後面接原形動詞 comply。" },
+            { stem: "We need to improve production ______.", options: ["efficient", "efficiency", "efficiently", "effect"], answer: 1, explanation: "production efficiency（生產效率），名詞。" },
+            { stem: "The ______ will be ready for testing next week.", options: ["prototype", "protocol", "promote", "protect"], answer: 0, explanation: "prototype（原型）用於測試。" },
+            { stem: "The company plans to ______ its packaging process.", options: ["automate", "automatic", "automatically", "automation"], answer: 0, explanation: "plans to 後面接原形動詞 automate。" },
+            { stem: "______ control ensures that all products meet standards.", options: ["Qualify", "Quality", "Qualified", "Qualifying"], answer: 1, explanation: "Quality control（品質控管）是固定搭配。" },
+            { stem: "The ______ delivered the parts ahead of schedule.", options: ["supply", "supplier", "supplied", "supplying"], answer: 1, explanation: "supplier（供應商）語意正確。" },
+            { stem: "The product did not meet the required ______.", options: ["specific", "specify", "specifications", "specified"], answer: 2, explanation: "required specifications（要求規格），名詞。" },
+            { stem: "The new process has ______ production time significantly.", options: ["streamline", "streamlined", "streamlines", "streamlining"], answer: 1, explanation: "has streamlined（已精簡），現在完成式。" },
+            { stem: "The ______ center handles all deliveries for the region.", options: ["distribute", "distribution", "distributed", "distributing"], answer: 1, explanation: "distribution center（配送中心）是固定搭配。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "工廠場景注意機器設備與人員操作",
+          questions: [
+            { stem: "【情境】工人戴著安全帽在工廠工作", options: ["Workers wearing hard hats are working in a factory.", "Workers are having lunch.", "The factory is closed.", "Workers are leaving the building."], answer: 0, explanation: "戴安全帽工作，wearing hard hats are working in a factory 正確。" },
+            { stem: "【情境】倉庫裡堆滿了箱子", options: ["The warehouse is full of boxes.", "The warehouse is empty.", "Workers are loading a truck.", "The boxes are being opened."], answer: 0, explanation: "倉庫堆滿箱子，full of boxes 正確。" },
+            { stem: "【情境】機器手臂在組裝零件", options: ["A robotic arm is assembling parts.", "A worker is fixing the machine.", "The machine is turned off.", "Parts are scattered on the floor."], answer: 0, explanation: "機器手臂組裝零件，assembling parts 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "製造場景常考流程、品質與時程",
+          questions: [
+            { stem: "When will the shipment arrive?", options: ["It should be here by Thursday.", "The shipment was very large.", "We shipped it last week."], answer: 0, explanation: "When 問時間，(A) 回答具體時間。" },
+            { stem: "Has the product passed quality control?", options: ["Quality is our top priority.", "Yes, it met all the requirements.", "The product is very popular."], answer: 1, explanation: "Has...passed 問是否通過，(B) Yes 回答。" },
+            { stem: "How many units can the factory produce per day?", options: ["About 5,000 units.", "The factory is very large.", "We produce smartphones."], answer: 0, explanation: "How many 問數量，(A) 回答具體數量。" },
+            { stem: "Who is our main supplier for electronic parts?", options: ["The parts arrived yesterday.", "Techno Corp has been our supplier for years.", "We need more parts."], answer: 1, explanation: "Who 問人/公司，(B) 回答具體名稱。" },
+            { stem: "Why was the product recalled?", options: ["Because of a safety defect.", "The product is very popular.", "We recalled 1,000 units."], answer: 0, explanation: "Why 問原因，(A) 回答具體原因。" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 18,
+      date: "6/24",
+      title: "法律與合約",
+      vocab: [
+        { word: "contract", pos: "n.", meaning: "合約", example: "Please sign the contract." },
+        { word: "agreement", pos: "n.", meaning: "協議", example: "Both parties reached an agreement." },
+        { word: "clause", pos: "n.", meaning: "條款", example: "Read every clause carefully." },
+        { word: "obligation", pos: "n.", meaning: "義務/責任", example: "You have an obligation to pay." },
+        { word: "liability", pos: "n.", meaning: "法律責任", example: "The company denies all liability." },
+        { word: "regulation", pos: "n.", meaning: "法規/規定", example: "We must follow government regulations." },
+        { word: "violation", pos: "n.", meaning: "違反/違規", example: "That is a violation of the rules." },
+        { word: "penalty", pos: "n.", meaning: "罰款/處罰", example: "There is a penalty for late payment." },
+        { word: "authorize", pos: "v.", meaning: "授權", example: "Only the manager can authorize this." },
+        { word: "confidential", pos: "adj.", meaning: "機密的", example: "This document is confidential." },
+        { word: "terminate", pos: "v.", meaning: "終止", example: "The contract was terminated." },
+        { word: "enforce", pos: "v.", meaning: "執行/強制實施", example: "The new law will be enforced strictly." },
+        { word: "dispute", pos: "n./v.", meaning: "爭議/爭論", example: "The dispute was resolved." },
+        { word: "attorney", pos: "n.", meaning: "律師", example: "She consulted an attorney." },
+        { word: "comply", pos: "v.", meaning: "遵守", example: "All employees must comply with the policy." },
+        { word: "amendment", pos: "n.", meaning: "修正/修訂", example: "An amendment was added to the contract." },
+        { word: "prior", pos: "adj.", meaning: "事先的/先前的", example: "Prior approval is required." },
+        { word: "binding", pos: "adj.", meaning: "有約束力的", example: "This agreement is legally binding." },
+        { word: "consent", pos: "n./v.", meaning: "同意/許可", example: "Written consent is required." },
+        { word: "provision", pos: "n.", meaning: "條款/規定", example: "The provision protects both parties." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "法律詞彙注意形容詞+名詞固定搭配",
+          questions: [
+            { stem: "Both parties signed the ______ yesterday.", options: ["contract", "contact", "contrast", "construct"], answer: 0, explanation: "contract（合約）語意正確，注意和 contact（聯繫）區分。" },
+            { stem: "This information is strictly ______.", options: ["confident", "confidential", "confidently", "confidence"], answer: 1, explanation: "strictly confidential（嚴格保密），形容詞。" },
+            { stem: "The contract was ______ due to a breach.", options: ["terminate", "terminates", "terminated", "termination"], answer: 2, explanation: "was terminated（被終止），被動語態。" },
+            { stem: "All companies must ______ with the new regulations.", options: ["comply", "complies", "complied", "compliance"], answer: 0, explanation: "must 後面接原形動詞 comply。" },
+            { stem: "______ approval is required before making any changes.", options: ["Prior", "Priority", "Primary", "Priorly"], answer: 0, explanation: "Prior approval（事先批准）是固定搭配。" },
+            { stem: "The agreement is legally ______.", options: ["bind", "binding", "bound", "binder"], answer: 1, explanation: "legally binding（有法律約束力的），形容詞。" },
+            { stem: "A ______ for late delivery is stated in the contract.", options: ["penalize", "penalty", "penalized", "penalizing"], answer: 1, explanation: "A 後面接名詞 penalty（罰款）。" },
+            { stem: "The ______ between the two companies was resolved.", options: ["dispute", "disputed", "disputing", "disputes"], answer: 0, explanation: "The 後面接名詞 dispute（爭議）。" },
+            { stem: "Written ______ from the patient is required.", options: ["consent", "consented", "consenting", "consensus"], answer: 0, explanation: "Written consent（書面同意），名詞。" },
+            { stem: "Only the director is ______ to sign the contract.", options: ["authorize", "authorized", "authorizing", "authorization"], answer: 1, explanation: "is authorized to（被授權），被動語態。" },
+            { stem: "An ______ was made to the original agreement.", options: ["amend", "amended", "amendment", "amending"], answer: 2, explanation: "An 後面接名詞 amendment（修正）。" },
+            { stem: "That is a clear ______ of company policy.", options: ["violate", "violated", "violation", "violating"], answer: 2, explanation: "a violation of（違反…），名詞。" },
+            { stem: "She consulted her ______ before responding.", options: ["attorney", "attention", "attempt", "attendant"], answer: 0, explanation: "attorney（律師）語意正確。" },
+            { stem: "The new law will be strictly ______.", options: ["enforce", "enforced", "enforcing", "enforcement"], answer: 1, explanation: "will be enforced（將被執行），被動語態。" },
+            { stem: "Each party has certain ______ under the contract.", options: ["oblige", "obliged", "obligations", "obligatory"], answer: 2, explanation: "certain obligations（特定義務），名詞。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "商務場景注意簽約與會面動作",
+          questions: [
+            { stem: "【情境】兩個人正在握手簽約", options: ["Two people are shaking hands after signing a contract.", "Two people are arguing.", "Two people are eating lunch.", "Two people are waiting for a meeting."], answer: 0, explanation: "握手簽約，shaking hands after signing a contract 正確。" },
+            { stem: "【情境】一位律師在辦公室裡看文件", options: ["The attorney is reviewing documents.", "The attorney is making a phone call.", "The man is writing on a whiteboard.", "The office is empty."], answer: 0, explanation: "律師看文件，reviewing documents 正確。" },
+            { stem: "【情境】一疊合約文件放在桌上，旁邊有一支筆", options: ["A stack of documents and a pen are on the table.", "The table is empty.", "Someone is writing a letter.", "Books are on the shelf."], answer: 0, explanation: "文件和筆在桌上的描述正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "法律場景常考同意、條件與期限",
+          questions: [
+            { stem: "When does the contract expire?", options: ["At the end of this year.", "The contract was signed last month.", "We need a new contract."], answer: 0, explanation: "When 問時間，(A) 回答具體時間。" },
+            { stem: "Has the agreement been finalized?", options: ["Yes, both sides have signed.", "The agreement covers five years.", "We are still negotiating."], answer: 0, explanation: "Has...been finalized 問是否完成，(A) Yes 回答。" },
+            { stem: "Who should I contact about the contract terms?", options: ["The terms are very clear.", "Ms. Chen in the legal department.", "I signed the contract yesterday."], answer: 1, explanation: "Who 問人，(B) 回答具體人名和部門。" },
+            { stem: "Is prior approval necessary for this expense?", options: ["Yes, you need your manager's signature.", "The expense was reasonable.", "I approved it already."], answer: 0, explanation: "Is...necessary 問是否需要，(A) Yes 回答。" },
+            { stem: "What happens if we violate the terms?", options: ["The terms were updated last month.", "There's a penalty of $10,000.", "We should read the terms carefully."], answer: 1, explanation: "What happens 問後果，(B) 回答具體罰則。" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 19,
+      date: "6/25",
+      title: "人事與招聘",
+      vocab: [
+        { word: "applicant", pos: "n.", meaning: "申請人/應徵者", example: "The applicant has strong qualifications." },
+        { word: "resume", pos: "n.", meaning: "履歷", example: "Please submit your resume online." },
+        { word: "interview", pos: "n./v.", meaning: "面試", example: "She has an interview tomorrow." },
+        { word: "candidate", pos: "n.", meaning: "候選人", example: "There are five candidates for the position." },
+        { word: "qualification", pos: "n.", meaning: "資格/學歷", example: "What are the qualifications for this job?" },
+        { word: "recruit", pos: "v.", meaning: "招聘/招募", example: "The company is recruiting new staff." },
+        { word: "probation", pos: "n.", meaning: "試用期", example: "The probation period is three months." },
+        { word: "promotion", pos: "n.", meaning: "晉升", example: "She received a promotion last month." },
+        { word: "salary", pos: "n.", meaning: "薪資", example: "The starting salary is negotiable." },
+        { word: "benefit", pos: "n.", meaning: "福利", example: "The company offers excellent benefits." },
+        { word: "retirement", pos: "n.", meaning: "退休", example: "He is planning for retirement." },
+        { word: "resign", pos: "v.", meaning: "辭職", example: "She resigned from her position." },
+        { word: "reference", pos: "n.", meaning: "推薦人/推薦信", example: "Please provide two references." },
+        { word: "orientation", pos: "n.", meaning: "新人訓練", example: "New employee orientation is on Monday." },
+        { word: "evaluate", pos: "v.", meaning: "評估", example: "Managers evaluate staff performance yearly." },
+        { word: "overtime", pos: "n./adj.", meaning: "加班", example: "She works overtime on weekends." },
+        { word: "compensation", pos: "n.", meaning: "薪酬/補償", example: "Total compensation includes salary and benefits." },
+        { word: "workforce", pos: "n.", meaning: "勞動力/員工團隊", example: "The workforce has grown by 20%." },
+        { word: "transfer", pos: "v./n.", meaning: "調職/轉調", example: "He was transferred to the Tokyo office." },
+        { word: "criteria", pos: "n.", meaning: "標準/條件(複數)", example: "Applicants must meet all criteria." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "人事詞彙注意名詞/動詞/形容詞的轉換",
+          questions: [
+            { stem: "All ______ must submit their resumes by Friday.", options: ["apply", "applicants", "applied", "application"], answer: 1, explanation: "All 後面接名詞複數 applicants（應徵者）。" },
+            { stem: "She was ______ to the position of senior manager.", options: ["promote", "promoted", "promotion", "promoting"], answer: 1, explanation: "was promoted（被晉升），被動語態。" },
+            { stem: "The company offers competitive ______ and benefits.", options: ["salary", "salaries", "salaried", "sale"], answer: 1, explanation: "competitive salaries（有競爭力的薪資），用複數搭配 benefits。" },
+            { stem: "The ______ period for new employees is 90 days.", options: ["probe", "probation", "probable", "problem"], answer: 1, explanation: "probation period（試用期）是固定搭配。" },
+            { stem: "He ______ from his position last month.", options: ["resign", "resigns", "resigned", "resignation"], answer: 2, explanation: "last month 是過去時間，用過去式 resigned。" },
+            { stem: "New employee ______ will be held on Monday.", options: ["orient", "oriented", "orientation", "orienting"], answer: 2, explanation: "employee orientation（新人訓練），名詞。" },
+            { stem: "Managers ______ staff performance annually.", options: ["evaluate", "evaluates", "evaluated", "evaluation"], answer: 0, explanation: "Managers 是複數主詞，動詞用原形。" },
+            { stem: "The job requires a minimum of three years of ______.", options: ["experience", "experienced", "experiencing", "experiment"], answer: 0, explanation: "years of experience（年經驗），名詞。" },
+            { stem: "She was ______ to the Shanghai office.", options: ["transfer", "transferred", "transferring", "transference"], answer: 1, explanation: "was transferred（被調職），被動語態。" },
+            { stem: "Applicants must meet all the ______ listed in the job posting.", options: ["criterion", "criteria", "critical", "critique"], answer: 1, explanation: "all the criteria（所有標準），criteria 是複數。" },
+            { stem: "Total ______ includes salary, bonuses, and benefits.", options: ["compensate", "compensated", "compensation", "compensating"], answer: 2, explanation: "Total compensation（整體薪酬），名詞。" },
+            { stem: "The company is ______ for a new marketing director.", options: ["recruit", "recruiting", "recruited", "recruitment"], answer: 1, explanation: "is recruiting（正在招聘），進行式。" },
+            { stem: "Please provide two professional ______.", options: ["refer", "reference", "references", "referred"], answer: 2, explanation: "two references（兩位推薦人），用複數。" },
+            { stem: "Employees who work ______ will receive extra pay.", options: ["overtime", "over time", "overtiming", "overtimed"], answer: 0, explanation: "work overtime（加班），overtime 是副詞/名詞。" },
+            { stem: "His ______ for the position were impressive.", options: ["qualify", "qualified", "qualifications", "qualifying"], answer: 2, explanation: "His qualifications（他的資格），名詞用複數。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "面試與辦公場景注意人物互動",
+          questions: [
+            { stem: "【情境】面試官與應徵者正在交談", options: ["The interviewer is talking with a candidate.", "Two colleagues are having lunch.", "The office is empty.", "A man is waiting in the lobby."], answer: 0, explanation: "面試交談，talking with a candidate 正確。" },
+            { stem: "【情境】一群新員工在會議室聽講", options: ["New employees are attending an orientation session.", "The meeting room is being cleaned.", "Workers are leaving the building.", "The room is empty."], answer: 0, explanation: "新人訓練，attending an orientation session 正確。" },
+            { stem: "【情境】一位女性在電腦前整理履歷", options: ["The woman is working on her resume.", "The woman is browsing the internet.", "The woman is sending an email.", "The woman is printing a document."], answer: 0, explanation: "整理履歷，working on her resume 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "人事場景常考職位、福利與流程",
+          questions: [
+            { stem: "When is the deadline for applications?", options: ["Applications close on June 30th.", "I applied last week.", "The application form is online."], answer: 0, explanation: "When 問截止日，(A) 回答具體日期。" },
+            { stem: "What benefits does the company offer?", options: ["The company was founded in 2005.", "Health insurance, paid vacation, and a retirement plan.", "I benefit from this experience."], answer: 1, explanation: "What benefits 問福利，(B) 回答具體項目。" },
+            { stem: "How many candidates have been interviewed?", options: ["We've interviewed eight so far.", "The interview went well.", "The candidate was very qualified."], answer: 0, explanation: "How many 問數量，(A) 回答具體人數。" },
+            { stem: "Is experience required for this position?", options: ["Yes, at least two years of relevant experience.", "The position is very challenging.", "I have five years of experience."], answer: 0, explanation: "Is...required 問是否需要，(A) Yes 回答。" },
+            { stem: "Who approved the salary increase?", options: ["The increase is 5%.", "The HR director approved it.", "Salaries are paid monthly."], answer: 1, explanation: "Who 問人，(B) 回答具體人物。" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 20,
+      date: "6/26",
+      title: "廣告與行銷",
+      vocab: [
+        { word: "campaign", pos: "n.", meaning: "活動/宣傳", example: "The marketing campaign was successful." },
+        { word: "advertisement", pos: "n.", meaning: "廣告", example: "I saw an advertisement in the newspaper." },
+        { word: "target", pos: "n./v.", meaning: "目標/瞄準", example: "Our target audience is young adults." },
+        { word: "launch", pos: "v./n.", meaning: "推出/發布", example: "We will launch the new product next month." },
+        { word: "brand", pos: "n.", meaning: "品牌", example: "Brand awareness has increased." },
+        { word: "market", pos: "n./v.", meaning: "市場/行銷", example: "We need to market the product online." },
+        { word: "competitor", pos: "n.", meaning: "競爭者", example: "Our main competitor lowered prices." },
+        { word: "survey", pos: "n./v.", meaning: "調查", example: "We conducted a customer survey." },
+        { word: "feedback", pos: "n.", meaning: "回饋意見", example: "Customer feedback has been positive." },
+        { word: "strategy", pos: "n.", meaning: "策略", example: "We need a new marketing strategy." },
+        { word: "demographic", pos: "n./adj.", meaning: "人口統計/族群", example: "The ad targets a young demographic." },
+        { word: "brochure", pos: "n.", meaning: "宣傳冊", example: "Please take a brochure." },
+        { word: "slogan", pos: "n.", meaning: "標語/口號", example: "The company has a catchy slogan." },
+        { word: "endorsement", pos: "n.", meaning: "代言/背書", example: "The celebrity endorsement boosted sales." },
+        { word: "exposure", pos: "n.", meaning: "曝光度", example: "Social media provides great exposure." },
+        { word: "flyer", pos: "n.", meaning: "傳單", example: "They handed out flyers on the street." },
+        { word: "testimonial", pos: "n.", meaning: "顧客見證/推薦", example: "Customer testimonials are on our website." },
+        { word: "segment", pos: "n./v.", meaning: "區隔/部分", example: "We segment the market by age group." },
+        { word: "influence", pos: "n./v.", meaning: "影響", example: "Social media influences buying decisions." },
+        { word: "roi", pos: "n.", meaning: "投資報酬率", example: "The campaign delivered a high ROI." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "行銷詞彙注意名詞搭配與動詞形式",
+          questions: [
+            { stem: "The marketing ______ will run for three months.", options: ["camp", "campaign", "camping", "campus"], answer: 1, explanation: "marketing campaign（行銷活動）是固定搭配。" },
+            { stem: "The company ______ the new product last week.", options: ["launch", "launches", "launched", "launching"], answer: 2, explanation: "last week 是過去時間，用過去式 launched。" },
+            { stem: "We conducted a customer ______ to gather opinions.", options: ["survey", "surveys", "surveyed", "surveying"], answer: 0, explanation: "a customer survey（顧客調查），名詞。" },
+            { stem: "Our main ______ has lowered their prices.", options: ["compete", "competitive", "competitor", "competition"], answer: 2, explanation: "Our main competitor（主要競爭者），名詞。" },
+            { stem: "Customer ______ has been overwhelmingly positive.", options: ["feed", "feedback", "fed", "feeding"], answer: 1, explanation: "Customer feedback（顧客回饋），不可數名詞搭配 has。" },
+            { stem: "Please take a ______ from the display rack.", options: ["brochure", "broker", "broadcast", "browse"], answer: 0, explanation: "brochure（宣傳冊）語意正確。" },
+            { stem: "The ______ audience for this product is women aged 25-40.", options: ["target", "targeted", "targeting", "targets"], answer: 0, explanation: "target audience（目標受眾）是固定搭配。" },
+            { stem: "The company's ______ is recognized worldwide.", options: ["brand", "bland", "band", "banned"], answer: 0, explanation: "brand（品牌）語意正確。" },
+            { stem: "Social media provides excellent ______ for new products.", options: ["expose", "exposure", "exposed", "exposing"], answer: 1, explanation: "provides exposure（提供曝光度），名詞。" },
+            { stem: "The celebrity ______ helped boost sales significantly.", options: ["endorse", "endorsement", "endorsed", "endorsing"], answer: 1, explanation: "celebrity endorsement（名人代言），名詞。" },
+            { stem: "They distributed ______ at the shopping mall.", options: ["fly", "flyer", "flyers", "flying"], answer: 2, explanation: "distributed flyers（發傳單），用複數。" },
+            { stem: "We need to develop a new marketing ______.", options: ["strategic", "strategize", "strategy", "strategies"], answer: 2, explanation: "a new strategy（新策略），名詞。" },
+            { stem: "Customer ______ on the website help build trust.", options: ["testify", "testimonial", "testimonials", "testimony"], answer: 2, explanation: "Customer testimonials（顧客見證），用複數搭配 help。" },
+            { stem: "Social media ______ consumers' buying decisions.", options: ["influence", "influences", "influenced", "influential"], answer: 1, explanation: "第三人稱單數現在式加 s。" },
+            { stem: "We ______ the market by age and income level.", options: ["segment", "segments", "segmented", "segmenting"], answer: 0, explanation: "We 搭配原形動詞 segment。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "行銷場景注意廣告素材與團隊合作",
+          questions: [
+            { stem: "【情境】團隊正在白板上討論行銷計畫", options: ["The team is discussing a marketing plan on the whiteboard.", "The team is having a break.", "The office is being renovated.", "The whiteboard is empty."], answer: 0, explanation: "討論行銷計畫，discussing a marketing plan 正確。" },
+            { stem: "【情境】街上有一面大型廣告看板", options: ["A large billboard is displayed on the street.", "The street is empty.", "Cars are parked along the road.", "People are crossing the street."], answer: 0, explanation: "大型廣告看板，large billboard is displayed 正確。" },
+            { stem: "【情境】一位女性在筆電上分析圖表", options: ["The woman is analyzing charts on her laptop.", "The woman is sending an email.", "The woman is on a phone call.", "The woman is writing a report."], answer: 0, explanation: "分析圖表，analyzing charts 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "行銷場景常考計畫、效果與預算",
+          questions: [
+            { stem: "How effective was the advertising campaign?", options: ["Sales increased by 30%.", "The campaign ran for two months.", "We advertised on social media."], answer: 0, explanation: "How effective 問成效，(A) 回答具體成果。" },
+            { stem: "What is our target market for this product?", options: ["Young professionals aged 25-35.", "The product costs $29.99.", "We launched it last quarter."], answer: 0, explanation: "What is 問目標市場，(A) 回答具體族群。" },
+            { stem: "Have the brochures been printed yet?", options: ["Yes, they'll be ready for pickup tomorrow.", "The brochure has 12 pages.", "I designed the cover."], answer: 0, explanation: "Have...been printed 問是否印好，(A) Yes 回答。" },
+            { stem: "Who designed the company's new logo?", options: ["The logo is blue and white.", "An external design agency.", "The logo was approved last week."], answer: 1, explanation: "Who 問人，(B) 回答設計者。" },
+            { stem: "Should we increase the advertising budget?", options: ["The budget was approved in January.", "Yes, especially for digital channels.", "We spent $50,000 last quarter."], answer: 1, explanation: "Should we 問建議，(B) Yes 並說明方向。" }
+          ]
+        }
+      ]
+    },
+    {
+      id: 21,
+      date: "6/27",
+      title: "總複習（考前衝刺）",
+      vocab: [
+        { word: "accomplish", pos: "v.", meaning: "完成/達成", example: "She accomplished her goal." },
+        { word: "anticipate", pos: "v.", meaning: "預期/期待", example: "We anticipate strong sales." },
+        { word: "comprehensive", pos: "adj.", meaning: "全面的/綜合的", example: "We need a comprehensive plan." },
+        { word: "consequence", pos: "n.", meaning: "後果/結果", example: "Consider the consequences carefully." },
+        { word: "determine", pos: "v.", meaning: "決定/確定", example: "We need to determine the cause." },
+        { word: "eliminate", pos: "v.", meaning: "消除/淘汰", example: "We must eliminate errors." },
+        { word: "essential", pos: "adj.", meaning: "必要的/必不可少的", example: "Experience is essential for this job." },
+        { word: "implement", pos: "v.", meaning: "實施/執行", example: "We will implement the new policy." },
+        { word: "mandatory", pos: "adj.", meaning: "強制性的/必須的", example: "Attendance is mandatory." },
+        { word: "negotiate", pos: "v.", meaning: "談判/協商", example: "They negotiated a better deal." },
+        { word: "obtain", pos: "v.", meaning: "獲得/取得", example: "She obtained a master's degree." },
+        { word: "potential", pos: "adj./n.", meaning: "潛在的/潛力", example: "The plan has great potential." },
+        { word: "regarding", pos: "prep.", meaning: "關於", example: "I'm writing regarding your application." },
+        { word: "significant", pos: "adj.", meaning: "重大的/顯著的", example: "There was a significant improvement." },
+        { word: "sufficient", pos: "adj.", meaning: "足夠的", example: "Is there sufficient evidence?" },
+        { word: "thorough", pos: "adj.", meaning: "徹底的/仔細的", example: "They did a thorough inspection." },
+        { word: "ultimately", pos: "adv.", meaning: "最終地", example: "He ultimately agreed to the plan." },
+        { word: "valid", pos: "adj.", meaning: "有效的", example: "Your passport must be valid." },
+        { word: "whereas", pos: "conj.", meaning: "然而/反之", example: "He likes tea, whereas she prefers coffee." },
+        { word: "yield", pos: "v./n.", meaning: "產生/收益", example: "The investment yielded good returns." }
+      ],
+      sections: [
+        {
+          type: "Part 5",
+          name: "句子填空",
+          tip: "總複習：綜合三週所有文法重點",
+          questions: [
+            { stem: "Attendance at the safety training is ______.", options: ["mandate", "mandatory", "mandated", "mandating"], answer: 1, explanation: "is mandatory（是強制性的），形容詞。" },
+            { stem: "We need to ______ the new procedure immediately.", options: ["implement", "implements", "implemented", "implementation"], answer: 0, explanation: "need to 後面接原形動詞 implement。" },
+            { stem: "The results were ______ better than expected.", options: ["significant", "significantly", "significance", "signify"], answer: 1, explanation: "副詞 significantly 修飾形容詞 better。" },
+            { stem: "She ______ her master's degree last year.", options: ["obtain", "obtains", "obtained", "obtaining"], answer: 2, explanation: "last year 是過去時間，用過去式 obtained。" },
+            { stem: "I am writing ______ the position of sales manager.", options: ["regard", "regards", "regarding", "regarded"], answer: 2, explanation: "regarding（關於）是介系詞。" },
+            { stem: "We must ______ all potential risks.", options: ["eliminate", "eliminates", "eliminated", "elimination"], answer: 0, explanation: "must 後面接原形動詞 eliminate。" },
+            { stem: "A ______ review of the project is scheduled for next week.", options: ["comprehend", "comprehensive", "comprehension", "comprehensively"], answer: 1, explanation: "comprehensive review（全面檢討），形容詞修飾名詞。" },
+            { stem: "The investment ______ a 12% return last year.", options: ["yield", "yields", "yielded", "yielding"], answer: 2, explanation: "last year 是過去時間，用過去式 yielded。" },
+            { stem: "He likes working alone, ______ she prefers teamwork.", options: ["where", "whereas", "whereby", "wherever"], answer: 1, explanation: "whereas（然而）表示對比。" },
+            { stem: "Is there ______ evidence to support the claim?", options: ["suffice", "sufficient", "sufficiently", "sufficiency"], answer: 1, explanation: "sufficient evidence（充分的證據），形容詞修飾名詞。" },
+            { stem: "The company has the ______ to grow rapidly.", options: ["potent", "potential", "potentially", "potency"], answer: 1, explanation: "has the potential（有潛力），名詞。" },
+            { stem: "They ______ a better contract after weeks of talks.", options: ["negotiate", "negotiates", "negotiated", "negotiation"], answer: 2, explanation: "after weeks 暗示過去，用過去式 negotiated。" },
+            { stem: "Prior experience is ______ for this position.", options: ["essence", "essential", "essentially", "essentials"], answer: 1, explanation: "is essential（是必要的），形容詞。" },
+            { stem: "She ______ all her tasks ahead of schedule.", options: ["accomplish", "accomplished", "accomplishes", "accomplishment"], answer: 1, explanation: "描述過去完成的事，用過去式 accomplished。" },
+            { stem: "The inspector conducted a ______ examination of the site.", options: ["through", "thorough", "thoroughly", "thought"], answer: 1, explanation: "thorough examination（徹底的檢查），形容詞。注意 thorough 和 through 區分。" }
+          ]
+        },
+        {
+          type: "Part 1",
+          name: "照片描述",
+          tip: "最終複習：各種場景綜合練習",
+          questions: [
+            { stem: "【情境】一群人正在會議室裡看投影片", options: ["People are watching a presentation in a conference room.", "People are eating in a cafeteria.", "The room is being cleaned.", "People are leaving the building."], answer: 0, explanation: "看投影片，watching a presentation 正確。" },
+            { stem: "【情境】一位穿制服的男性在指揮交通", options: ["A man in uniform is directing traffic.", "A man is crossing the street.", "Cars are parked on the side.", "The road is under construction."], answer: 0, explanation: "指揮交通，directing traffic 正確。" },
+            { stem: "【情境】圖書館裡，幾位學生正在讀書", options: ["Students are studying in the library.", "Students are playing outside.", "The library is closed.", "Books are falling off the shelves."], answer: 0, explanation: "在圖書館讀書，studying in the library 正確。" }
+          ]
+        },
+        {
+          type: "Part 2",
+          name: "應答問題",
+          tip: "最終複習：各種問答類型綜合練習",
+          questions: [
+            { stem: "Could you tell me where the nearest bank is?", options: ["There's one on the corner of Main Street.", "I bank with First National.", "The bank closes at 5."], answer: 0, explanation: "Where 問地點，(A) 回答具體位置。" },
+            { stem: "How long have you been working here?", options: ["I work on the third floor.", "About five years.", "I enjoy my work very much."], answer: 1, explanation: "How long 問時間長度，(B) 回答具體年數。" },
+            { stem: "Why was the meeting postponed?", options: ["The meeting lasted two hours.", "Because the director is traveling.", "The meeting room is on the second floor."], answer: 1, explanation: "Why 問原因，(B) Because 回答原因。" },
+            { stem: "Whose report is this on the printer?", options: ["The report has 20 pages.", "It must be Mr. Kim's.", "I haven't read it yet."], answer: 1, explanation: "Whose 問所有者，(B) 回答是誰的。" },
+            { stem: "Don't you think we should hire more staff?", options: ["We hired two people last month.", "Yes, we're definitely short-handed.", "The staff meeting is at 3."], answer: 1, explanation: "否定疑問句問意見，(B) Yes 表示同意。" }
+          ]
+        }
+      ]
     }
   ]
 };
+
+// =====================================================
+// GRAMMAR & PHRASE REFERENCE DATA
+// =====================================================
+const GRAMMAR_DATA = [
+  {
+    title: "詞性判斷（Part 5 必考）",
+    rules: [
+      { rule: "冠詞（a/an/the）或所有格（my/his/our）後 → 名詞", examples: ["the <b>decision</b> (n.)", "his <b>experience</b> (n.)", "a <b>recommendation</b> (n.)"] },
+      { rule: "名詞前 → 形容詞", examples: ["an <b>important</b> meeting", "<b>annual</b> revenue", "<b>significant</b> improvement"] },
+      { rule: "動詞前/後 → 副詞", examples: ["increased <b>significantly</b>", "<b>carefully</b> reviewed", "work <b>efficiently</b>"] },
+      { rule: "主詞 + ______ → 動詞", examples: ["The manager <b>approved</b> the plan.", "She <b>submitted</b> the report."] },
+      { rule: "常見字尾辨識", examples: [
+        "名詞：-tion, -ment, -ness, -ity, -ance/-ence, -er/-or",
+        "形容詞：-ive, -ful, -ous, -able/-ible, -al, -ent/-ant",
+        "副詞：-ly",
+        "動詞：-ize, -ify, -ate, -en"
+      ]}
+    ]
+  },
+  {
+    title: "時態",
+    rules: [
+      { rule: "現在簡單式：習慣、事實、排程", examples: ["The store <b>opens</b> at 9 a.m.", "She <b>commutes</b> by train."] },
+      { rule: "過去簡單式：yesterday, last ~, ago, in 2020", examples: ["He <b>submitted</b> the report yesterday.", "She <b>resigned</b> last month."] },
+      { rule: "未來式：will / be going to", examples: ["The meeting <b>will start</b> at 3 p.m.", "We <b>are going to launch</b> the product."] },
+      { rule: "現在完成式：have/has + p.p.（已完成、經驗、持續）", examples: ["She <b>has worked</b> here for five years.", "The report <b>has been</b> submitted."] },
+      { rule: "現在進行式：be + V-ing（正在做）", examples: ["They <b>are discussing</b> the budget.", "The patient <b>is recovering</b> well."] }
+    ]
+  },
+  {
+    title: "被動語態",
+    rules: [
+      { rule: "be + 過去分詞 (p.p.)", examples: ["The report <b>was submitted</b> on time.", "Employees <b>are required</b> to attend."] },
+      { rule: "will be + p.p.（未來被動）", examples: ["The new policy <b>will be implemented</b> next month."] },
+      { rule: "have/has been + p.p.（完成被動）", examples: ["The product <b>has been recalled</b>.", "The files <b>have been backed up</b>."] },
+      { rule: "being + p.p.（進行被動）", examples: ["The building <b>is being renovated</b>."] }
+    ]
+  },
+  {
+    title: "主詞動詞一致",
+    rules: [
+      { rule: "第三人稱單數 → 動詞 +s/es", examples: ["The manager <b>approves</b> the budget.", "She <b>commutes</b> daily."] },
+      { rule: "不可數名詞 → 單數動詞", examples: ["The information <b>is</b> accurate.", "The luggage <b>was</b> lost.", "The feedback <b>has been</b> positive."] },
+      { rule: "every/each + 單數名詞 → 單數動詞", examples: ["Every employee <b>is</b> required to attend.", "Each product <b>is</b> inspected."] }
+    ]
+  },
+  {
+    title: "介系詞搭配",
+    rules: [
+      { rule: "時間介系詞", examples: [
+        "<b>at</b> + 時間點：at 3 p.m., at noon",
+        "<b>on</b> + 日期/星期：on Monday, on June 28th",
+        "<b>in</b> + 月/年/季：in June, in 2026, in the morning",
+        "<b>by</b> + 截止時間：by Friday, by the end of the month",
+        "<b>for</b> + 一段時間：for three years",
+        "<b>since</b> + 起始時間點：since 2020"
+      ]},
+      { rule: "地點介系詞", examples: [
+        "<b>at</b> + 地點：at the office, at the counter",
+        "<b>in</b> + 空間內：in the warehouse, in the meeting room",
+        "<b>on</b> + 表面/樓層：on the desk, on the second floor"
+      ]},
+      { rule: "常考搭配介系詞", examples: [
+        "comply <b>with</b>（遵守）",
+        "participate <b>in</b>（參與）",
+        "responsible <b>for</b>（負責）",
+        "familiar <b>with</b>（熟悉）",
+        "according <b>to</b>（根據）",
+        "due <b>to</b>（由於）",
+        "in addition <b>to</b>（除了…之外）",
+        "result <b>in</b>（導致）"
+      ]}
+    ]
+  },
+  {
+    title: "不定詞 vs 動名詞",
+    rules: [
+      { rule: "to + 原形動詞（不定詞）", examples: [
+        "plan/decide/need/want/hope/expect <b>to + V</b>",
+        "She decided <b>to accept</b> the offer.",
+        "We need <b>to improve</b> efficiency."
+      ]},
+      { rule: "V-ing（動名詞）", examples: [
+        "enjoy/consider/avoid/finish/suggest <b>V-ing</b>",
+        "She enjoys <b>working</b> from home.",
+        "Consider <b>hiring</b> more staff."
+      ]},
+      { rule: "兩者皆可", examples: [
+        "start/begin/continue + <b>to V</b> 或 <b>V-ing</b>",
+        "He started <b>to work</b> / <b>working</b> on the project."
+      ]}
+    ]
+  },
+  {
+    title: "連接詞與轉折",
+    rules: [
+      { rule: "因果：because, since, due to, therefore", examples: ["The flight was delayed <b>due to</b> bad weather.", "<b>Since</b> the budget was approved, we can proceed."] },
+      { rule: "轉折：however, although, whereas, despite", examples: ["<b>Although</b> it rained, the event was successful.", "He likes tea, <b>whereas</b> she prefers coffee."] },
+      { rule: "並列：and, both...and, not only...but also", examples: ["<b>Both</b> managers <b>and</b> employees attended.", "<b>Not only</b> quality <b>but also</b> delivery improved."] },
+      { rule: "條件：if, unless, provided that", examples: ["<b>If</b> you have questions, please ask.", "<b>Unless</b> otherwise noted, the policy applies to all."] }
+    ]
+  },
+  {
+    title: "比較級與最高級",
+    rules: [
+      { rule: "比較級：-er / more + adj. + than", examples: ["This route is <b>shorter than</b> that one.", "The new model is <b>more efficient than</b> the old one."] },
+      { rule: "最高級：the -est / the most + adj.", examples: ["This is the <b>most direct</b> route.", "She is the <b>most experienced</b> candidate."] },
+      { rule: "as...as 同級比較", examples: ["The new office is <b>as spacious as</b> the old one.", "This product is not <b>as expensive as</b> that one."] }
+    ]
+  },
+  {
+    title: "關係代名詞",
+    rules: [
+      { rule: "who — 人（主格）", examples: ["The employee <b>who</b> submitted the report got promoted."] },
+      { rule: "which — 事物", examples: ["The product <b>which</b> was recalled has been fixed."] },
+      { rule: "that — 人或事物（限定用法）", examples: ["The candidate <b>that</b> we interviewed was excellent."] },
+      { rule: "whose — 所有格", examples: ["The client <b>whose</b> order was delayed received a discount."] }
+    ]
+  }
+];
+
+const PHRASE_DATA = [
+  {
+    category: "商務與辦公",
+    phrases: [
+      { phrase: "in charge of", meaning: "負責", example: "She is in charge of the marketing team." },
+      { phrase: "ahead of schedule", meaning: "提前", example: "The project was completed ahead of schedule." },
+      { phrase: "behind schedule", meaning: "落後進度", example: "Construction is behind schedule." },
+      { phrase: "meet a deadline", meaning: "趕上截止日期", example: "We must meet the deadline." },
+      { phrase: "take place", meaning: "舉行/發生", example: "The meeting will take place at 3 p.m." },
+      { phrase: "be in compliance with", meaning: "遵守/符合", example: "All products are in compliance with safety standards." },
+      { phrase: "on behalf of", meaning: "代表", example: "I'm writing on behalf of the manager." },
+      { phrase: "as soon as possible (ASAP)", meaning: "盡快", example: "Please reply as soon as possible." },
+      { phrase: "follow up on", meaning: "跟進/追蹤", example: "I'll follow up on the issue tomorrow." },
+      { phrase: "look into", meaning: "調查/研究", example: "We will look into the matter." },
+      { phrase: "carry out", meaning: "執行/進行", example: "The team carried out the inspection." },
+      { phrase: "put off", meaning: "延期/推遲", example: "The meeting was put off until next week." }
+    ]
+  },
+  {
+    category: "人事與職場",
+    phrases: [
+      { phrase: "apply for", meaning: "申請", example: "She applied for the position." },
+      { phrase: "fill out / fill in", meaning: "填寫", example: "Please fill out this application form." },
+      { phrase: "lay off", meaning: "解僱/裁員", example: "The company laid off 50 workers." },
+      { phrase: "take over", meaning: "接管/接任", example: "He took over as the new director." },
+      { phrase: "turn down", meaning: "拒絕", example: "She turned down the job offer." },
+      { phrase: "be eligible for", meaning: "有資格", example: "Employees are eligible for health benefits." },
+      { phrase: "be responsible for", meaning: "負責", example: "He is responsible for training new staff." },
+      { phrase: "report to", meaning: "向…報告/隸屬", example: "She reports to the vice president." },
+      { phrase: "work overtime", meaning: "加班", example: "We had to work overtime to finish the project." },
+      { phrase: "call in sick", meaning: "請病假", example: "He called in sick this morning." }
+    ]
+  },
+  {
+    category: "購物與消費",
+    phrases: [
+      { phrase: "on sale", meaning: "特價中", example: "All winter coats are on sale." },
+      { phrase: "out of stock", meaning: "缺貨", example: "The item is currently out of stock." },
+      { phrase: "in stock", meaning: "有庫存", example: "The product is back in stock." },
+      { phrase: "try on", meaning: "試穿", example: "Can I try on this jacket?" },
+      { phrase: "ring up", meaning: "結帳/算帳", example: "The cashier rang up the total." },
+      { phrase: "get a refund", meaning: "獲得退款", example: "You can get a refund within 30 days." },
+      { phrase: "place an order", meaning: "下訂單", example: "I'd like to place an order." },
+      { phrase: "pick up", meaning: "取貨/撿起", example: "You can pick up your order tomorrow." }
+    ]
+  },
+  {
+    category: "旅遊與交通",
+    phrases: [
+      { phrase: "check in / check out", meaning: "辦理入住/退房", example: "Check-in time is 3 p.m." },
+      { phrase: "get on / get off", meaning: "上車/下車", example: "Get off at the next stop." },
+      { phrase: "pick up (someone)", meaning: "接人", example: "I'll pick you up at the airport." },
+      { phrase: "drop off", meaning: "放下/送到", example: "Please drop off the rental car by 5 p.m." },
+      { phrase: "set off / head out", meaning: "出發", example: "We should set off early to avoid traffic." },
+      { phrase: "make a reservation", meaning: "預約", example: "I'd like to make a reservation for two." },
+      { phrase: "look forward to", meaning: "期待", example: "I look forward to hearing from you." },
+      { phrase: "go through", meaning: "通過/經歷", example: "You must go through customs." }
+    ]
+  },
+  {
+    category: "財務與銀行",
+    phrases: [
+      { phrase: "open an account", meaning: "開戶", example: "I'd like to open a savings account." },
+      { phrase: "pay off", meaning: "還清", example: "He paid off his loan." },
+      { phrase: "make a deposit", meaning: "存款", example: "I need to make a deposit." },
+      { phrase: "write a check", meaning: "開支票", example: "She wrote a check for $500." },
+      { phrase: "be due on", meaning: "到期日為", example: "The payment is due on the 15th." },
+      { phrase: "cut costs / reduce expenses", meaning: "削減成本", example: "The company cut costs by 15%." },
+      { phrase: "break even", meaning: "損益兩平", example: "We expect to break even by Q3." },
+      { phrase: "go over budget", meaning: "超出預算", example: "The project went over budget." }
+    ]
+  },
+  {
+    category: "溝通與書信",
+    phrases: [
+      { phrase: "in response to", meaning: "回應/回覆", example: "In response to your inquiry, we would like to inform you..." },
+      { phrase: "as per / per", meaning: "根據/依照", example: "As per your request, I have attached the file." },
+      { phrase: "please find attached", meaning: "請參閱附件", example: "Please find attached the revised proposal." },
+      { phrase: "for your reference", meaning: "供您參考", example: "The report is attached for your reference." },
+      { phrase: "at your earliest convenience", meaning: "在您方便時盡快", example: "Please reply at your earliest convenience." },
+      { phrase: "be advised that", meaning: "請注意", example: "Please be advised that the office will be closed Friday." },
+      { phrase: "with regard to / regarding", meaning: "關於", example: "With regard to your question, here is our answer." },
+      { phrase: "should you have any questions", meaning: "如果您有任何問題", example: "Should you have any questions, please contact us." }
+    ]
+  },
+  {
+    category: "常見易混淆詞組",
+    phrases: [
+      { phrase: "affect vs. effect", meaning: "affect (v.) 影響 / effect (n.) 效果", example: "The weather affects (v.) productivity. The effect (n.) was significant." },
+      { phrase: "accept vs. except", meaning: "accept (v.) 接受 / except (prep.) 除了", example: "I accept your offer. Everyone except Tom attended." },
+      { phrase: "advice vs. advise", meaning: "advice (n.) 建議 / advise (v.) 建議", example: "Take my advice. I advise you to apply." },
+      { phrase: "compliment vs. complement", meaning: "compliment 讚美 / complement 補充", example: "She complimented my work. The wine complements the dish." },
+      { phrase: "principal vs. principle", meaning: "principal 主要的;校長 / principle 原則", example: "The principal reason. A matter of principle." },
+      { phrase: "stationary vs. stationery", meaning: "stationary 靜止的 / stationery 文具", example: "The car is stationary. Office stationery is on the shelf." },
+      { phrase: "personal vs. personnel", meaning: "personal 個人的 / personnel 人事;員工", example: "Personal information. The personnel department." },
+      { phrase: "ensure vs. assure vs. insure", meaning: "ensure 確保 / assure 向…保證 / insure 投保", example: "Ensure quality. I assure you it's safe. Insure your car." }
+    ]
+  }
+];
 
 // =====================================================
 // FIREBASE INIT
@@ -2316,13 +3141,16 @@ function switchDay(i) {
 }
 
 function switchInnerTab(tab) {
-  const tabs = ['vocab', 'quiz', 'wrong'];
+  const tabs = ['vocab', 'quiz', 'wrong', 'grammar', 'phrase'];
   document.querySelectorAll('.inner-tab').forEach((el, i) => {
     el.classList.toggle('active', tab === tabs[i]);
   });
-  document.getElementById('vocabTab').classList.toggle('active', tab === 'vocab');
-  document.getElementById('quizTab').classList.toggle('active', tab === 'quiz');
-  document.getElementById('wrongTab').classList.toggle('active', tab === 'wrong');
+  tabs.forEach(t => {
+    const id = t === 'grammar' ? 'grammarTab' : t === 'phrase' ? 'phraseTab' : t + 'Tab';
+    document.getElementById(id).classList.toggle('active', tab === t);
+  });
+  if (tab === 'grammar') renderGrammar();
+  if (tab === 'phrase') renderPhrase();
 }
 
 // =====================================================
@@ -2467,6 +3295,49 @@ function renderStats() {
   document.getElementById('statCorrect').textContent = totalCorrect;
   document.getElementById('statAccuracy').textContent = totalAnswered > 0 ? Math.round((totalCorrect/totalAnswered)*100)+'%' : '-';
   document.getElementById('statStreak').textContent = maxStreak;
+}
+
+// =====================================================
+// GRAMMAR & PHRASE RENDERERS
+// =====================================================
+function renderGrammar() {
+  const c = document.getElementById('grammarTab');
+  c.innerHTML = `<div class="ref-container">${GRAMMAR_DATA.map((g, gi) => `
+    <div class="ref-section">
+      <div class="ref-title" onclick="this.parentElement.classList.toggle('open')">${gi+1}. ${g.title}<span class="ref-arrow">▸</span></div>
+      <div class="ref-body">${g.rules.map(r => `
+        <div class="ref-rule">
+          <div class="ref-rule-head">${r.rule}</div>
+          <div class="ref-examples">${r.examples.map(e => `<div class="ref-ex">${e}</div>`).join('')}</div>
+        </div>
+      `).join('')}</div>
+    </div>
+  `).join('')}</div>`;
+  document.querySelectorAll('.ref-section').forEach(el => el.classList.add('open'));
+}
+
+function renderPhrase() {
+  const c = document.getElementById('phraseTab');
+  c.innerHTML = `<div class="ref-container">${PHRASE_DATA.map((cat, ci) => `
+    <div class="ref-section">
+      <div class="ref-title" onclick="this.parentElement.classList.toggle('open')">${cat.category}<span class="ref-arrow">▸</span></div>
+      <div class="ref-body">
+        <div class="phrase-grid">${cat.phrases.map(p => `
+          <div class="phrase-card">
+            <div class="phrase-head">
+              <span class="phrase-text">${p.phrase}</span>
+              <button class="speak-btn-sm" onclick="event.stopPropagation(); speak('${p.phrase.replace(/'/g,"\\'")}', this)">&#128264;</button>
+            </div>
+            <div class="phrase-meaning">${p.meaning}</div>
+            <div class="phrase-example">${p.example}
+              <button class="speak-btn-sm" onclick="event.stopPropagation(); speak(\`${p.example.replace(/`/g,'\\`').replace(/'/g,"\\'")}\`, this)">&#128264;</button>
+            </div>
+          </div>
+        `).join('')}</div>
+      </div>
+    </div>
+  `).join('')}</div>`;
+  document.querySelectorAll('#phraseTab .ref-section').forEach(el => el.classList.add('open'));
 }
 
 // =====================================================
