@@ -589,6 +589,34 @@
   }
   .sync-dot.syncing { background: #f59e0b; animation: pulse 1s infinite; }
 
+  /* Retry in wrong notebook */
+  .retry-btn {
+    margin-top: 14px;
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+  .retry-options .option {
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .retry-options .option:hover {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.08);
+  }
+  .retry-result {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+  }
+  .retry-result.correct { background: var(--correct-bg); }
+  .retry-result.wrong { background: var(--wrong-bg); }
+  .retry-icon { font-size: 36px; margin-bottom: 6px; }
+  .retry-msg { font-size: 16px; font-weight: 600; }
+  .retry-result.correct .retry-msg { color: var(--correct); }
+  .retry-result.wrong .retry-msg { color: var(--wrong); }
+
   /* Grammar & Phrase reference */
   .ref-container { display: flex; flex-direction: column; gap: 12px; }
   .ref-section {
@@ -3248,9 +3276,12 @@ function renderWrong() {
     const attemptText = e.isMastered
       ? `<span class="attempt-count ok">&#10003; 重做答對</span>`
       : `<span class="attempt-count">錯 ${e.log.wrongCount} 次</span>`;
+    const retryBtn = e.isMastered
+      ? ''
+      : `<button class="btn btn-primary retry-btn" onclick="startRetry('${e.key}')">重新作答</button>`;
 
     html += `
-      <div class="wrong-item" style="${e.isMastered ? 'opacity:0.65' : ''}">
+      <div class="wrong-item" id="wrong-${e.key}" style="${e.isMastered ? 'opacity:0.65' : ''}">
         <div class="wrong-meta">
           ${statusBadge}
           <span class="day-label">Day ${e.dayId} · ${e.sec.type} · Q${e.qi + 1}</span>
@@ -3269,11 +3300,118 @@ function renderWrong() {
           }).join('')}
         </div>
         <div class="wrong-explanation"><strong>解析：</strong>${e.q.explanation}</div>
+        ${retryBtn}
       </div>
     `;
   });
 
   c.innerHTML = html;
+}
+
+function startRetry(key) {
+  const log = wrongLog[key];
+  if (!log) return;
+  const parts = key.split('-');
+  const dayId = parseInt(parts[0]);
+  const si = parseInt(parts[1]);
+  const qi = parseInt(parts[2]);
+  const day = QUIZ_DATA.days.find(d => d.id === dayId);
+  if (!day) return;
+  const q = day.sections[si].questions[qi];
+  if (!q) return;
+  const letters = ['A', 'B', 'C', 'D'];
+  const el = document.getElementById('wrong-' + key);
+  if (!el) return;
+
+  el.style.opacity = '1';
+  el.style.borderColor = 'var(--accent)';
+  el.innerHTML = `
+    <div class="wrong-meta">
+      <span class="badge" style="background:var(--accent)">重新作答</span>
+      <span class="day-label">Day ${dayId} · ${day.sections[si].type} · Q${qi + 1}</span>
+    </div>
+    <div class="wrong-stem">${formatStem(q.stem)}
+      <button class="speak-btn-sm" onclick="speak(\`${q.stem.replace(/______/g,'blank').replace(/【.*?】/g,'').replace(/`/g,'')}\`, this)">&#128264;</button>
+    </div>
+    <div class="options retry-options">
+      ${q.options.map((opt, oi) => `
+        <div class="option" onclick="submitRetry('${key}', ${oi})" data-oi="${oi}">
+          <div class="radio"></div>
+          <span class="letter">(${letters[oi]})</span>
+          <span>${opt}</span>
+          <button class="speak-btn-sm" onclick="event.stopPropagation(); speak('${opt.replace(/'/g,"\\'")}', this)" style="margin-left:auto">&#128264;</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function submitRetry(key, pick) {
+  const log = wrongLog[key];
+  if (!log) return;
+  const parts = key.split('-');
+  const dayId = parseInt(parts[0]);
+  const si = parseInt(parts[1]);
+  const qi = parseInt(parts[2]);
+  const day = QUIZ_DATA.days.find(d => d.id === dayId);
+  if (!day) return;
+  const q = day.sections[si].questions[qi];
+  if (!q) return;
+  const isCorrect = pick === q.answer;
+
+  if (isCorrect) {
+    log.correctCount = (log.correctCount || 0) + 1;
+  } else {
+    log.wrongCount = (log.wrongCount || 0) + 1;
+    log.yourPick = pick;
+  }
+  saveState();
+
+  const el = document.getElementById('wrong-' + key);
+  const letters = ['A', 'B', 'C', 'D'];
+
+  if (isCorrect) {
+    el.style.borderColor = 'var(--correct)';
+    el.innerHTML = `
+      <div class="wrong-meta">
+        <span class="badge mastered">&#10003; 已掌握</span>
+        <span class="day-label">Day ${dayId} · ${day.sections[si].type} · Q${qi + 1}</span>
+        <span class="attempt-count ok">&#10003; 重做答對</span>
+      </div>
+      <div class="retry-result correct">
+        <div class="retry-icon">&#127881;</div>
+        <div class="retry-msg">答對了！已標記為「已掌握」</div>
+      </div>
+      <div class="wrong-explanation"><strong>解析：</strong>${q.explanation}</div>
+    `;
+    setTimeout(() => { renderWrong(); }, 1500);
+  } else {
+    el.style.borderColor = 'var(--wrong)';
+    el.innerHTML = `
+      <div class="wrong-meta">
+        <span class="badge">&#10007; 答錯了</span>
+        <span class="day-label">Day ${dayId} · ${day.sections[si].type} · Q${qi + 1}</span>
+        <span class="attempt-count">累計錯 ${log.wrongCount} 次</span>
+      </div>
+      <div class="retry-result wrong">
+        <div class="retry-icon">&#128557;</div>
+        <div class="retry-msg">還是錯了，再看一次解析吧！</div>
+      </div>
+      <div class="wrong-stem">${formatStem(q.stem)}</div>
+      <div class="wrong-choices">
+        ${q.options.map((opt, oi) => {
+          let cls = '';
+          if (oi === pick && oi !== q.answer) cls = 'your-pick';
+          if (oi === q.answer) cls = 'correct-pick';
+          const label = oi === pick && oi !== q.answer ? ' ← 你的答案' : (oi === q.answer ? ' ← 正確答案' : '');
+          return `<div class="choice ${cls}">(${letters[oi]}) ${opt}${label}</div>`;
+        }).join('')}
+      </div>
+      <div class="wrong-explanation"><strong>解析：</strong>${q.explanation}</div>
+      <button class="btn btn-primary retry-btn" onclick="startRetry('${key}')">再試一次</button>
+    `;
+  }
 }
 
 function setWrongFilter(f) {
