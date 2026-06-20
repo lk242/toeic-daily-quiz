@@ -2874,6 +2874,7 @@ function renderVocab() {
       <button class="btn btn-outline" onclick="speakAllVocab()" id="speakAllBtn">&#128264; 連續播放</button>
       <button class="btn btn-outline" onclick="toggleAllVocab(true)">全部顯示</button>
       <button class="btn btn-outline" onclick="toggleAllVocab(false)">全部隱藏</button>
+      <button class="btn btn-primary" onclick="startVocabQuiz()">&#128221; 單字測驗</button>
     </div>
     <div class="vocab-grid">
       ${day.vocab.map((v, i) => `
@@ -2899,6 +2900,215 @@ function toggleAllVocab(show) {
     if (show) el.classList.add('revealed');
     else el.classList.remove('revealed');
   });
+}
+
+// =====================================================
+// VOCAB QUIZ
+// =====================================================
+let vocabQuizAnswers = {};
+let vocabQuizData = [];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startVocabQuiz() {
+  const day = QUIZ_DATA.days[currentDay];
+  if (!day || day.vocab.length < 4) return;
+
+  vocabQuizAnswers = {};
+  vocabQuizData = [];
+  const vocab = day.vocab;
+  const shuffled = shuffle(vocab.map((v, i) => ({ ...v, idx: i })));
+
+  shuffled.forEach((v, qi) => {
+    const isEngToChn = qi % 2 === 0;
+    const others = vocab.filter(o => o.word !== v.word);
+    const distractors = shuffle(others).slice(0, 3);
+
+    if (isEngToChn) {
+      const opts = shuffle([
+        { text: v.meaning, correct: true },
+        ...distractors.map(d => ({ text: d.meaning, correct: false }))
+      ]);
+      vocabQuizData.push({
+        stem: v.word,
+        stemSub: v.pos,
+        speakText: v.word,
+        type: 'eng2chn',
+        options: opts.map(o => o.text),
+        answer: opts.findIndex(o => o.correct),
+        word: v.word,
+        meaning: v.meaning,
+        example: v.example
+      });
+    } else {
+      const opts = shuffle([
+        { text: v.word, correct: true },
+        ...distractors.map(d => ({ text: d.word, correct: false }))
+      ]);
+      vocabQuizData.push({
+        stem: v.meaning,
+        stemSub: v.pos,
+        speakText: v.word,
+        type: 'chn2eng',
+        options: opts.map(o => o.text),
+        answer: opts.findIndex(o => o.correct),
+        word: v.word,
+        meaning: v.meaning,
+        example: v.example
+      });
+    }
+  });
+
+  renderVocabQuiz();
+}
+
+function renderVocabQuiz() {
+  const day = QUIZ_DATA.days[currentDay];
+  const c = document.getElementById('vocabTab');
+  const total = vocabQuizData.length;
+  const answered = Object.keys(vocabQuizAnswers).length;
+  const letters = ['A', 'B', 'C', 'D'];
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <h3 style="font-size:18px;">&#128221; Day ${day.id} 單字測驗 (${total} 題)</h3>
+      <button class="btn btn-outline" onclick="renderVocab()" style="font-size:13px;">返回單字卡</button>
+    </div>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px;">英文→中文 與 中文→英文 交替出題，選出正確答案</p>
+    <div class="progress-bar"><div class="fill" id="vocabQuizProgress" style="width:${(answered/total)*100}%"></div></div>
+  `;
+
+  vocabQuizData.forEach((q, qi) => {
+    const chosen = vocabQuizAnswers[qi];
+    const isSubmitted = chosen !== undefined && document.getElementById('vocabQuizSubmitted');
+    const typeLabel = q.type === 'eng2chn' ? '英→中' : '中→英';
+
+    html += `<div class="q-card" id="vq-card-${qi}">`;
+    html += `<div class="q-num">Question ${qi + 1} <span style="font-size:11px;color:var(--text-dim);margin-left:6px;">${typeLabel}</span></div>`;
+    html += `<div class="q-stem">${q.type === 'eng2chn' ? `<span style="font-size:20px;font-weight:700;">${q.stem}</span> <span style="color:var(--text-dim)">${q.stemSub}</span>` : `<span style="font-size:18px;">${q.stem}</span> <span style="color:var(--text-dim)">${q.stemSub}</span>`}`;
+    html += ` <button class="speak-btn-sm" onclick="speak('${q.speakText.replace(/'/g,"\\'")}', this)">&#128264;</button></div>`;
+    html += `<div class="options">`;
+    q.options.forEach((opt, oi) => {
+      let optClass = '';
+      if (chosen === oi) optClass += ' selected';
+      const speakOpt = q.type === 'eng2chn' ? '' : `<button class="speak-btn-sm" onclick="event.stopPropagation(); speak('${opt.replace(/'/g,"\\'")}', this)" style="margin-left:auto">&#128264;</button>`;
+      html += `
+        <div class="option${optClass}" onclick="selectVocabQuizOption(${qi}, ${oi})" id="vqopt-${qi}-${oi}">
+          <div class="radio"></div>
+          <span class="letter">(${letters[oi]})</span>
+          <span>${opt}</span>
+          ${speakOpt}
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+  });
+
+  html += `
+    <div class="btn-row">
+      <button class="btn btn-primary" id="vocabQuizSubmitBtn" onclick="submitVocabQuiz()" ${answered < total ? 'disabled' : ''} style="padding:14px 32px;font-size:16px;">
+        交卷批改（${answered}/${total}）
+      </button>
+    </div>
+    <span id="vocabQuizSubmitted" style="display:none"></span>
+  `;
+  c.innerHTML = html;
+}
+
+function selectVocabQuizOption(qi, oi) {
+  if (document.getElementById('vocabQuizSubmitted')?.dataset.done) return;
+  const prev = vocabQuizAnswers[qi];
+  if (prev !== undefined) {
+    const prevEl = document.getElementById('vqopt-' + qi + '-' + prev);
+    if (prevEl) prevEl.classList.remove('selected');
+  }
+  vocabQuizAnswers[qi] = oi;
+  const el = document.getElementById('vqopt-' + qi + '-' + oi);
+  if (el) el.classList.add('selected');
+
+  const total = vocabQuizData.length;
+  const answered = Object.keys(vocabQuizAnswers).length;
+  const prog = document.getElementById('vocabQuizProgress');
+  if (prog) prog.style.width = (answered / total * 100) + '%';
+  const btn = document.getElementById('vocabQuizSubmitBtn');
+  if (btn) {
+    btn.textContent = `交卷批改（${answered}/${total}）`;
+    btn.disabled = answered < total;
+  }
+}
+
+function submitVocabQuiz() {
+  const marker = document.getElementById('vocabQuizSubmitted');
+  if (marker) marker.dataset.done = '1';
+
+  let correctCount = 0;
+  const total = vocabQuizData.length;
+  const letters = ['A', 'B', 'C', 'D'];
+
+  vocabQuizData.forEach((q, qi) => {
+    const pick = vocabQuizAnswers[qi];
+    const isCorrect = pick === q.answer;
+    const card = document.getElementById('vq-card-' + qi);
+    if (!card) return;
+
+    if (isCorrect) {
+      correctCount++;
+      card.classList.add('correct');
+    } else {
+      card.classList.add('wrong');
+    }
+
+    const resultTag = isCorrect
+      ? `<span class="result-tag correct-tag">&#10003; 正確</span>`
+      : `<span class="result-tag wrong-tag">&#10007; 錯誤</span>`;
+    const qNum = card.querySelector('.q-num');
+    if (qNum) qNum.innerHTML += resultTag;
+
+    q.options.forEach((opt, oi) => {
+      const optEl = document.getElementById('vqopt-' + qi + '-' + oi);
+      if (!optEl) return;
+      optEl.classList.add('locked');
+      optEl.onclick = null;
+      if (oi === q.answer) optEl.classList.add('show-correct');
+      else if (pick === oi && !isCorrect) optEl.classList.add('show-wrong');
+    });
+
+    const expDiv = document.createElement('div');
+    expDiv.className = 'explanation show';
+    expDiv.innerHTML = `<strong>${q.word}</strong> ${q.meaning}<br><span style="color:var(--text-dim);font-style:italic;">${q.example}</span> <button class="speak-btn-sm" onclick="speak(\`${q.example.replace(/`/g,'').replace(/'/g,"\\'")}\`, this)">&#128264;</button>`;
+    card.appendChild(expDiv);
+  });
+
+  const pct = Math.round((correctCount / total) * 100);
+  const btn = document.getElementById('vocabQuizSubmitBtn');
+  if (btn) btn.remove();
+
+  const resultHtml = `
+    <div style="text-align:center;padding:24px;margin:20px 0;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+      <div class="score-ring" style="width:100px;height:100px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;
+        background:conic-gradient(${pct >= 70 ? 'var(--correct)' : 'var(--wrong)'} ${pct * 3.6}deg, var(--border) 0deg);color:var(--text);">
+        <span style="background:var(--bg);width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;">${pct}%</span>
+      </div>
+      <h2 style="margin-top:16px;font-size:20px;">${pct >= 90 ? '&#127775; 太厲害了！' : pct >= 70 ? '&#127881; 不錯喔！' : '&#128170; 再背一下吧！'}</h2>
+      <p style="color:var(--text-dim);margin-top:8px;">${total} 題中答對 ${correctCount} 題</p>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-outline" onclick="renderVocab()">返回單字卡</button>
+        <button class="btn btn-primary" onclick="startVocabQuiz()">再測一次</button>
+      </div>
+    </div>
+  `;
+
+  const c = document.getElementById('vocabTab');
+  const existing = c.querySelector('.btn-row');
+  if (existing) existing.outerHTML = resultHtml;
+  else c.insertAdjacentHTML('beforeend', resultHtml);
 }
 
 function renderQuiz() {
