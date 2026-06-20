@@ -419,6 +419,13 @@
     transition: all 0.2s;
   }
   .vocab-item.revealed .example { opacity: 0.7; height: auto; margin-top: 4px; }
+  .vocab-item.has-wrong { border-left: 3px solid var(--wrong); }
+  .vw-badge {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-size: 11px; font-weight: 700; color: #fff;
+    background: var(--wrong); border-radius: 10px;
+    padding: 1px 7px; margin-left: 6px; vertical-align: middle;
+  }
 
   .vocab-controls {
     display: flex; gap: 8px; margin-bottom: 12px; justify-content: flex-end;
@@ -2722,9 +2729,9 @@ let answers = {};
 let submitted = {};
 let streaks = {};
 let wrongLog = {};
+let vocabWrong = {};
 
 function loadState() {
-  // always load from localStorage first (instant)
   try {
     const s = localStorage.getItem('toeic-quiz-state');
     if (s) {
@@ -2733,13 +2740,13 @@ function loadState() {
       submitted = d.submitted || {};
       streaks = d.streaks || {};
       wrongLog = d.wrongLog || {};
+      vocabWrong = d.vocabWrong || {};
     }
   } catch(e) {}
 }
 
 function saveState() {
-  // save to localStorage (instant)
-  localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog }));
+  localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog, vocabWrong }));
   // debounced sync to Firestore
   if (currentUser) {
     clearTimeout(syncTimeout);
@@ -2755,7 +2762,7 @@ async function syncToFirestore() {
   if (!currentUser) return;
   try {
     await db.collection('users').doc(currentUser.uid).set({
-      answers, submitted, streaks, wrongLog,
+      answers, submitted, streaks, wrongLog, vocabWrong,
       displayName: currentUser.displayName || '',
       email: currentUser.email || '',
       photoURL: currentUser.photoURL || '',
@@ -2778,8 +2785,8 @@ async function loadFromFirestore() {
       submitted = d.submitted || {};
       streaks = d.streaks || {};
       wrongLog = d.wrongLog || {};
-      // also update localStorage
-      localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog }));
+      vocabWrong = d.vocabWrong || {};
+      localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog, vocabWrong }));
       render();
       setSyncStatus('synced');
     } else {
@@ -2904,11 +2911,14 @@ function renderVocab() {
       <button class="btn btn-primary" onclick="startVocabQuiz()">&#128221; 單字測驗</button>
     </div>
     <div class="vocab-grid">
-      ${day.vocab.map((v, i) => `
-        <div class="vocab-item" id="vocab-${i}">
+      ${day.vocab.map((v, i) => {
+        const wc = vocabWrong[v.word] || 0;
+        return `
+        <div class="vocab-item${wc > 0 ? ' has-wrong' : ''}" id="vocab-${i}">
           <div class="word-row">
             <div class="word-left" onclick="document.getElementById('vocab-${i}').classList.toggle('revealed')">
               <span class="word">${v.word}</span><span class="pos">${v.pos}</span>
+              ${wc > 0 ? `<span class="vw-badge">&#10007;${wc}</span>` : ''}
             </div>
             <button class="speak-btn" onclick="event.stopPropagation(); speak('${v.word}', this)" title="播放發音">&#128264;</button>
           </div>
@@ -2916,8 +2926,8 @@ function renderVocab() {
           <div class="example">${v.example}
             <button class="speak-btn-sm" onclick="event.stopPropagation(); speak(\`${v.example.replace(/`/g,'\\`').replace(/'/g,"\\'")}\`, this)" title="播放例句">&#128264;</button>
           </div>
-        </div>
-      `).join('')}
+        </div>`;
+      }).join('')}
     </div>
   `;
 }
@@ -3201,12 +3211,18 @@ function submitVocabQuiz() {
       else if (pick === oi && !isCorrect) optEl.classList.add('show-wrong');
     });
 
+    if (!isCorrect) {
+      vocabWrong[q.word] = (vocabWrong[q.word] || 0) + 1;
+    }
+
+    const wrongCnt = vocabWrong[q.word] || 0;
     const expDiv = document.createElement('div');
     expDiv.className = 'explanation show';
-    expDiv.innerHTML = `<strong>${q.word}</strong> ${q.meaning}<br><span style="color:var(--text-dim);font-style:italic;">${q.example}</span> <button class="speak-btn-sm" onclick="speak(\`${q.example.replace(/`/g,'').replace(/'/g,"\\'")}\`, this)">&#128264;</button>`;
+    expDiv.innerHTML = `<strong>${q.word}</strong> ${q.meaning}${wrongCnt > 0 ? ` <span class="vw-badge">&#10007;${wrongCnt}</span>` : ''}<br><span style="color:var(--text-dim);font-style:italic;">${q.example}</span> <button class="speak-btn-sm" onclick="speak(\`${q.example.replace(/`/g,'').replace(/'/g,"\\'")}\`, this)">&#128264;</button>`;
     card.appendChild(expDiv);
   });
 
+  saveState();
   const pct = Math.round((correctCount / total) * 100);
   const btn = document.getElementById('vocabQuizSubmitBtn');
   if (btn) btn.remove();
