@@ -464,6 +464,33 @@
     transition: width 0.5s;
   }
 
+  /* Vocab quiz picker */
+  .vq-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+  .vq-pick-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .vq-pick-item:has(input:checked) {
+    border-color: var(--accent);
+    background: rgba(139, 92, 246, 0.08);
+  }
+  .vq-pick-item input { accent-color: var(--accent); width: 18px; height: 18px; flex-shrink: 0; }
+  .vq-pick-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .vq-pick-day { font-weight: 700; font-size: 14px; }
+  .vq-pick-title { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .vq-pick-count { font-size: 11px; color: var(--accent); }
+
   /* Empty state */
   .empty-state {
     text-align: center;
@@ -2907,6 +2934,7 @@ function toggleAllVocab(show) {
 // =====================================================
 let vocabQuizAnswers = {};
 let vocabQuizData = [];
+let vocabQuizSelectedDays = [];
 
 function shuffle(arr) {
   const a = [...arr];
@@ -2917,13 +2945,99 @@ function shuffle(arr) {
   return a;
 }
 
-function startVocabQuiz() {
-  const day = QUIZ_DATA.days[currentDay];
-  if (!day || day.vocab.length < 4) return;
+function showVocabQuizPicker() {
+  const c = document.getElementById('vocabTab');
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <h3 style="font-size:18px;">&#128221; 選擇測驗範圍</h3>
+      <button class="btn btn-outline" onclick="renderVocab()" style="font-size:13px;">返回單字卡</button>
+    </div>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px;">勾選要測驗的天數，可以多選</p>
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+      <button class="btn btn-outline" onclick="vqPickAll()" style="font-size:13px;padding:6px 14px;">全選</button>
+      <button class="btn btn-outline" onclick="vqPickNone()" style="font-size:13px;padding:6px 14px;">全不選</button>
+      <button class="btn btn-outline" onclick="vqPickWeek(1)" style="font-size:13px;padding:6px 14px;">Week 1</button>
+      <button class="btn btn-outline" onclick="vqPickWeek(2)" style="font-size:13px;padding:6px 14px;">Week 2</button>
+      <button class="btn btn-outline" onclick="vqPickWeek(3)" style="font-size:13px;padding:6px 14px;">Week 3</button>
+    </div>
+    <div class="vq-picker-grid">
+  `;
+  QUIZ_DATA.days.forEach((d, i) => {
+    const checked = i === currentDay ? 'checked' : '';
+    html += `
+      <label class="vq-pick-item" id="vq-pick-${i}">
+        <input type="checkbox" ${checked} onchange="vqUpdateCount()" value="${i}">
+        <span class="vq-pick-label">
+          <span class="vq-pick-day">Day ${d.id}</span>
+          <span class="vq-pick-title">${d.title}</span>
+          <span class="vq-pick-count">${d.vocab.length} 字</span>
+        </span>
+      </label>
+    `;
+  });
+  html += `</div>
+    <div style="text-align:center;margin-top:20px;">
+      <p style="color:var(--text-dim);font-size:14px;margin-bottom:12px;" id="vqPickStatus">已選 1 天 · ${QUIZ_DATA.days[currentDay].vocab.length} 個單字</p>
+      <button class="btn btn-primary" id="vqStartBtn" onclick="launchVocabQuiz()" style="padding:14px 40px;font-size:16px;">開始測驗</button>
+    </div>
+  `;
+  c.innerHTML = html;
+}
+
+function vqPickAll() {
+  document.querySelectorAll('.vq-pick-item input').forEach(cb => cb.checked = true);
+  vqUpdateCount();
+}
+function vqPickNone() {
+  document.querySelectorAll('.vq-pick-item input').forEach(cb => cb.checked = false);
+  vqUpdateCount();
+}
+function vqPickWeek(w) {
+  document.querySelectorAll('.vq-pick-item input').forEach(cb => cb.checked = false);
+  const start = (w - 1) * 7;
+  const end = w * 7;
+  document.querySelectorAll('.vq-pick-item input').forEach(cb => {
+    const idx = parseInt(cb.value);
+    if (idx >= start && idx < end) cb.checked = true;
+  });
+  vqUpdateCount();
+}
+function vqUpdateCount() {
+  const checked = document.querySelectorAll('.vq-pick-item input:checked');
+  let wordCount = 0;
+  checked.forEach(cb => {
+    const day = QUIZ_DATA.days[parseInt(cb.value)];
+    if (day) wordCount += day.vocab.length;
+  });
+  const status = document.getElementById('vqPickStatus');
+  const btn = document.getElementById('vqStartBtn');
+  if (status) status.textContent = `已選 ${checked.length} 天 · ${wordCount} 個單字`;
+  if (btn) btn.disabled = checked.length === 0;
+}
+function launchVocabQuiz() {
+  const checked = document.querySelectorAll('.vq-pick-item input:checked');
+  const selected = Array.from(checked).map(cb => parseInt(cb.value));
+  if (selected.length === 0) return;
+  startVocabQuiz(selected);
+}
+
+function startVocabQuiz(selectedDays) {
+  if (!selectedDays) {
+    showVocabQuizPicker();
+    return;
+  }
+  vocabQuizSelectedDays = selectedDays;
+
+  const days = selectedDays.map(i => QUIZ_DATA.days[i]).filter(Boolean);
+  const allVocab = [];
+  days.forEach(day => {
+    day.vocab.forEach(v => allVocab.push({ ...v, dayId: day.id }));
+  });
+  if (allVocab.length < 4) return;
 
   vocabQuizAnswers = {};
   vocabQuizData = [];
-  const vocab = day.vocab;
+  const vocab = allVocab;
   const shuffled = shuffle(vocab.map((v, i) => ({ ...v, idx: i })));
 
   shuffled.forEach((v, qi) => {
@@ -2945,7 +3059,8 @@ function startVocabQuiz() {
         answer: opts.findIndex(o => o.correct),
         word: v.word,
         meaning: v.meaning,
-        example: v.example
+        example: v.example,
+        dayId: v.dayId
       });
     } else {
       const opts = shuffle([
@@ -2961,7 +3076,8 @@ function startVocabQuiz() {
         answer: opts.findIndex(o => o.correct),
         word: v.word,
         meaning: v.meaning,
-        example: v.example
+        example: v.example,
+        dayId: v.dayId
       });
     }
   });
@@ -2970,16 +3086,21 @@ function startVocabQuiz() {
 }
 
 function renderVocabQuiz() {
-  const day = QUIZ_DATA.days[currentDay];
   const c = document.getElementById('vocabTab');
   const total = vocabQuizData.length;
   const answered = Object.keys(vocabQuizAnswers).length;
   const letters = ['A', 'B', 'C', 'D'];
 
+  const dayIds = vocabQuizSelectedDays.map(i => QUIZ_DATA.days[i]?.id).filter(Boolean);
+  const dayLabel = dayIds.length === 1 ? `Day ${dayIds[0]}` : dayIds.length <= 5 ? `Day ${dayIds.join(', ')}` : `${dayIds.length} 天`;
+
   let html = `
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-      <h3 style="font-size:18px;">&#128221; Day ${day.id} 單字測驗 (${total} 題)</h3>
-      <button class="btn btn-outline" onclick="renderVocab()" style="font-size:13px;">返回單字卡</button>
+      <h3 style="font-size:18px;">&#128221; ${dayLabel} 單字測驗 (${total} 題)</h3>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline" onclick="showVocabQuizPicker()" style="font-size:13px;">重新選天</button>
+        <button class="btn btn-outline" onclick="renderVocab()" style="font-size:13px;">返回單字卡</button>
+      </div>
     </div>
     <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px;">英文→中文 與 中文→英文 交替出題，選出正確答案</p>
     <div class="progress-bar"><div class="fill" id="vocabQuizProgress" style="width:${(answered/total)*100}%"></div></div>
@@ -3100,7 +3221,8 @@ function submitVocabQuiz() {
       <p style="color:var(--text-dim);margin-top:8px;">${total} 題中答對 ${correctCount} 題</p>
       <div class="btn-row" style="margin-top:16px;">
         <button class="btn btn-outline" onclick="renderVocab()">返回單字卡</button>
-        <button class="btn btn-primary" onclick="startVocabQuiz()">再測一次</button>
+        <button class="btn btn-outline" onclick="showVocabQuizPicker()">重新選天</button>
+        <button class="btn btn-primary" onclick="startVocabQuiz([${vocabQuizSelectedDays.join(',')}])">再測一次</button>
       </div>
     </div>
   `;
