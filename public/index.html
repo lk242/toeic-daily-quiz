@@ -535,6 +535,33 @@
   .wrong-item .wrong-explanation { margin-top: 10px; padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 8px; border-left: 3px solid var(--accent); font-size: 13px; color: var(--text-dim); }
   .wrong-item .wrong-explanation strong { color: var(--text); }
 
+  /* Wrong practice mode */
+  .wrong-practice-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .wrong-practice-bar .btn { padding: 10px 22px; font-size: 14px; }
+  .wrong-practice-bar .practice-hint {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .wrong-practice-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wrong-practice-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-light);
+  }
+
   .wrong-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .wrong-filter {
     padding: 6px 14px;
@@ -736,6 +763,107 @@
     gap: 6px;
     flex-wrap: wrap;
   }
+
+  /* Review mode */
+  .review-menu { display: flex; flex-direction: column; gap: 14px; }
+  .review-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .review-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .review-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .review-card p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+  .review-card .review-icon { font-size: 28px; margin-bottom: 8px; }
+  .review-card .review-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  .review-card .review-tag.blue { background: rgba(59,130,246,0.15); color: var(--accent-light); }
+  .review-card .review-tag.yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .review-card .review-tag.green { background: rgba(34,197,94,0.15); color: var(--correct); }
+  .review-card .review-tag.purple { background: rgba(167,139,250,0.15); color: #a78bfa; }
+  .review-card .review-tag.red { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .review-card.highlight { border-color: #f59e0b; box-shadow: 0 0 12px rgba(245,158,11,0.2); }
+
+  .score-predict { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-top: 16px; }
+  .score-gauge { position: relative; width: 200px; height: 120px; margin: 0 auto 16px; }
+  .score-gauge svg { width: 200px; height: 120px; }
+  .score-gauge .score-val { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 36px; font-weight: 800; color: var(--text); }
+  .score-gauge .score-label { font-size: 12px; color: var(--text-dim); }
+  .predict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .predict-item { background: var(--bg); border-radius: 8px; padding: 14px; text-align: center; }
+  .predict-item .pi-label { font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
+  .predict-item .pi-value { font-size: 22px; font-weight: 700; }
+  .predict-item .pi-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+  .smart-review-days { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .smart-review-day { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .smart-review-day .srd-label { font-size: 11px; color: var(--text-dim); }
+  .confidence-bar { height: 8px; border-radius: 4px; background: var(--border); margin-top: 8px; overflow: hidden; }
+  .confidence-bar .fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+
+  .vocab-quiz-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .vocab-quiz-word {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent-light);
+    margin-bottom: 4px;
+  }
+  .vocab-quiz-pos { font-size: 13px; color: var(--text-dim); margin-bottom: 12px; }
+  .vocab-quiz-options { display: flex; flex-direction: column; gap: 6px; }
+  .vocab-quiz-opt {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.15s;
+  }
+  .vocab-quiz-opt:hover { border-color: var(--accent); background: rgba(59,130,246,0.08); }
+  .vocab-quiz-opt.selected { border-color: var(--accent); background: rgba(59,130,246,0.15); }
+  .vocab-quiz-opt.show-correct { border-color: var(--correct); background: var(--correct-bg); }
+  .vocab-quiz-opt.show-wrong { border-color: var(--wrong); background: var(--wrong-bg); text-decoration: line-through; }
+  .vocab-quiz-opt.locked { pointer-events: none; }
+
+  /* PP Table & Collocation */
+  .pp-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .pp-table th { background: var(--accent); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; }
+  .pp-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .pp-table tr:hover td { background: rgba(59,130,246,0.06); }
+  .pp-table .highlight { color: var(--accent-light); font-weight: 600; }
+  .pp-search { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; margin-bottom: 12px; }
+  .colloc-item { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .colloc-item:last-child { border-bottom: none; }
+  .colloc-word { font-weight: 700; color: var(--accent-light); font-size: 15px; }
+  .colloc-meaning { color: var(--text-dim); font-size: 13px; margin-left: 8px; }
+  .colloc-ex { font-size: 13px; color: var(--text-dim); font-style: italic; margin-top: 4px; }
+  .grammar-mode-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .grammar-mode-tab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .grammar-mode-tab:hover { border-color: var(--accent); }
+  .grammar-mode-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -762,6 +890,7 @@
     <div class="inner-tab active" onclick="switchInnerTab('vocab')">單字卡</div>
     <div class="inner-tab" onclick="switchInnerTab('quiz')">練習題</div>
     <div class="inner-tab" onclick="switchInnerTab('wrong')">錯題本 <span id="wrongBadge" style="background:var(--wrong);color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;margin-left:4px;display:none">0</span></div>
+    <div class="inner-tab" onclick="switchInnerTab('review')">總複習</div>
     <div class="inner-tab" onclick="switchInnerTab('grammar')">文法</div>
     <div class="inner-tab" onclick="switchInnerTab('phrase')">片語</div>
   </div>
@@ -769,6 +898,7 @@
   <div class="tab-content active" id="vocabTab"></div>
   <div class="tab-content" id="quizTab"></div>
   <div class="tab-content" id="wrongTab"></div>
+  <div class="tab-content" id="reviewTab"></div>
   <div class="tab-content" id="grammarTab"></div>
   <div class="tab-content" id="phraseTab"></div>
 </div>
@@ -2604,6 +2734,551 @@ const GRAMMAR_DATA = [
   }
 ];
 
+const PP_TABLE = [
+  { base: "be", past: "was/were", pp: "been", meaning: "是" },
+  { base: "become", past: "became", pp: "become", meaning: "成為" },
+  { base: "begin", past: "began", pp: "begun", meaning: "開始" },
+  { base: "break", past: "broke", pp: "broken", meaning: "打破" },
+  { base: "bring", past: "brought", pp: "brought", meaning: "帶來" },
+  { base: "build", past: "built", pp: "built", meaning: "建造" },
+  { base: "buy", past: "bought", pp: "bought", meaning: "購買" },
+  { base: "catch", past: "caught", pp: "caught", meaning: "抓住" },
+  { base: "choose", past: "chose", pp: "chosen", meaning: "選擇" },
+  { base: "come", past: "came", pp: "come", meaning: "來" },
+  { base: "cost", past: "cost", pp: "cost", meaning: "花費" },
+  { base: "cut", past: "cut", pp: "cut", meaning: "切割" },
+  { base: "deal", past: "dealt", pp: "dealt", meaning: "處理" },
+  { base: "do", past: "did", pp: "done", meaning: "做" },
+  { base: "draw", past: "drew", pp: "drawn", meaning: "畫/抽" },
+  { base: "drive", past: "drove", pp: "driven", meaning: "開車" },
+  { base: "eat", past: "ate", pp: "eaten", meaning: "吃" },
+  { base: "fall", past: "fell", pp: "fallen", meaning: "落下" },
+  { base: "feel", past: "felt", pp: "felt", meaning: "感覺" },
+  { base: "find", past: "found", pp: "found", meaning: "找到" },
+  { base: "fly", past: "flew", pp: "flown", meaning: "飛" },
+  { base: "forget", past: "forgot", pp: "forgotten", meaning: "忘記" },
+  { base: "get", past: "got", pp: "gotten/got", meaning: "獲得" },
+  { base: "give", past: "gave", pp: "given", meaning: "給" },
+  { base: "go", past: "went", pp: "gone", meaning: "去" },
+  { base: "grow", past: "grew", pp: "grown", meaning: "成長" },
+  { base: "have", past: "had", pp: "had", meaning: "有" },
+  { base: "hear", past: "heard", pp: "heard", meaning: "聽到" },
+  { base: "hold", past: "held", pp: "held", meaning: "持有/舉辦" },
+  { base: "keep", past: "kept", pp: "kept", meaning: "保持" },
+  { base: "know", past: "knew", pp: "known", meaning: "知道" },
+  { base: "lead", past: "led", pp: "led", meaning: "領導" },
+  { base: "leave", past: "left", pp: "left", meaning: "離開" },
+  { base: "lend", past: "lent", pp: "lent", meaning: "借出" },
+  { base: "let", past: "let", pp: "let", meaning: "讓" },
+  { base: "lie", past: "lay", pp: "lain", meaning: "躺" },
+  { base: "lose", past: "lost", pp: "lost", meaning: "失去" },
+  { base: "make", past: "made", pp: "made", meaning: "製作" },
+  { base: "mean", past: "meant", pp: "meant", meaning: "意思是" },
+  { base: "meet", past: "met", pp: "met", meaning: "遇見" },
+  { base: "pay", past: "paid", pp: "paid", meaning: "支付" },
+  { base: "put", past: "put", pp: "put", meaning: "放置" },
+  { base: "read", past: "read", pp: "read", meaning: "閱讀" },
+  { base: "ride", past: "rode", pp: "ridden", meaning: "騎" },
+  { base: "rise", past: "rose", pp: "risen", meaning: "上升" },
+  { base: "run", past: "ran", pp: "run", meaning: "跑/經營" },
+  { base: "say", past: "said", pp: "said", meaning: "說" },
+  { base: "see", past: "saw", pp: "seen", meaning: "看見" },
+  { base: "sell", past: "sold", pp: "sold", meaning: "賣" },
+  { base: "send", past: "sent", pp: "sent", meaning: "寄送" },
+  { base: "set", past: "set", pp: "set", meaning: "設定" },
+  { base: "show", past: "showed", pp: "shown", meaning: "展示" },
+  { base: "shut", past: "shut", pp: "shut", meaning: "關閉" },
+  { base: "sit", past: "sat", pp: "sat", meaning: "坐" },
+  { base: "speak", past: "spoke", pp: "spoken", meaning: "說話" },
+  { base: "spend", past: "spent", pp: "spent", meaning: "花費" },
+  { base: "stand", past: "stood", pp: "stood", meaning: "站立" },
+  { base: "steal", past: "stole", pp: "stolen", meaning: "偷" },
+  { base: "take", past: "took", pp: "taken", meaning: "拿取" },
+  { base: "teach", past: "taught", pp: "taught", meaning: "教" },
+  { base: "tell", past: "told", pp: "told", meaning: "告訴" },
+  { base: "think", past: "thought", pp: "thought", meaning: "想" },
+  { base: "throw", past: "threw", pp: "thrown", meaning: "丟" },
+  { base: "understand", past: "understood", pp: "understood", meaning: "了解" },
+  { base: "wear", past: "wore", pp: "worn", meaning: "穿戴" },
+  { base: "win", past: "won", pp: "won", meaning: "贏" },
+  { base: "write", past: "wrote", pp: "written", meaning: "寫" },
+  { base: "withdraw", past: "withdrew", pp: "withdrawn", meaning: "撤回/提款" },
+  { base: "overcome", past: "overcame", pp: "overcome", meaning: "克服" },
+  { base: "undertake", past: "undertook", pp: "undertaken", meaning: "承擔" },
+  { base: "forbid", past: "forbade", pp: "forbidden", meaning: "禁止" },
+  { base: "forgive", past: "forgave", pp: "forgiven", meaning: "原諒" },
+  { base: "arise", past: "arose", pp: "arisen", meaning: "出現/產生" },
+  { base: "seek", past: "sought", pp: "sought", meaning: "尋找" },
+  { base: "undergo", past: "underwent", pp: "undergone", meaning: "經歷" }
+];
+
+const COLLOCATION_DATA = [
+  {
+    category: "動詞 + 介系詞（多益超愛考）",
+    items: [
+      { collocation: "comply with", meaning: "遵守", example: "All employees must comply with the policy." },
+      { collocation: "deal with", meaning: "處理", example: "She deals with customer complaints." },
+      { collocation: "result in", meaning: "導致", example: "The error resulted in a delay." },
+      { collocation: "result from", meaning: "源於", example: "The delay resulted from a technical issue." },
+      { collocation: "consist of", meaning: "由…組成", example: "The team consists of five members." },
+      { collocation: "depend on", meaning: "取決於", example: "Success depends on teamwork." },
+      { collocation: "account for", meaning: "占/說明", example: "Online sales account for 40% of revenue." },
+      { collocation: "refer to", meaning: "參考/指的是", example: "Please refer to the manual." },
+      { collocation: "respond to", meaning: "回應", example: "She responded to the email promptly." },
+      { collocation: "contribute to", meaning: "貢獻/促成", example: "Exercise contributes to good health." },
+      { collocation: "subscribe to", meaning: "訂閱", example: "Subscribe to our newsletter." },
+      { collocation: "apply for", meaning: "申請", example: "He applied for the manager position." },
+      { collocation: "apply to", meaning: "適用於", example: "This rule applies to all employees." },
+      { collocation: "approve of", meaning: "贊同", example: "The board approved of the plan." },
+      { collocation: "benefit from", meaning: "受益於", example: "Employees benefit from the training program." },
+      { collocation: "engage in", meaning: "參與/從事", example: "The company engages in international trade." },
+      { collocation: "specialize in", meaning: "專精於", example: "We specialize in digital marketing." },
+      { collocation: "interfere with", meaning: "干擾", example: "Noise interferes with concentration." }
+    ]
+  },
+  {
+    category: "形容詞 + 介系詞",
+    items: [
+      { collocation: "responsible for", meaning: "負責", example: "She is responsible for the project." },
+      { collocation: "familiar with", meaning: "熟悉", example: "Are you familiar with this software?" },
+      { collocation: "capable of", meaning: "有能力的", example: "He is capable of leading the team." },
+      { collocation: "eligible for", meaning: "有資格的", example: "You are eligible for a discount." },
+      { collocation: "committed to", meaning: "致力於", example: "We are committed to quality." },
+      { collocation: "dedicated to", meaning: "專注於", example: "She is dedicated to her work." },
+      { collocation: "subject to", meaning: "受…約束/可能", example: "Prices are subject to change." },
+      { collocation: "aware of", meaning: "意識到", example: "Please be aware of the deadline." },
+      { collocation: "concerned about", meaning: "擔心", example: "He is concerned about the budget." },
+      { collocation: "satisfied with", meaning: "滿意", example: "Customers are satisfied with the service." },
+      { collocation: "relevant to", meaning: "與…相關", example: "The data is relevant to our study." },
+      { collocation: "prior to", meaning: "在…之前", example: "Prior to the meeting, review the agenda." },
+      { collocation: "subsequent to", meaning: "在…之後", example: "Subsequent to the merger, profits rose." },
+      { collocation: "essential to/for", meaning: "對…必要的", example: "Teamwork is essential to success." },
+      { collocation: "comparable to", meaning: "可比較的", example: "Our prices are comparable to competitors." },
+      { collocation: "adjacent to", meaning: "鄰近的", example: "The hotel is adjacent to the station." }
+    ]
+  },
+  {
+    category: "名詞 + 介系詞",
+    items: [
+      { collocation: "access to", meaning: "進入/使用權", example: "Employees have access to the database." },
+      { collocation: "demand for", meaning: "對…的需求", example: "There is growing demand for electric cars." },
+      { collocation: "increase in", meaning: "…的增加", example: "There was an increase in sales." },
+      { collocation: "decrease in", meaning: "…的減少", example: "We noticed a decrease in complaints." },
+      { collocation: "solution to", meaning: "…的解決方案", example: "We found a solution to the problem." },
+      { collocation: "reason for", meaning: "…的原因", example: "The reason for the delay is unclear." },
+      { collocation: "impact on", meaning: "對…的影響", example: "Technology has an impact on education." },
+      { collocation: "approval of", meaning: "對…的批准", example: "We are awaiting approval of the budget." },
+      { collocation: "compliance with", meaning: "遵守", example: "Compliance with regulations is mandatory." },
+      { collocation: "exception to", meaning: "…的例外", example: "There are no exceptions to this rule." }
+    ]
+  },
+  {
+    category: "常考片語介系詞 / 連接詞",
+    items: [
+      { collocation: "according to", meaning: "根據", example: "According to the report, sales increased." },
+      { collocation: "due to", meaning: "由於", example: "The cancellation was due to bad weather." },
+      { collocation: "in addition to", meaning: "除了…之外還", example: "In addition to salary, we offer bonuses." },
+      { collocation: "in spite of / despite", meaning: "儘管", example: "Despite the rain, the event was held." },
+      { collocation: "in terms of", meaning: "在…方面", example: "In terms of quality, this is the best." },
+      { collocation: "on behalf of", meaning: "代表", example: "I'm speaking on behalf of the team." },
+      { collocation: "with regard to", meaning: "關於", example: "With regard to your request, we agree." },
+      { collocation: "as opposed to", meaning: "相對於", example: "We chose email as opposed to phone." },
+      { collocation: "regardless of", meaning: "不管", example: "Regardless of the cost, safety comes first." },
+      { collocation: "in the event of", meaning: "萬一/如果發生", example: "In the event of a fire, use the stairs." },
+      { collocation: "provided that", meaning: "假如/只要", example: "You may leave provided that you finish." },
+      { collocation: "as long as", meaning: "只要", example: "You can borrow it as long as you return it." }
+    ]
+  }
+];
+
+const GRAMMAR_QUIZ_DATA = [
+  { stem: "The report ______ submitted by the manager yesterday.", options: ["was", "were", "is", "has"], answer: 0, explanation: "昨天 (yesterday) → 過去式，主詞 report 是單數 → was submitted（過去被動）", category: "被動語態/時態" },
+  { stem: "All employees are required to comply ______ the new policy.", options: ["with", "to", "for", "in"], answer: 0, explanation: "comply with 遵守（固定搭配）", category: "介系詞搭配" },
+  { stem: "The company has ______ significant progress this year.", options: ["made", "make", "making", "makes"], answer: 0, explanation: "has + p.p.（現在完成式）→ has made", category: "時態/p.p." },
+  { stem: "Ms. Chen is responsible ______ managing the budget.", options: ["for", "to", "with", "of"], answer: 0, explanation: "be responsible for（固定搭配：負責）", category: "介系詞搭配" },
+  { stem: "The meeting will ______ place in the conference room.", options: ["take", "make", "have", "hold"], answer: 0, explanation: "take place = 舉行（固定片語）", category: "片語" },
+  { stem: "The new system is more ______ than the old one.", options: ["efficient", "efficiently", "efficiency", "efficiencies"], answer: 0, explanation: "more + 形容詞 + than（比較級）→ efficient 是形容詞", category: "詞性判斷" },
+  { stem: "______ the heavy rain, the outdoor event was held as planned.", options: ["Despite", "Because", "Since", "Due to"], answer: 0, explanation: "Despite + 名詞 = 儘管。Because/Since 後接子句，Due to 表因果不合語意。", category: "連接詞" },
+  { stem: "The products ______ been recalled due to a safety issue.", options: ["have", "has", "is", "was"], answer: 0, explanation: "products 是複數 → have been recalled（完成被動）", category: "主詞動詞一致" },
+  { stem: "She decided ______ the job offer from the competitor.", options: ["to accept", "accepting", "accept", "accepted"], answer: 0, explanation: "decide + to V（不定詞）", category: "不定詞/動名詞" },
+  { stem: "The client ______ order was delayed received a full refund.", options: ["whose", "who", "which", "that"], answer: 0, explanation: "whose + 名詞（所有格關係代名詞）→ whose order", category: "關係代名詞" },
+  { stem: "Each employee ______ required to attend the training.", options: ["is", "are", "were", "have"], answer: 0, explanation: "each + 單數名詞 → 單數動詞 is", category: "主詞動詞一致" },
+  { stem: "The building is currently ______ renovated.", options: ["being", "been", "be", "was"], answer: 0, explanation: "is being + p.p.（現在進行被動）→ is being renovated", category: "被動語態" },
+  { stem: "We need to find a solution ______ this problem.", options: ["to", "for", "of", "with"], answer: 0, explanation: "solution to（…的解決方案，固定搭配）", category: "介系詞搭配" },
+  { stem: "The information ______ accurate and up-to-date.", options: ["is", "are", "were", "have"], answer: 0, explanation: "information 是不可數名詞 → 單數動詞 is", category: "主詞動詞一致" },
+  { stem: "He suggested ______ the meeting to next week.", options: ["postponing", "to postpone", "postpone", "postponed"], answer: 0, explanation: "suggest + V-ing（動名詞）", category: "不定詞/動名詞" },
+  { stem: "The report has been ______ by the finance department.", options: ["reviewed", "reviewing", "review", "reviews"], answer: 0, explanation: "has been + p.p.（完成被動）→ reviewed", category: "被動語態/p.p." },
+  { stem: "Prices are subject ______ change without notice.", options: ["to", "for", "of", "with"], answer: 0, explanation: "be subject to（受…約束，固定搭配）", category: "介系詞搭配" },
+  { stem: "The manager ______ approved the budget will announce it Monday.", options: ["who", "which", "whose", "whom"], answer: 0, explanation: "who + 動詞（主格關係代名詞，指人）→ who approved", category: "關係代名詞" },
+  { stem: "______ to the report, sales increased by 20%.", options: ["According", "Because", "Despite", "Although"], answer: 0, explanation: "According to + 名詞 = 根據", category: "片語介系詞" },
+  { stem: "The project was completed ahead ______ schedule.", options: ["of", "to", "in", "on"], answer: 0, explanation: "ahead of schedule = 提前（固定片語）", category: "片語" },
+  { stem: "She works ______ in the marketing department.", options: ["efficiently", "efficient", "efficiency", "efficiencies"], answer: 0, explanation: "動詞後 → 副詞 efficiently 修飾動詞 works", category: "詞性判斷" },
+  { stem: "The company ______ in digital marketing since 2015.", options: ["has specialized", "specialized", "specializes", "specializing"], answer: 0, explanation: "since 2015 → 現在完成式 has specialized", category: "時態" },
+  { stem: "Not only the manager ______ the staff attended the seminar.", options: ["but also", "and also", "or", "as well"], answer: 0, explanation: "Not only...but also...（固定搭配）", category: "連接詞" },
+  { stem: "The contract will be ______ by both parties next week.", options: ["signed", "signing", "sign", "signs"], answer: 0, explanation: "will be + p.p.（未來被動）→ will be signed", category: "被動語態" },
+  { stem: "We are looking forward ______ hearing from you.", options: ["to", "for", "at", "in"], answer: 0, explanation: "look forward to + V-ing（期待，固定搭配）", category: "介系詞搭配" },
+  { stem: "The demand ______ electric vehicles has increased significantly.", options: ["for", "to", "of", "in"], answer: 0, explanation: "demand for（對…的需求，固定搭配）", category: "介系詞搭配" },
+  { stem: "______ you have any questions, please contact us.", options: ["Should", "Would", "Could", "Must"], answer: 0, explanation: "Should you... = If you...（倒裝條件句，多益書信常見）", category: "連接詞" },
+  { stem: "The new policy is ______ to all departments.", options: ["applicable", "application", "apply", "applied"], answer: 0, explanation: "is + 形容詞（be 動詞後接形容詞）→ applicable", category: "詞性判斷" },
+  { stem: "In addition ______ the base salary, employees receive bonuses.", options: ["to", "of", "for", "with"], answer: 0, explanation: "in addition to（除了…之外還，固定搭配）", category: "片語介系詞" },
+  { stem: "The workshop aims to improve participants' ______ skills.", options: ["communication", "communicate", "communicative", "communicating"], answer: 0, explanation: "名詞前 → 名詞（communication skills）", category: "詞性判斷" },
+  { stem: "The supervisor asked the team to finish the project ______.", options: ["promptly", "prompt", "promptness", "prompting"], answer: 0, explanation: "修飾動詞 finish → 副詞 promptly", category: "詞性判斷" },
+  { stem: "The goods ______ shipped to the warehouse last Friday.", options: ["were", "was", "are", "is"], answer: 0, explanation: "goods 是複數名詞 + last Friday 過去式 → were shipped", category: "主詞動詞一致" },
+  { stem: "Mr. Lee is ______ experienced candidate we have interviewed.", options: ["the most", "more", "most", "the more"], answer: 0, explanation: "最高級：the most + 多音節形容詞", category: "比較級" },
+  { stem: "Employees who wish to attend the seminar should register ______ advance.", options: ["in", "on", "at", "by"], answer: 0, explanation: "in advance = 提前（固定片語）", category: "介系詞搭配" },
+  { stem: "The annual report ______ completed before the board meeting.", options: ["must be", "must", "must been", "must being"], answer: 0, explanation: "must be + p.p.（情態動詞被動）→ must be completed", category: "被動語態" },
+  { stem: "______ the deadline was extended, many employees submitted their work early.", options: ["Although", "Because of", "Despite", "In spite of"], answer: 0, explanation: "Although + 子句（雖然）。Because of / Despite / In spite of 後接名詞。", category: "連接詞" },
+  { stem: "The hotel is conveniently ______ near the train station.", options: ["located", "locating", "location", "locate"], answer: 0, explanation: "is + p.p.（被動）→ is located（位於）", category: "被動語態" },
+  { stem: "Please submit the form ______ than Friday.", options: ["no later", "not later", "no late", "not late"], answer: 0, explanation: "no later than = 不晚於（固定片語）", category: "片語" },
+  { stem: "The company plans to ______ its operations to Southeast Asia.", options: ["expand", "expansion", "expanding", "expanded"], answer: 0, explanation: "to + 原形動詞（不定詞）→ to expand", category: "不定詞/動名詞" },
+  { stem: "The ______ of the new software has improved office productivity.", options: ["installation", "install", "installed", "installing"], answer: 0, explanation: "the + ______ + of → 名詞 installation", category: "詞性判斷" },
+  { stem: "Customers are ______ satisfied with our delivery service.", options: ["highly", "high", "height", "higher"], answer: 0, explanation: "修飾形容詞 satisfied → 副詞 highly", category: "詞性判斷" },
+  { stem: "The conference ______ attended by over 500 participants.", options: ["was", "were", "has", "have"], answer: 0, explanation: "conference 單數 → was attended（過去被動）", category: "被動語態" },
+  { stem: "She has been working here ______ she graduated from college.", options: ["since", "for", "during", "while"], answer: 0, explanation: "since + 過去時間點（起始點）→ since she graduated", category: "時態" },
+  { stem: "The manager asked the staff ______ the report by noon.", options: ["to complete", "completing", "complete", "completed"], answer: 0, explanation: "ask someone to V（不定詞）", category: "不定詞/動名詞" },
+  { stem: "______ reviewing the proposal, the committee approved the budget.", options: ["After", "During", "While", "Despite"], answer: 0, explanation: "After + V-ing = 在…之後（介系詞 + 動名詞）", category: "連接詞" },
+  { stem: "The product recall was ______ by a defect in the battery.", options: ["caused", "causing", "cause", "causes"], answer: 0, explanation: "was + p.p.（過去被動）→ was caused", category: "被動語態" },
+  { stem: "Mr. Park, ______ has worked here for 20 years, will retire next month.", options: ["who", "which", "whose", "whom"], answer: 0, explanation: "who + 動詞（主格關係代名詞，指人），非限定用法", category: "關係代名詞" },
+  { stem: "The new regulation requires all vehicles to undergo an annual ______.", options: ["inspection", "inspect", "inspecting", "inspector"], answer: 0, explanation: "annual + ______ → 名詞 inspection", category: "詞性判斷" },
+  { stem: "We will notify you as soon as the shipment ______.", options: ["arrives", "will arrive", "arriving", "arrived"], answer: 0, explanation: "as soon as 後用現在式表未來（時間副詞子句）", category: "時態" },
+  { stem: "The marketing team is ______ for launching the new campaign.", options: ["responsible", "responsibility", "responsibly", "respond"], answer: 0, explanation: "is + 形容詞 → responsible；be responsible for 負責", category: "詞性判斷" },
+  { stem: "Neither the manager ______ the assistant was available for comment.", options: ["nor", "or", "and", "but"], answer: 0, explanation: "neither...nor...（兩者皆不，固定搭配）", category: "連接詞" },
+  { stem: "The renovations are expected ______ by the end of March.", options: ["to be completed", "completing", "complete", "completed"], answer: 0, explanation: "be expected to V（被動不定詞）→ to be completed", category: "被動語態" },
+  { stem: "______ carefully before signing the contract.", options: ["Read", "Reading", "To read", "Reads"], answer: 0, explanation: "祈使句 → 原形動詞開頭", category: "時態" },
+  { stem: "The CEO made an important ______ at the press conference.", options: ["announcement", "announce", "announcing", "announced"], answer: 0, explanation: "an important + ______ → 名詞 announcement", category: "詞性判斷" },
+  { stem: "The factory has ______ its production capacity by 30%.", options: ["increased", "increasing", "increase", "increases"], answer: 0, explanation: "has + p.p.（現在完成式）→ has increased", category: "時態/p.p." },
+  { stem: "All participants must arrive ______ the session begins.", options: ["before", "until", "by", "during"], answer: 0, explanation: "before + 子句（在…之前）", category: "連接詞" },
+  { stem: "The proposal was ______ received by the board of directors.", options: ["favorably", "favorable", "favor", "favoring"], answer: 0, explanation: "修飾動詞 received → 副詞 favorably", category: "詞性判斷" },
+  { stem: "Ms. Johnson suggested that the meeting ______ postponed.", options: ["be", "is", "was", "will be"], answer: 0, explanation: "suggest that + S + 原形動詞（虛擬語氣）→ be postponed", category: "時態" },
+  { stem: "The report, ______ was submitted yesterday, contains several errors.", options: ["which", "who", "whose", "whom"], answer: 0, explanation: "which（指事物的關係代名詞）→ which was submitted", category: "關係代名詞" },
+  { stem: "Employees are encouraged to participate ______ the wellness program.", options: ["in", "to", "for", "with"], answer: 0, explanation: "participate in（參與，固定搭配）", category: "介系詞搭配" },
+  { stem: "The merchandise will be delivered ______ five business days.", options: ["within", "until", "by", "since"], answer: 0, explanation: "within + 時間 = 在…之內", category: "介系詞搭配" },
+  { stem: "The CEO ______ the staff about the upcoming changes last week.", options: ["informed", "has informed", "informs", "informing"], answer: 0, explanation: "last week → 過去式 informed", category: "時態" },
+  { stem: "The repairs ______ carried out by an authorized technician.", options: ["should be", "should", "should been", "should being"], answer: 0, explanation: "should be + p.p.（情態動詞被動）→ should be carried out", category: "被動語態" },
+  { stem: "______ the heavy workload, the team managed to meet the deadline.", options: ["Despite", "Although", "Because", "Since"], answer: 0, explanation: "Despite + 名詞（儘管）。Although 後接子句。", category: "連接詞" },
+  { stem: "The applicant demonstrated ______ knowledge of the industry.", options: ["extensive", "extensively", "extend", "extension"], answer: 0, explanation: "______  + 名詞 knowledge → 形容詞 extensive", category: "詞性判斷" },
+  { stem: "Budget cuts have led ______ a reduction in staff.", options: ["to", "for", "in", "with"], answer: 0, explanation: "lead to = 導致（固定搭配）", category: "介系詞搭配" },
+  { stem: "The policy change will take ______ on January 1st.", options: ["effect", "affect", "effective", "effectively"], answer: 0, explanation: "take effect = 生效（固定片語）", category: "片語" },
+  { stem: "Visitors are required to sign in ______ entering the building.", options: ["upon", "during", "while", "since"], answer: 0, explanation: "upon + V-ing = 一…就…（正式用法，多益常考）", category: "介系詞搭配" },
+  { stem: "The financial advisor recommended ______ in diversified funds.", options: ["investing", "to invest", "invest", "invested"], answer: 0, explanation: "recommend + V-ing（動名詞）", category: "不定詞/動名詞" },
+  { stem: "The warranty is ______ for one year from the date of purchase.", options: ["valid", "validate", "validity", "validly"], answer: 0, explanation: "is + 形容詞 → valid（有效的）", category: "詞性判斷" },
+  { stem: "Had the shipment arrived on time, we ______ met the deadline.", options: ["would have", "will have", "would", "had"], answer: 0, explanation: "Had + S + p.p., S + would have + p.p.（過去假設語氣倒裝）", category: "時態" },
+  { stem: "The new branch is ______ to the main office.", options: ["adjacent", "adjacently", "adjacence", "adjoin"], answer: 0, explanation: "is + 形容詞 → adjacent；adjacent to 鄰近", category: "詞性判斷" },
+  { stem: "The intern was praised for her ______ to learn new skills.", options: ["willingness", "willing", "willingly", "will"], answer: 0, explanation: "her + ______ → 名詞 willingness", category: "詞性判斷" },
+  { stem: "The board voted ______ approve the merger.", options: ["to", "for", "on", "in"], answer: 0, explanation: "vote to V = 投票決定做…（不定詞）", category: "不定詞/動名詞" },
+  { stem: "Please make sure the door is ______ locked before leaving.", options: ["securely", "secure", "security", "secured"], answer: 0, explanation: "修飾 p.p. locked → 副詞 securely", category: "詞性判斷" },
+  { stem: "The research team ______ been conducting experiments since April.", options: ["has", "have", "is", "was"], answer: 0, explanation: "team 作集合名詞視為單數 → has been conducting（現在完成進行式）", category: "主詞動詞一致" },
+  { stem: "The manual provides ______ instructions for assembling the furniture.", options: ["detailed", "detail", "detailing", "details"], answer: 0, explanation: "______ + 名詞 instructions → 形容詞 detailed", category: "詞性判斷" },
+  { stem: "The order ______ processed once payment is confirmed.", options: ["will be", "will", "will been", "is"], answer: 0, explanation: "will be + p.p.（未來被動）→ will be processed", category: "被動語態" },
+  { stem: "Tenants are prohibited ______ making alterations to the property.", options: ["from", "to", "of", "for"], answer: 0, explanation: "be prohibited from + V-ing（禁止做…，固定搭配）", category: "介系詞搭配" },
+  { stem: "The company ______ a new marketing strategy next quarter.", options: ["will implement", "implemented", "has implemented", "implementing"], answer: 0, explanation: "next quarter → 未來式 will implement", category: "時態" },
+  { stem: "The event was ______ successful than we had expected.", options: ["more", "most", "much", "very"], answer: 0, explanation: "more + 形容詞 + than（比較級）", category: "比較級" },
+  { stem: "______ the terms of the contract, payment is due within 30 days.", options: ["Under", "Between", "Against", "Toward"], answer: 0, explanation: "under the terms of = 根據…條款（正式用語）", category: "介系詞搭配" },
+  { stem: "The samples ______ to the lab for analysis yesterday.", options: ["were sent", "are sent", "will be sent", "have sent"], answer: 0, explanation: "yesterday → 過去式被動 were sent", category: "被動語態/時態" },
+  { stem: "The position requires someone ______ can work under pressure.", options: ["who", "which", "whose", "whom"], answer: 0, explanation: "who + 動詞（主格關係代名詞，指人）→ who can work", category: "關係代名詞" },
+  { stem: "It is ______ that all staff attend the safety briefing.", options: ["essential", "essentially", "essence", "essentials"], answer: 0, explanation: "It is + 形容詞 + that → essential", category: "詞性判斷" },
+  { stem: "The sales figures ______ significantly over the past year.", options: ["have risen", "has risen", "risen", "rising"], answer: 0, explanation: "figures 複數 + over the past year → have risen（現在完成式）", category: "時態/p.p." },
+  { stem: "The contract ______ both parties agree to the terms.", options: ["requires that", "requiring", "required", "requirement"], answer: 0, explanation: "requires that + S + 原形 V（虛擬語氣）", category: "時態" },
+  { stem: "We appreciate your ______ in this matter.", options: ["cooperation", "cooperate", "cooperative", "cooperating"], answer: 0, explanation: "your + ______ → 名詞 cooperation", category: "詞性判斷" },
+  { stem: "The package was delivered ______ the customer had requested.", options: ["as", "like", "such", "so"], answer: 0, explanation: "as + 子句 = 如同…（連接詞）", category: "連接詞" }
+];
+
+const EXTRA_VOCAB = [
+  { cat: "辦公室與職場", words: [
+    { word: "administrative", pos: "adj.", meaning: "行政的；管理的", example: "She handles administrative tasks for the team." },
+    { word: "administrator", pos: "n.", meaning: "管理員；行政人員", example: "The system administrator reset the password." },
+    { word: "advisor", pos: "n.", meaning: "顧問", example: "She met with a financial advisor." },
+    { word: "assignment", pos: "n.", meaning: "任務；作業", example: "He completed the assignment before the deadline." },
+    { word: "boardroom", pos: "n.", meaning: "會議室；董事會議室", example: "The directors met in the boardroom." },
+    { word: "briefcase", pos: "n.", meaning: "公事包", example: "He carried his briefcase to the office." },
+    { word: "bulletin", pos: "n.", meaning: "公告；佈告欄", example: "The job listing was posted on the bulletin board." },
+    { word: "chairperson", pos: "n.", meaning: "主席", example: "The chairperson opened the meeting." },
+    { word: "clerk", pos: "n.", meaning: "辦事員；店員", example: "The clerk processed the paperwork." },
+    { word: "collaboration", pos: "n.", meaning: "合作", example: "The project was a collaboration between two departments." },
+    { word: "conference", pos: "n.", meaning: "會議；研討會", example: "The annual conference will be held in May." },
+    { word: "coordinator", pos: "n.", meaning: "協調者", example: "The event coordinator arranged the seating." },
+    { word: "coworker", pos: "n.", meaning: "同事", example: "She went to lunch with a coworker." },
+    { word: "dedication", pos: "n.", meaning: "奉獻；投入", example: "His dedication to the project was impressive." },
+    { word: "efficiently", pos: "adv.", meaning: "有效率地", example: "She completed the task efficiently." },
+    { word: "hardworking", pos: "adj.", meaning: "勤勞的", example: "She is a hardworking employee." },
+    { word: "intern", pos: "n.", meaning: "實習生", example: "The intern started last Monday." },
+    { word: "internship", pos: "n.", meaning: "實習", example: "She applied for a summer internship." },
+    { word: "managerial", pos: "adj.", meaning: "管理的", example: "He was promoted to a managerial position." },
+    { word: "memo", pos: "n.", meaning: "備忘錄", example: "The manager sent a memo to all employees." },
+    { word: "newsletter", pos: "n.", meaning: "電子報；通訊", example: "The company newsletter comes out monthly." },
+    { word: "ongoing", pos: "adj.", meaning: "進行中的", example: "The ongoing project requires more resources." },
+    { word: "operational", pos: "adj.", meaning: "營運的", example: "The new system is now fully operational." },
+    { word: "organizational", pos: "n.", meaning: "組織的", example: "She has excellent organizational skills." },
+    { word: "organizer", pos: "n.", meaning: "組織者；收納盒", example: "The conference organizer confirmed the schedule." },
+    { word: "outstanding", pos: "adj.", meaning: "傑出的；未付的", example: "She received an award for outstanding performance." },
+    { word: "overview", pos: "n.", meaning: "概覽；概述", example: "The report provides an overview of last quarter." },
+    { word: "paperwork", pos: "n.", meaning: "文書工作", example: "Please complete the paperwork before Friday." },
+    { word: "placement", pos: "n.", meaning: "安置；就職", example: "The agency helps with job placement." },
+    { word: "spreadsheet", pos: "n.", meaning: "試算表", example: "She entered the data into a spreadsheet." },
+    { word: "submission", pos: "n.", meaning: "提交", example: "The deadline for submission is next week." },
+    { word: "supervise", pos: "v.", meaning: "監督", example: "She supervises a team of ten people." },
+    { word: "workbook", pos: "n.", meaning: "練習簿", example: "Complete exercises 1 through 5 in the workbook." },
+    { word: "workplace", pos: "n.", meaning: "工作場所", example: "Safety is a priority in the workplace." },
+    { word: "workshop", pos: "n.", meaning: "工作坊；研習會", example: "The writing workshop starts at 10 a.m." }
+  ]},
+  { cat: "人事與招聘", words: [
+    { word: "accomplishment", pos: "n.", meaning: "成就", example: "List your accomplishments on your résumé." },
+    { word: "applicant", pos: "n.", meaning: "申請人", example: "All applicants must submit a cover letter." },
+    { word: "attain", pos: "v.", meaning: "達到；獲得", example: "She attained the highest score in the group." },
+    { word: "attendee", pos: "n.", meaning: "出席者", example: "Over 200 attendees registered for the event." },
+    { word: "certification", pos: "n.", meaning: "認證；證書", example: "He earned a certification in project management." },
+    { word: "counselor", pos: "n.", meaning: "諮詢師；顧問", example: "A career counselor helped her prepare." },
+    { word: "diploma", pos: "n.", meaning: "文憑", example: "He received his diploma at the ceremony." },
+    { word: "eligible", pos: "adj.", meaning: "有資格的", example: "Only full-time employees are eligible for benefits." },
+    { word: "enrollment", pos: "n.", meaning: "登記；入學", example: "Enrollment for the course begins next month." },
+    { word: "instructor", pos: "n.", meaning: "講師；教練", example: "The instructor explained the new procedure." },
+    { word: "layoff", pos: "n.", meaning: "裁員", example: "The company announced layoffs due to budget cuts." },
+    { word: "nomination", pos: "n.", meaning: "提名", example: "She received a nomination for employee of the year." },
+    { word: "paycheck", pos: "n.", meaning: "薪資支票", example: "Paychecks are issued on the 15th and 30th." },
+    { word: "payroll", pos: "n.", meaning: "薪資名冊", example: "The payroll department handles salary questions." },
+    { word: "proficiency", pos: "n.", meaning: "熟練；精通", example: "The job requires proficiency in English." },
+    { word: "questionnaire", pos: "n.", meaning: "問卷", example: "Please fill out the employee questionnaire." },
+    { word: "recruiter", pos: "n.", meaning: "招聘人員", example: "The recruiter contacted her about the position." },
+    { word: "recruitment", pos: "n.", meaning: "招聘", example: "The recruitment process takes about three weeks." },
+    { word: "referral", pos: "n.", meaning: "推薦；轉介", example: "She got the interview through a referral." },
+    { word: "resignation", pos: "n.", meaning: "辭職", example: "He submitted his resignation last Friday." },
+    { word: "résumé", pos: "n.", meaning: "履歷", example: "Please attach your résumé to the application." },
+    { word: "seminar", pos: "n.", meaning: "研討會", example: "The leadership seminar starts at 9 a.m." },
+    { word: "trainee", pos: "n.", meaning: "受訓者", example: "Each trainee will be assigned a mentor." },
+    { word: "trainer", pos: "n.", meaning: "培訓師", example: "The trainer demonstrated the new software." }
+  ]},
+  { cat: "購物與消費", words: [
+    { word: "affordable", pos: "adj.", meaning: "負擔得起的", example: "The hotel offers affordable rates." },
+    { word: "appetizer", pos: "n.", meaning: "開胃菜", example: "We ordered an appetizer before the main course." },
+    { word: "bakery", pos: "n.", meaning: "麵包店", example: "The bakery opens at 6 a.m." },
+    { word: "bargain", pos: "n.", meaning: "特價品；交易", example: "She found a bargain at the sale." },
+    { word: "beverage", pos: "n.", meaning: "飲料", example: "Hot beverages are served in the lounge." },
+    { word: "cashier", pos: "n.", meaning: "收銀員", example: "The cashier scanned the items." },
+    { word: "checkout", pos: "n.", meaning: "結帳", example: "Checkout time is 11 a.m." },
+    { word: "complimentary", pos: "adj.", meaning: "免費贈送的", example: "The hotel offers complimentary breakfast." },
+    { word: "coupon", pos: "n.", meaning: "優惠券", example: "She used a coupon to get 20% off." },
+    { word: "dealership", pos: "n.", meaning: "經銷商", example: "He bought the car at a local dealership." },
+    { word: "delicious", pos: "adj.", meaning: "美味的", example: "The restaurant serves delicious seafood." },
+    { word: "dessert", pos: "n.", meaning: "甜點", example: "We ordered cake for dessert." },
+    { word: "grocery", pos: "n.", meaning: "雜貨店", example: "She went to the grocery store after work." },
+    { word: "merchandise", pos: "n.", meaning: "商品", example: "The store displays merchandise in the window." },
+    { word: "merchant", pos: "n.", meaning: "商人；商家", example: "The merchant offered a discount." },
+    { word: "patron", pos: "n.", meaning: "顧客；贊助者", example: "The restaurant thanks its loyal patrons." },
+    { word: "purchaser", pos: "n.", meaning: "購買者", example: "The purchaser signed the contract." },
+    { word: "rebate", pos: "n.", meaning: "退款；折扣", example: "You can get a $50 rebate on this product." },
+    { word: "receipt", pos: "n.", meaning: "收據", example: "Keep the receipt for your records." },
+    { word: "refundable", pos: "adj.", meaning: "可退款的", example: "The ticket is non-refundable." },
+    { word: "retailer", pos: "n.", meaning: "零售商", example: "The retailer offers free shipping." },
+    { word: "shopper", pos: "n.", meaning: "購物者", example: "The store was full of holiday shoppers." },
+    { word: "stationery", pos: "n.", meaning: "文具", example: "She ordered new stationery for the office." },
+    { word: "supermarket", pos: "n.", meaning: "超市", example: "The supermarket is open until 10 p.m." },
+    { word: "vendor", pos: "n.", meaning: "供應商；攤販", example: "The vendor delivered the supplies on time." },
+    { word: "voucher", pos: "n.", meaning: "兌換券", example: "She received a gift voucher for her birthday." }
+  ]},
+  { cat: "旅遊與交通", words: [
+    { word: "aboard", pos: "adv.", meaning: "在（船/飛機）上", example: "Welcome aboard Flight 507." },
+    { word: "airfare", pos: "n.", meaning: "機票費", example: "Airfare to Tokyo has dropped this month." },
+    { word: "airport", pos: "n.", meaning: "機場", example: "The shuttle goes directly to the airport." },
+    { word: "aisle", pos: "n.", meaning: "走道", example: "Would you prefer an aisle or window seat?" },
+    { word: "baggage", pos: "n.", meaning: "行李", example: "Baggage claim is on the lower level." },
+    { word: "cab", pos: "n.", meaning: "計程車", example: "We took a cab to the hotel." },
+    { word: "cancellation", pos: "n.", meaning: "取消", example: "The cancellation policy requires 24-hour notice." },
+    { word: "cruise", pos: "n.", meaning: "遊輪旅行", example: "They booked a cruise to Alaska." },
+    { word: "departure", pos: "n.", meaning: "出發；啟程", example: "The departure time has been changed to 3 p.m." },
+    { word: "destination", pos: "n.", meaning: "目的地", example: "Our destination is the downtown conference center." },
+    { word: "excursion", pos: "n.", meaning: "短途旅行", example: "The hotel offers guided excursions." },
+    { word: "ferry", pos: "n.", meaning: "渡輪", example: "The ferry departs every 30 minutes." },
+    { word: "highway", pos: "n.", meaning: "高速公路", example: "Take the highway to exit 14." },
+    { word: "itinerary", pos: "n.", meaning: "行程表", example: "The travel itinerary includes three cities." },
+    { word: "luggage", pos: "n.", meaning: "行李", example: "Please keep your luggage with you at all times." },
+    { word: "overnight", pos: "adj.", meaning: "過夜的", example: "The overnight train arrives at 6 a.m." },
+    { word: "passport", pos: "n.", meaning: "護照", example: "Make sure your passport is valid." },
+    { word: "pedestrian", pos: "n.", meaning: "行人", example: "The new bridge is for pedestrians only." },
+    { word: "railway", pos: "n.", meaning: "鐵路", example: "The railway station is two blocks away." },
+    { word: "reservation", pos: "n.", meaning: "預訂", example: "I made a reservation for two nights." },
+    { word: "scenery", pos: "n.", meaning: "風景", example: "The mountain scenery was spectacular." },
+    { word: "shuttle", pos: "n.", meaning: "接駁車", example: "A free shuttle runs between the hotel and airport." },
+    { word: "sidewalk", pos: "n.", meaning: "人行道", example: "The café has tables on the sidewalk." },
+    { word: "subway", pos: "n.", meaning: "地鐵", example: "Take the subway to the next station." },
+    { word: "suitcase", pos: "n.", meaning: "行李箱", example: "She packed her suitcase the night before." },
+    { word: "terminal", pos: "n.", meaning: "航廈", example: "International flights depart from Terminal 3." },
+    { word: "traveler", pos: "n.", meaning: "旅客", example: "Business travelers prefer direct flights." },
+    { word: "upcoming", pos: "adj.", meaning: "即將到來的", example: "Check the schedule for upcoming events." },
+    { word: "visa", pos: "n.", meaning: "簽證", example: "You need a visa to enter the country." }
+  ]},
+  { cat: "住宅與設施", words: [
+    { word: "accommodate", pos: "v.", meaning: "容納；提供住宿", example: "The hotel can accommodate 300 guests." },
+    { word: "amenity", pos: "n.", meaning: "設施；便利設備", example: "The apartment includes modern amenities." },
+    { word: "appliance", pos: "n.", meaning: "家電", example: "The kitchen comes with new appliances." },
+    { word: "balcony", pos: "n.", meaning: "陽台", example: "The room has a balcony with a sea view." },
+    { word: "basement", pos: "n.", meaning: "地下室", example: "Storage is available in the basement." },
+    { word: "bathroom", pos: "n.", meaning: "浴室", example: "The suite has two bathrooms." },
+    { word: "cabinet", pos: "n.", meaning: "櫥櫃", example: "Plates are stored in the kitchen cabinet." },
+    { word: "ceiling", pos: "n.", meaning: "天花板", example: "The ceiling in the lobby is very high." },
+    { word: "closet", pos: "n.", meaning: "衣櫥", example: "There is a walk-in closet in the bedroom." },
+    { word: "condominium", pos: "n.", meaning: "公寓大廈", example: "She bought a condominium downtown." },
+    { word: "decorate", pos: "v.", meaning: "裝飾", example: "They decorated the lobby for the holiday." },
+    { word: "dishwasher", pos: "n.", meaning: "洗碗機", example: "The apartment includes a dishwasher." },
+    { word: "drawer", pos: "n.", meaning: "抽屜", example: "The forms are in the top drawer." },
+    { word: "elevator", pos: "n.", meaning: "電梯", example: "Take the elevator to the fifth floor." },
+    { word: "escalator", pos: "n.", meaning: "手扶梯", example: "The escalator is next to the main entrance." },
+    { word: "furnish", pos: "v.", meaning: "佈置家具", example: "The apartment is fully furnished." },
+    { word: "hallway", pos: "n.", meaning: "走廊", example: "The restroom is at the end of the hallway." },
+    { word: "heater", pos: "n.", meaning: "暖氣機", example: "The heater was turned on during winter." },
+    { word: "homeowner", pos: "n.", meaning: "屋主", example: "Homeowners are responsible for maintenance." },
+    { word: "indoor", pos: "adj.", meaning: "室內的", example: "The hotel has an indoor swimming pool." },
+    { word: "landlord", pos: "n.", meaning: "房東", example: "The landlord raised the rent this year." },
+    { word: "lobby", pos: "n.", meaning: "大廳", example: "Please wait in the lobby." },
+    { word: "lounge", pos: "n.", meaning: "休息室", example: "Guests can relax in the lounge." },
+    { word: "microwave", pos: "n.", meaning: "微波爐", example: "You can heat your lunch in the microwave." },
+    { word: "outdoor", pos: "adj.", meaning: "戶外的", example: "The restaurant has outdoor seating." },
+    { word: "oven", pos: "n.", meaning: "烤箱", example: "Preheat the oven to 350 degrees." },
+    { word: "refrigerator", pos: "n.", meaning: "冰箱", example: "Put the leftovers in the refrigerator." },
+    { word: "remodel", pos: "v.", meaning: "重新裝修", example: "The kitchen was remodeled last year." },
+    { word: "renovate", pos: "v.", meaning: "翻新", example: "The building will be renovated this summer." },
+    { word: "rental", pos: "n.", meaning: "租金；租賃", example: "Monthly rental includes utilities." },
+    { word: "residence", pos: "n.", meaning: "住所", example: "His residence is close to the office." },
+    { word: "spacious", pos: "adj.", meaning: "寬敞的", example: "The suite is spacious and comfortable." },
+    { word: "suite", pos: "n.", meaning: "套房", example: "The executive suite is on the top floor." },
+    { word: "tenant", pos: "n.", meaning: "租戶", example: "Tenants must sign a 12-month lease." },
+    { word: "upstairs", pos: "adv.", meaning: "樓上", example: "The meeting room is upstairs." },
+    { word: "vacuum", pos: "n.", meaning: "吸塵器", example: "She used the vacuum to clean the carpet." }
+  ]},
+  { cat: "財務與銀行", words: [
+    { word: "accountant", pos: "n.", meaning: "會計師", example: "The accountant reviewed the financial records." },
+    { word: "annually", pos: "adv.", meaning: "每年", example: "The fee is charged annually." },
+    { word: "auction", pos: "n.", meaning: "拍賣", example: "The painting was sold at auction." },
+    { word: "banker", pos: "n.", meaning: "銀行家", example: "The banker approved the loan." },
+    { word: "bankruptcy", pos: "n.", meaning: "破產", example: "The company filed for bankruptcy." },
+    { word: "bonus", pos: "n.", meaning: "獎金", example: "Employees received a holiday bonus." },
+    { word: "broker", pos: "n.", meaning: "經紀人", example: "The broker handled the stock trade." },
+    { word: "calculation", pos: "n.", meaning: "計算", example: "Double-check the calculation before submitting." },
+    { word: "costly", pos: "adj.", meaning: "昂貴的", example: "The mistake was very costly." },
+    { word: "debit", pos: "n.", meaning: "扣款；借方", example: "The debit was processed overnight." },
+    { word: "deduction", pos: "n.", meaning: "扣除額", example: "Tax deductions lowered his total payment." },
+    { word: "economical", pos: "adj.", meaning: "經濟的；節省的", example: "This car is very economical on fuel." },
+    { word: "economist", pos: "n.", meaning: "經濟學家", example: "The economist predicted slow growth." },
+    { word: "exemption", pos: "n.", meaning: "免除；豁免", example: "Tax exemptions apply to certain organizations." },
+    { word: "fiscal", pos: "adj.", meaning: "財政的", example: "The fiscal year ends in March." },
+    { word: "merger", pos: "n.", meaning: "合併", example: "The merger created the largest company in the industry." },
+    { word: "payable", pos: "adj.", meaning: "應付的", example: "The invoice is payable within 30 days." },
+    { word: "premium", pos: "n.", meaning: "保費；額外費用", example: "The insurance premium increased this year." },
+    { word: "profitable", pos: "adj.", meaning: "有利可圖的", example: "The business became profitable after two years." },
+    { word: "quarterly", pos: "adj.", meaning: "每季的", example: "The quarterly report was published today." },
+    { word: "recession", pos: "n.", meaning: "經濟衰退", example: "Many businesses closed during the recession." },
+    { word: "stockholder", pos: "n.", meaning: "股東", example: "Stockholders voted at the annual meeting." },
+    { word: "subsidize", pos: "v.", meaning: "補貼", example: "The government subsidizes public transportation." },
+    { word: "substantially", pos: "adv.", meaning: "大幅地", example: "Sales increased substantially this quarter." },
+    { word: "teller", pos: "n.", meaning: "銀行行員", example: "The teller deposited the check." },
+    { word: "turnover", pos: "n.", meaning: "營業額；人員流動率", example: "Staff turnover has been high this year." },
+    { word: "withdrawal", pos: "n.", meaning: "提款", example: "She made a withdrawal from her savings." }
+  ]},
+  { cat: "廣告與行銷", words: [
+    { word: "advertiser", pos: "n.", meaning: "廣告商", example: "The advertiser bought airtime on the radio." },
+    { word: "brochure", pos: "n.", meaning: "宣傳手冊", example: "Pick up a brochure at the front desk." },
+    { word: "booklet", pos: "n.", meaning: "小冊子", example: "The booklet contains product information." },
+    { word: "copyright", pos: "n.", meaning: "版權", example: "The image is protected by copyright." },
+    { word: "customize", pos: "v.", meaning: "客製化", example: "You can customize the design to fit your needs." },
+    { word: "editorial", pos: "n.", meaning: "社論；編輯的", example: "The editorial discussed new market trends." },
+    { word: "exclusive", pos: "adj.", meaning: "獨家的；專屬的", example: "Members get exclusive access to the event." },
+    { word: "flyer", pos: "n.", meaning: "傳單", example: "They handed out flyers at the station." },
+    { word: "franchise", pos: "n.", meaning: "加盟店；特許經營", example: "The coffee chain expanded through franchises." },
+    { word: "logo", pos: "n.", meaning: "商標；標誌", example: "The company redesigned its logo." },
+    { word: "pamphlet", pos: "n.", meaning: "小冊子", example: "The pamphlet explains the recycling program." },
+    { word: "popularity", pos: "n.", meaning: "受歡迎程度", example: "The product gained popularity quickly." },
+    { word: "poster", pos: "n.", meaning: "海報", example: "A poster was placed in the window." },
+    { word: "promotional", pos: "adj.", meaning: "促銷的", example: "The store is running a promotional campaign." },
+    { word: "publicity", pos: "n.", meaning: "宣傳；公眾關注", example: "The event received a lot of publicity." },
+    { word: "publicize", pos: "v.", meaning: "宣傳", example: "The company publicized the new product launch." },
+    { word: "subscriber", pos: "n.", meaning: "訂閱者", example: "Subscribers receive the magazine each month." },
+    { word: "trademark", pos: "n.", meaning: "商標", example: "The name is a registered trademark." }
+  ]},
+  { cat: "健康與醫療", words: [
+    { word: "allergy", pos: "n.", meaning: "過敏", example: "She has an allergy to peanuts." },
+    { word: "checkup", pos: "n.", meaning: "健康檢查", example: "He went to the doctor for an annual checkup." },
+    { word: "clinic", pos: "n.", meaning: "診所", example: "The clinic is open on Saturdays." },
+    { word: "dentist", pos: "n.", meaning: "牙醫", example: "She has an appointment with the dentist." },
+    { word: "diagnose", pos: "v.", meaning: "診斷", example: "The doctor diagnosed the condition early." },
+    { word: "fatigue", pos: "n.", meaning: "疲勞", example: "Fatigue can affect work performance." },
+    { word: "fitness", pos: "n.", meaning: "健身；健康", example: "The hotel has a fitness center." },
+    { word: "flu", pos: "n.", meaning: "流感", example: "Several employees were out with the flu." },
+    { word: "gym", pos: "n.", meaning: "健身房", example: "The gym is open from 6 a.m. to 10 p.m." },
+    { word: "healthcare", pos: "n.", meaning: "醫療保健", example: "The company offers healthcare benefits." },
+    { word: "hygiene", pos: "n.", meaning: "衛生", example: "Good hygiene helps prevent illness." },
+    { word: "medication", pos: "n.", meaning: "藥物", example: "Take the medication twice a day." },
+    { word: "pharmacist", pos: "n.", meaning: "藥劑師", example: "The pharmacist filled the prescription." },
+    { word: "physician", pos: "n.", meaning: "內科醫師", example: "She consulted her physician about the symptoms." },
+    { word: "pill", pos: "n.", meaning: "藥丸", example: "Take one pill after each meal." },
+    { word: "prescribe", pos: "v.", meaning: "開處方", example: "The doctor prescribed a new medication." },
+    { word: "prescription", pos: "n.", meaning: "處方", example: "You need a prescription for this medicine." },
+    { word: "vitamin", pos: "n.", meaning: "維他命", example: "She takes a vitamin every morning." },
+    { word: "wellness", pos: "n.", meaning: "健康；養生", example: "The company launched a wellness program." }
+  ]},
+  { cat: "維修與製造", words: [
+    { word: "assemble", pos: "v.", meaning: "組裝", example: "Workers assemble the parts in the factory." },
+    { word: "auto", pos: "n.", meaning: "汽車", example: "The auto industry is recovering." },
+    { word: "automatic", pos: "adj.", meaning: "自動的", example: "The doors open automatically." },
+    { word: "brake", pos: "n.", meaning: "煞車", example: "The mechanic checked the brakes." },
+    { word: "bulb", pos: "n.", meaning: "燈泡", example: "Replace the bulb when it burns out." },
+    { word: "carpenter", pos: "n.", meaning: "木匠", example: "The carpenter built the bookshelf." },
+    { word: "cartridge", pos: "n.", meaning: "墨水匣", example: "The printer needs a new cartridge." },
+    { word: "cord", pos: "n.", meaning: "電線；繩索", example: "Plug the cord into the outlet." },
+    { word: "defective", pos: "adj.", meaning: "有缺陷的", example: "The defective product was recalled." },
+    { word: "durable", pos: "adj.", meaning: "耐用的", example: "This material is very durable." },
+    { word: "electrician", pos: "n.", meaning: "電工", example: "The electrician repaired the wiring." },
+    { word: "equip", pos: "v.", meaning: "裝備", example: "The lab is equipped with modern tools." },
+    { word: "faulty", pos: "adj.", meaning: "有故障的", example: "The faulty wiring caused a short circuit." },
+    { word: "flaw", pos: "n.", meaning: "瑕疵", example: "Inspectors found a flaw in the design." },
+    { word: "generator", pos: "n.", meaning: "發電機", example: "The generator provides backup power." },
+    { word: "helmet", pos: "n.", meaning: "安全帽", example: "Workers must wear a helmet on site." },
+    { word: "inspect", pos: "v.", meaning: "檢查", example: "The inspector will inspect the building." },
+    { word: "installation", pos: "n.", meaning: "安裝", example: "Installation of the system takes two hours." },
+    { word: "machinery", pos: "n.", meaning: "機械", example: "The factory updated its machinery." },
+    { word: "malfunction", pos: "n.", meaning: "故障", example: "A malfunction caused the system to shut down." },
+    { word: "mechanic", pos: "n.", meaning: "技工", example: "The mechanic fixed the engine." },
+    { word: "plug", pos: "n.", meaning: "插頭", example: "Insert the plug into the socket." },
+    { word: "portable", pos: "adj.", meaning: "攜帶式的", example: "She bought a portable speaker." },
+    { word: "replacement", pos: "n.", meaning: "替換品", example: "A replacement part was ordered." },
+    { word: "technician", pos: "n.", meaning: "技術人員", example: "A technician will fix the copier today." },
+    { word: "toll", pos: "n.", meaning: "通行費", example: "There is a toll on the highway." }
+  ]},
+  { cat: "日常生活與描述", words: [
+    { word: "beforehand", pos: "adv.", meaning: "事先", example: "Please let us know beforehand if you cannot attend." },
+    { word: "casual", pos: "adj.", meaning: "休閒的；非正式的", example: "The dress code is casual on Fridays." },
+    { word: "chilly", pos: "adj.", meaning: "寒冷的", example: "It was chilly outside this morning." },
+    { word: "comfortably", pos: "adv.", meaning: "舒適地", example: "The room seats 50 people comfortably." },
+    { word: "considerate", pos: "adj.", meaning: "體貼的", example: "She is very considerate of her colleagues." },
+    { word: "convenience", pos: "n.", meaning: "便利", example: "For your convenience, the store is open 24 hours." },
+    { word: "conveniently", pos: "adv.", meaning: "方便地", example: "The hotel is conveniently located near the station." },
+    { word: "delicate", pos: "adj.", meaning: "精緻的；易碎的", example: "Handle the delicate equipment with care." },
+    { word: "dependable", pos: "adj.", meaning: "可靠的", example: "She is a dependable member of the team." },
+    { word: "eager", pos: "adj.", meaning: "渴望的", example: "He is eager to start the new project." },
+    { word: "elegant", pos: "adj.", meaning: "優雅的", example: "The restaurant has an elegant interior." },
+    { word: "enthusiastic", pos: "adj.", meaning: "熱情的", example: "The audience was enthusiastic about the performance." },
+    { word: "fortunately", pos: "adv.", meaning: "幸運地", example: "Fortunately, the meeting was rescheduled." },
+    { word: "generous", pos: "adj.", meaning: "慷慨的", example: "The company made a generous donation." },
+    { word: "hesitant", pos: "adj.", meaning: "猶豫的", example: "She was hesitant to accept the offer." },
+    { word: "honestly", pos: "adv.", meaning: "誠實地", example: "Honestly, I think we need more time." },
+    { word: "ideally", pos: "adv.", meaning: "理想地", example: "Ideally, we should finish by Friday." },
+    { word: "mild", pos: "adj.", meaning: "溫和的", example: "The weather has been mild this week." },
+    { word: "neat", pos: "adj.", meaning: "整潔的", example: "Please keep your desk neat." },
+    { word: "optimistic", pos: "adj.", meaning: "樂觀的", example: "She is optimistic about the results." },
+    { word: "patience", pos: "n.", meaning: "耐心", example: "Thank you for your patience." },
+    { word: "polite", pos: "adj.", meaning: "有禮貌的", example: "The staff was polite and helpful." },
+    { word: "promptly", pos: "adv.", meaning: "迅速地；準時地", example: "The meeting will begin promptly at 9 a.m." },
+    { word: "punctual", pos: "adj.", meaning: "準時的", example: "Please be punctual for the interview." },
+    { word: "reluctant", pos: "adj.", meaning: "不情願的", example: "He was reluctant to make changes." },
+    { word: "seldom", pos: "adv.", meaning: "很少", example: "She seldom misses a meeting." },
+    { word: "smoothly", pos: "adv.", meaning: "順利地", example: "The transition went smoothly." },
+    { word: "strategic", pos: "adj.", meaning: "策略性的", example: "The company announced a strategic plan." },
+    { word: "thoroughly", pos: "adv.", meaning: "徹底地", example: "The report was thoroughly reviewed." },
+    { word: "timely", pos: "adj.", meaning: "及時的", example: "Thank you for your timely response." },
+    { word: "urgent", pos: "adj.", meaning: "緊急的", example: "Please respond to the urgent request." },
+    { word: "worthwhile", pos: "adj.", meaning: "值得的", example: "The training program was worthwhile." }
+  ]}
+];
+
+
 const PHRASE_DATA = [
   {
     category: "商務與辦公",
@@ -2730,6 +3405,7 @@ let submitted = {};
 let streaks = {};
 let wrongLog = {};
 let vocabWrong = {};
+let completedDates = {};
 
 function loadState() {
   try {
@@ -2741,12 +3417,13 @@ function loadState() {
       streaks = d.streaks || {};
       wrongLog = d.wrongLog || {};
       vocabWrong = d.vocabWrong || {};
+      completedDates = d.completedDates || {};
     }
   } catch(e) {}
 }
 
 function saveState() {
-  localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog, vocabWrong }));
+  localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog, vocabWrong, completedDates }));
   // debounced sync to Firestore
   if (currentUser) {
     clearTimeout(syncTimeout);
@@ -2762,7 +3439,7 @@ async function syncToFirestore() {
   if (!currentUser) return;
   try {
     await db.collection('users').doc(currentUser.uid).set({
-      answers, submitted, streaks, wrongLog, vocabWrong,
+      answers, submitted, streaks, wrongLog, vocabWrong, completedDates,
       displayName: currentUser.displayName || '',
       email: currentUser.email || '',
       photoURL: currentUser.photoURL || '',
@@ -2786,7 +3463,8 @@ async function loadFromFirestore() {
       streaks = d.streaks || {};
       wrongLog = d.wrongLog || {};
       vocabWrong = d.vocabWrong || {};
-      localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog, vocabWrong }));
+      completedDates = d.completedDates || {};
+      localStorage.setItem('toeic-quiz-state', JSON.stringify({ answers, submitted, streaks, wrongLog, vocabWrong, completedDates, completedDates }));
       render();
       setSyncStatus('synced');
     } else {
@@ -3432,6 +4110,9 @@ function submitQuiz() {
   const day = QUIZ_DATA.days[currentDay];
   const dayKey = day.id;
   submitted[dayKey] = true;
+  if (!completedDates[dayKey]) {
+    completedDates[dayKey] = new Date().toISOString().slice(0, 10);
+  }
 
   const { correct, total } = getDayScore(day);
   const pct = Math.round((correct / total) * 100);
@@ -3517,14 +4198,15 @@ function switchDay(i) {
 }
 
 function switchInnerTab(tab) {
-  const tabs = ['vocab', 'quiz', 'wrong', 'grammar', 'phrase'];
+  const tabs = ['vocab', 'quiz', 'wrong', 'review', 'grammar', 'phrase'];
   document.querySelectorAll('.inner-tab').forEach((el, i) => {
     el.classList.toggle('active', tab === tabs[i]);
   });
   tabs.forEach(t => {
-    const id = t === 'grammar' ? 'grammarTab' : t === 'phrase' ? 'phraseTab' : t + 'Tab';
+    const id = t === 'grammar' ? 'grammarTab' : t === 'phrase' ? 'phraseTab' : t === 'review' ? 'reviewTab' : t + 'Tab';
     document.getElementById(id).classList.toggle('active', tab === t);
   });
+  if (tab === 'review') renderReviewMenu();
   if (tab === 'grammar') renderGrammar();
   if (tab === 'phrase') renderPhrase();
 }
@@ -3584,12 +4266,27 @@ function renderWrong() {
   }
 
   // filter
-  const filtered = wrongFilter === 'all' ? entries
-    : wrongFilter === 'active' ? entries.filter(e => !e.isMastered)
-    : entries.filter(e => e.isMastered);
-
   const masteredCount = entries.filter(e => e.isMastered).length;
   const repeatOffenders = entries.filter(e => e.log.wrongCount >= 2).length;
+  const repeatActive = entries.filter(e => e.log.wrongCount >= 2 && !e.isMastered).length;
+
+  const filtered = wrongFilter === 'all' ? entries
+    : wrongFilter === 'active' ? entries.filter(e => !e.isMastered)
+    : wrongFilter === 'repeat' ? entries.filter(e => e.log.wrongCount >= 2)
+    : entries.filter(e => e.isMastered);
+
+  let practiceHtml = '';
+  if (wrongFilter === 'repeat' && repeatActive > 0) {
+    practiceHtml = `<div class="wrong-practice-bar">
+      <button class="btn btn-primary" onclick="startBatchRetry('repeat')">&#9998; 練習反覆錯題 (${repeatActive} 題)</button>
+      <span class="practice-hint">針對錯 2 次以上且未掌握的題目重做</span>
+    </div>`;
+  } else if (activeCount > 0 && wrongFilter !== 'mastered') {
+    practiceHtml = `<div class="wrong-practice-bar">
+      <button class="btn btn-primary" onclick="startBatchRetry('active')">&#128170; 練習待加強 (${activeCount} 題)</button>
+      <span class="practice-hint">直接重做錯題，答對即標記為已掌握</span>
+    </div>`;
+  }
 
   let html = `
     <div class="wrong-summary">
@@ -3598,18 +4295,22 @@ function renderWrong() {
       <div class="ws-card"><div class="ws-num yellow">${repeatOffenders}</div><div class="ws-label">反覆錯 2+</div></div>
       <div class="ws-card"><div class="ws-num" style="color:var(--text)">${entries.length}</div><div class="ws-label">累計錯題</div></div>
     </div>
-    ${activeCount > 0 ? `<button class="btn btn-primary" style="width:100%;margin-bottom:16px;padding:14px;font-size:16px;" onclick="startBatchRetry()">&#128170; 重新作答全部待加強 (${activeCount} 題)</button>` : ''}
     <div class="wrong-filters">
       <div class="wrong-filter ${wrongFilter==='all'?'active':''}" onclick="setWrongFilter('all')">全部 (${entries.length})</div>
       <div class="wrong-filter ${wrongFilter==='active'?'active':''}" onclick="setWrongFilter('active')">待加強 (${activeCount})</div>
+      <div class="wrong-filter ${wrongFilter==='repeat'?'active':''}" onclick="setWrongFilter('repeat')">反覆錯 (${repeatOffenders})</div>
       <div class="wrong-filter ${wrongFilter==='mastered'?'active':''}" onclick="setWrongFilter('mastered')">已掌握 (${masteredCount})</div>
     </div>
+    ${practiceHtml}
   `;
 
   if (filtered.length === 0) {
-    html += `<div class="empty-state"><div class="icon">${wrongFilter==='active' ? '&#127881;' : '&#128218;'}</div>
-      <h3>${wrongFilter==='active' ? '全部都掌握了！' : '還沒有已掌握的題目'}</h3>
-      <p>${wrongFilter==='active' ? '太棒了，所有錯題都已重新答對！' : '重新作答答對錯題後，就會顯示在這裡。'}</p></div>`;
+    const emptyIcon = wrongFilter==='active' ? '&#127881;' : wrongFilter==='repeat' ? '&#127881;' : '&#128218;';
+    const emptyTitle = wrongFilter==='active' ? '全部都掌握了！' : wrongFilter==='repeat' ? '沒有反覆錯的題目' : '還沒有已掌握的題目';
+    const emptyMsg = wrongFilter==='active' ? '太棒了，所有錯題都已重新答對！' : wrongFilter==='repeat' ? '目前沒有錯 2 次以上的題目，繼續保持！' : '重新作答答對錯題後，就會顯示在這裡。';
+    html += `<div class="empty-state"><div class="icon">${emptyIcon}</div>
+      <h3>${emptyTitle}</h3>
+      <p>${emptyMsg}</p></div>`;
   }
 
   // sort: active first, then by wrongCount desc
@@ -3770,11 +4471,13 @@ function setWrongFilter(f) {
 
 let batchRetryAnswers = {};
 
-function startBatchRetry() {
+function startBatchRetry(filter) {
+  filter = filter || 'active';
   const entries = [];
   Object.keys(wrongLog).forEach(key => {
     const log = wrongLog[key];
     if (log.correctCount > 0) return;
+    if (filter === 'repeat' && log.wrongCount < 2) return;
     const parts = key.split('-');
     const dayId = parseInt(parts[0]);
     const si = parseInt(parts[1]);
@@ -3949,6 +4652,970 @@ function submitBatchRetry() {
   else c.insertAdjacentHTML('beforeend', resultHtml);
 }
 
+// =====================================================
+// EXTRA VOCAB HELPERS
+// =====================================================
+function getExtraVocabFlat() {
+  const existing = new Set();
+  QUIZ_DATA.days.forEach(d => d.vocab.forEach(v => existing.add(v.word.toLowerCase())));
+  const result = [];
+  EXTRA_VOCAB.forEach(cat => {
+    cat.words.forEach(w => {
+      if (!existing.has(w.word.toLowerCase())) {
+        result.push({ ...w, category: cat.cat });
+      }
+    });
+  });
+  return result;
+}
+
+// REVIEW MODE (總複習)
+// =====================================================
+let reviewState = null;
+
+function renderReviewMenu() {
+  const allQ = QUIZ_DATA.days.reduce((s, d) => s + d.sections.reduce((s2, sec) => s2 + sec.questions.length, 0), 0);
+  const allV = QUIZ_DATA.days.reduce((s, d) => s + d.vocab.length, 0);
+  const daysCompleted = QUIZ_DATA.days.filter(d => submitted[d.id]).length;
+  const weakParts = getWeakParts();
+  const weakLabel = weakParts.length > 0 ? weakParts.map(p => p.type).join('、') : '尚無資料';
+
+  document.getElementById('reviewTab').innerHTML = `
+    <div class="section-header">
+      <span class="badge" style="background:#a78bfa">總複習</span>
+      <span style="font-weight:600">考前衝刺模式</span>
+    </div>
+    <div class="review-menu">
+      <div class="review-card highlight" onclick="startSmartReview()">
+        <div class="review-icon">&#128293;</div>
+        <h3>智慧複習</h3>
+        <p>根據艾賓浩斯遺忘曲線，自動挑出 1、3、7、14 天前學過的單字與錯題混合出題，鞏固記憶。</p>
+        <span class="review-tag yellow">${getSmartReviewDays().length > 0 ? getSmartReviewDays().length + ' 天需複習' : '尚無可複習'}</span>
+      </div>
+      <div class="review-card" onclick="renderScorePrediction()">
+        <div class="review-icon">&#128202;</div>
+        <h3>成績預測</h3>
+        <p>根據目前答題表現，預估多益成績落點，分析各題型強弱項，提供提升建議。</p>
+        <span class="review-tag purple">${daysCompleted > 0 ? '已完成 ' + daysCompleted + '/' + QUIZ_DATA.days.length + ' 天' : '尚未開始'}</span>
+      </div>
+      <div class="review-card" onclick="renderExtraVocab()">
+        <div class="review-icon">&#128214;</div>
+        <h3>單字補充庫</h3>
+        <p>超過 ${getExtraVocabFlat().length} 個多益高頻單字，按主題分類瀏覽，支援測驗模式。</p>
+        <span class="review-tag green">${getExtraVocabFlat().length} 個補充單字</span>
+      </div>
+      <div class="review-card" onclick="startRandomReview()">
+        <div class="review-icon">&#127922;</div>
+        <h3>隨機總複習測驗</h3>
+        <p>從全部 ${QUIZ_DATA.days.length} 天中隨機抽 30 題，模擬考試節奏。涵蓋 Part 1、Part 2、Part 5 所有題型。</p>
+        <span class="review-tag blue">${allQ} 題題庫</span>
+      </div>
+      <div class="review-card" onclick="startWeakReview()">
+        <div class="review-icon">&#127919;</div>
+        <h3>弱點集中練習</h3>
+        <p>根據你的錯題紀錄，自動從弱項題型中多抽題加強。目前弱項：<strong>${weakLabel}</strong></p>
+        <span class="review-tag yellow">針對弱點加強</span>
+      </div>
+      <div class="review-card" onclick="startReviewVocabQuiz()">
+        <div class="review-icon">&#128218;</div>
+        <h3>單字總測驗</h3>
+        <p>全部 ${allV} 個單字隨機出 30 題，看英文選中文意思。快速檢驗單字掌握度。</p>
+        <span class="review-tag green">${allV} 個單字</span>
+      </div>
+    </div>
+  `;
+}
+
+// =====================================================
+// SMART REVIEW (智慧複習 - 艾賓浩斯遺忘曲線)
+// =====================================================
+function backfillCompletedDates() {
+  let changed = false;
+  const today = new Date().toISOString().slice(0, 10);
+  QUIZ_DATA.days.forEach(day => {
+    if (submitted[day.id] && !completedDates[day.id]) {
+      completedDates[day.id] = today;
+      changed = true;
+    }
+  });
+  if (changed) saveState();
+}
+
+function getSmartReviewDays() {
+  backfillCompletedDates();
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const intervals = [1, 3, 7, 14];
+  const reviewDays = [];
+
+  QUIZ_DATA.days.forEach(day => {
+    const dateStr = completedDates[day.id];
+    if (!dateStr) return;
+    const completed = new Date(dateStr);
+    completed.setHours(0,0,0,0);
+    const daysSince = Math.round((today - completed) / 86400000);
+
+    for (const interval of intervals) {
+      if (daysSince >= interval) {
+        reviewDays.push({ day, daysSince, interval, dateStr });
+        break;
+      }
+    }
+  });
+
+  reviewDays.sort((a, b) => a.daysSince - b.daysSince);
+  return reviewDays;
+}
+
+function startSmartReview() {
+  const reviewDays = getSmartReviewDays();
+  if (reviewDays.length === 0) {
+    const c = document.getElementById('reviewTab');
+    c.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <h3 style="font-size:18px;font-weight:700;color:#f59e0b">&#128293; 智慧複習</h3>
+          <div style="font-size:13px;color:var(--text-dim)">根據遺忘曲線安排複習</div>
+        </div>
+        <button class="btn btn-outline" onclick="renderReviewMenu()" style="font-size:13px;padding:8px 16px;">返回總複習</button>
+      </div>
+      <div style="text-align:center;padding:48px 24px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:48px;margin-bottom:16px;">&#9996;&#65039;</div>
+        <h2 style="font-size:20px;margin-bottom:8px;">今天不用複習！</h2>
+        <p style="color:var(--text-dim);line-height:1.6;">你剛完成的天數還不需要複習。<br>明天再來這裡，系統會自動提醒你複習昨天的內容。</p>
+        <p style="color:var(--text-dim);font-size:12px;margin-top:16px;">複習排程：完成後 1天、3天、7天、14天</p>
+      </div>`;
+    return;
+  }
+
+  const allVocab = [];
+  const allQuestions = [];
+
+  reviewDays.forEach(({ day }) => {
+    day.vocab.forEach(v => allVocab.push({ ...v, dayId: day.id }));
+    day.sections.forEach((sec, si) => {
+      sec.questions.forEach((q, qi) => {
+        const key = `${day.id}-${si}-${qi}`;
+        const wrong = wrongLog[key];
+        if (wrong && wrong.wrongCount > (wrong.correctCount || 0)) {
+          allQuestions.push({ dayId: day.id, si, qi, sec, q });
+        }
+      });
+    });
+  });
+
+  const vocabItems = shuffle(allVocab).slice(0, 15).map(v => {
+    const wrongChoices = shuffle(allVocab.filter(w => w.meaning !== v.meaning)).slice(0, 3).map(w => w.meaning);
+    const options = shuffle([v.meaning, ...wrongChoices]);
+    return { type: 'vocab', word: v.word, pos: v.pos, meaning: v.meaning, example: v.example, dayId: v.dayId, options, answer: options.indexOf(v.meaning) };
+  });
+
+  const qItems = shuffle(allQuestions).slice(0, 15).map(item => ({
+    type: 'question', dayId: item.dayId, si: item.si, qi: item.qi, q: item.q, sec: item.sec
+  }));
+
+  const items = shuffle([...vocabItems, ...qItems]);
+  if (items.length === 0) return;
+
+  reviewState = { mode: 'smart', items, answers: {}, submitted: false, reviewDays };
+  renderSmartReview();
+}
+
+function renderSmartReview() {
+  const c = document.getElementById('reviewTab');
+  const items = reviewState.items;
+  const total = items.length;
+  const answered = Object.keys(reviewState.answers).length;
+  const isSubmitted = reviewState.submitted;
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:#f59e0b">&#128293; 智慧複習</h3>
+        <div style="font-size:13px;color:var(--text-dim)">根據遺忘曲線，複習需要加強的內容（單字＋錯題混合）</div>
+      </div>
+      <button class="btn btn-outline" onclick="renderReviewMenu()" style="font-size:13px;padding:8px 16px;">返回總複習</button>
+    </div>
+    <div class="smart-review-days">
+      ${reviewState.reviewDays.map(r => `<div class="smart-review-day">Day ${r.day.id} <span class="srd-label">${r.daysSince}天前完成</span></div>`).join('')}
+    </div>
+    <div class="progress-bar"><div class="fill" style="width:${(answered/total)*100}%"></div></div>
+  `;
+
+  items.forEach((item, idx) => {
+    const rKey = 'sr-' + idx;
+    const chosen = reviewState.answers[rKey];
+
+    if (item.type === 'vocab') {
+      let borderStyle = '';
+      if (isSubmitted && chosen !== undefined) {
+        borderStyle = chosen === item.answer ? 'border-color:var(--correct);background:var(--correct-bg);' : 'border-color:var(--wrong);background:var(--wrong-bg);';
+      }
+      html += `<div class="vocab-quiz-item" style="${borderStyle}">`;
+      html += `<div style="display:flex;align-items:center;justify-content:space-between;">`;
+      html += `<div><span class="vocab-quiz-word">${item.word}</span> <span class="vocab-quiz-pos">${item.pos}</span></div>`;
+      html += `<div style="display:flex;align-items:center;gap:8px;">`;
+      html += `<span style="font-size:11px;color:var(--text-dim)">Day ${item.dayId}</span>`;
+      html += `<span style="font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(167,139,250,0.15);color:#a78bfa;">單字</span>`;
+      html += `</div></div>`;
+      html += '<div class="vocab-quiz-options">';
+      item.options.forEach((opt, oi) => {
+        let cls = '';
+        if (chosen === oi) cls += ' selected';
+        if (isSubmitted) {
+          cls += ' locked';
+          if (oi === item.answer) cls += ' show-correct';
+          else if (chosen === oi && chosen !== item.answer) cls += ' show-wrong';
+        }
+        html += `<div class="vocab-quiz-opt${cls}" onclick="selectSmartReviewOption('${rKey}', ${oi})">${opt}</div>`;
+      });
+      html += '</div>';
+      if (isSubmitted) {
+        html += `<div style="margin-top:10px;font-size:13px;color:var(--text-dim);font-style:italic;"><strong style="color:var(--text)">例句：</strong>${item.example}</div>`;
+      }
+      html += '</div>';
+    } else {
+      const q = item.q;
+      let borderStyle = '';
+      if (isSubmitted && chosen !== undefined) {
+        borderStyle = chosen === q.answer ? 'border-color:var(--correct);background:var(--correct-bg);' : 'border-color:var(--wrong);background:var(--wrong-bg);';
+      }
+      html += `<div class="q-card" style="${borderStyle}">`;
+      html += `<div class="q-num" style="display:flex;justify-content:space-between;">Q${idx+1} <span style="font-size:11px;color:var(--text-dim)">Day ${item.dayId} · ${item.sec.type || item.sec.title}</span></div>`;
+      html += `<div class="q-stem">${q.stem}</div>`;
+      html += '<div class="options">';
+      const letters = ['A','B','C','D'];
+      q.options.forEach((opt, oi) => {
+        let cls = '';
+        if (chosen === oi) cls += ' selected';
+        if (isSubmitted) {
+          cls += ' locked';
+          if (oi === q.answer) cls += ' show-correct';
+          else if (chosen === oi && chosen !== q.answer) cls += ' show-wrong';
+        }
+        html += `<div class="option${cls}" onclick="selectSmartReviewOption('${rKey}', ${oi})"><div class="radio"></div><span class="letter">(${letters[oi]})</span><span>${opt}</span></div>`;
+      });
+      html += '</div>';
+      if (isSubmitted && q.explanation) {
+        html += `<div class="explanation show">${q.explanation}</div>`;
+      }
+      html += '</div>';
+    }
+  });
+
+  if (!isSubmitted) {
+    html += `<div class="btn-row"><button class="btn btn-primary" onclick="submitSmartReview()" ${answered < total ? 'disabled' : ''}>交卷批改（${answered}/${total}）</button></div>`;
+  } else {
+    const correct = items.filter((item, idx) => {
+      const chosen = reviewState.answers['sr-' + idx];
+      return item.type === 'vocab' ? chosen === item.answer : chosen === item.q.answer;
+    }).length;
+    const pct = Math.round((correct / total) * 100);
+    html += `
+      <div style="text-align:center;padding:24px;margin:20px 0;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:48px;margin-bottom:12px;">${pct >= 80 ? '&#127881;' : pct >= 60 ? '&#128170;' : '&#128166;'}</div>
+        <h2 style="font-size:22px;">${pct >= 80 ? '複習效果很好！' : pct >= 60 ? '記憶有在鞏固！' : '需要多複習幾次！'}</h2>
+        <p style="color:var(--text-dim);margin:8px 0 16px;">${total} 題中答對 ${correct} 題（${pct}%）</p>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="renderReviewMenu()">返回總複習</button>
+          <button class="btn btn-primary" onclick="startSmartReview()">再複習一次</button>
+        </div>
+      </div>`;
+  }
+  c.innerHTML = html;
+  c.scrollTop = 0;
+}
+
+function selectSmartReviewOption(rKey, oi) {
+  if (reviewState.submitted) return;
+  reviewState.answers[rKey] = oi;
+  renderSmartReview();
+}
+
+function submitSmartReview() {
+  reviewState.submitted = true;
+  const today = `${new Date().getMonth()+1}/${new Date().getDate()}`;
+  reviewState.items.forEach((item, idx) => {
+    const chosen = reviewState.answers['sr-' + idx];
+    if (item.type === 'vocab') {
+      if (chosen !== item.answer) {
+        vocabWrong[item.word] = (vocabWrong[item.word] || 0) + 1;
+      }
+    } else {
+      const key = `${item.dayId}-${item.si}-${item.qi}`;
+      if (chosen === item.q.answer) {
+        if (wrongLog[key]) {
+          wrongLog[key].correctCount = (wrongLog[key].correctCount || 0) + 1;
+          wrongLog[key].lastCorrect = today;
+        }
+      } else {
+        if (!wrongLog[key]) wrongLog[key] = { wrongCount: 0, correctCount: 0, firstWrong: today };
+        wrongLog[key].wrongCount++;
+        wrongLog[key].lastWrong = today;
+        wrongLog[key].yourPick = chosen;
+      }
+    }
+  });
+  saveState();
+  renderSmartReview();
+}
+
+// =====================================================
+// SCORE PREDICTION (成績預測)
+// =====================================================
+function getScorePrediction() {
+  let part1Correct = 0, part1Total = 0;
+  let part2Correct = 0, part2Total = 0;
+  let part5Correct = 0, part5Total = 0;
+  let vocabTotal = 0, vocabWrongTotal = 0;
+  let daysCompleted = 0;
+
+  QUIZ_DATA.days.forEach(day => {
+    if (!submitted[day.id]) return;
+    daysCompleted++;
+    day.sections.forEach((sec, si) => {
+      sec.questions.forEach((q, qi) => {
+        const key = `${day.id}-${si}-${qi}`;
+        const chosen = answers[key];
+        const isCorrect = chosen === q.answer;
+        const secLabel = sec.type || sec.title || '';
+        const partType = secLabel.includes('Part 1') ? 1 : secLabel.includes('Part 2') ? 2 : 5;
+        if (partType === 1) { part1Total++; if (isCorrect) part1Correct++; }
+        else if (partType === 2) { part2Total++; if (isCorrect) part2Correct++; }
+        else { part5Total++; if (isCorrect) part5Correct++; }
+      });
+    });
+    day.vocab.forEach(v => {
+      vocabTotal++;
+      if (vocabWrong[v.word]) vocabWrongTotal += vocabWrong[v.word];
+    });
+  });
+
+  const p1Rate = part1Total > 0 ? part1Correct / part1Total : 0;
+  const p2Rate = part2Total > 0 ? part2Correct / part2Total : 0;
+  const p5Rate = part5Total > 0 ? part5Correct / part5Total : 0;
+  const vocabRate = vocabTotal > 0 ? Math.max(0, 1 - vocabWrongTotal / (vocabTotal * 2)) : 0;
+
+  // TOEIC Listening: Part 1 (6Q), Part 2 (25Q), Part 3 (39Q), Part 4 (30Q) = 100Q → 5~495
+  // TOEIC Reading:  Part 5 (30Q), Part 6 (16Q), Part 7 (54Q) = 100Q → 5~495
+  // We only practice P1, P2, P5. Estimate others conservatively.
+  const listeningRate = (p1Rate * 0.3 + p2Rate * 0.5 + vocabRate * 0.2);
+  const readingRate = (p5Rate * 0.6 + vocabRate * 0.4);
+
+  // Map rates to scores (non-linear, TOEIC curve)
+  const mapToScore = (rate) => {
+    if (rate >= 0.9) return Math.round(380 + rate * 115);
+    if (rate >= 0.7) return Math.round(200 + rate * 280);
+    if (rate >= 0.5) return Math.round(100 + rate * 260);
+    return Math.round(50 + rate * 200);
+  };
+
+  const listeningScore = mapToScore(listeningRate);
+  const readingScore = mapToScore(readingRate);
+  const totalScore = listeningScore + readingScore;
+
+  const confidence = Math.min(100, Math.round((daysCompleted / QUIZ_DATA.days.length) * 100));
+
+  return {
+    totalScore, listeningScore, readingScore,
+    p1Rate, p2Rate, p5Rate, vocabRate,
+    part1Total, part2Total, part5Total, vocabTotal,
+    daysCompleted, totalDays: QUIZ_DATA.days.length,
+    confidence, listeningRate, readingRate
+  };
+}
+
+function renderScorePrediction() {
+  const p = getScorePrediction();
+  const c = document.getElementById('reviewTab');
+  const pctFmt = (r) => Math.round(r * 100) + '%';
+  const target = 450;
+  const diff = p.totalScore - target;
+  const diffText = diff >= 0 ? `已超過目標 ${diff} 分` : `距離目標還差 ${Math.abs(diff)} 分`;
+  const diffColor = diff >= 0 ? 'var(--correct)' : '#f59e0b';
+
+  const gaugeAngle = Math.min(180, (p.totalScore / 990) * 180);
+  const scoreColor = p.totalScore >= 450 ? 'var(--correct)' : p.totalScore >= 350 ? '#f59e0b' : 'var(--wrong)';
+
+  c.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:var(--accent-light)">&#128202; 成績預測</h3>
+        <div style="font-size:13px;color:var(--text-dim)">根據你的答題表現，估算多益成績落點</div>
+      </div>
+      <button class="btn btn-outline" onclick="renderReviewMenu()" style="font-size:13px;padding:8px 16px;">返回總複習</button>
+    </div>
+
+    <div class="score-predict">
+      <div class="score-gauge">
+        <svg viewBox="0 0 200 120">
+          <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="var(--border)" stroke-width="12" stroke-linecap="round"/>
+          <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="${scoreColor}" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="${gaugeAngle * 2.79} 999" />
+          <text x="30" y="118" font-size="10" fill="var(--text-dim)">0</text>
+          <text x="93" y="25" font-size="10" fill="var(--text-dim)">495</text>
+          <text x="162" y="118" font-size="10" fill="var(--text-dim)">990</text>
+        </svg>
+        <div class="score-val">${p.totalScore}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:14px;font-weight:600;color:${diffColor};margin-bottom:4px;">${diffText}</div>
+        <div style="font-size:12px;color:var(--text-dim);">目標：${target} 分</div>
+      </div>
+
+      <div class="predict-grid">
+        <div class="predict-item">
+          <div class="pi-label">聽力預估</div>
+          <div class="pi-value" style="color:var(--accent-light)">${p.listeningScore}</div>
+          <div class="pi-sub">/ 495</div>
+        </div>
+        <div class="predict-item">
+          <div class="pi-label">閱讀預估</div>
+          <div class="pi-value" style="color:var(--accent-light)">${p.readingScore}</div>
+          <div class="pi-sub">/ 495</div>
+        </div>
+        <div class="predict-item">
+          <div class="pi-label">Part 1 照片題</div>
+          <div class="pi-value">${pctFmt(p.p1Rate)}</div>
+          <div class="pi-sub">${p.part1Total} 題已做</div>
+        </div>
+        <div class="predict-item">
+          <div class="pi-label">Part 2 應答題</div>
+          <div class="pi-value">${pctFmt(p.p2Rate)}</div>
+          <div class="pi-sub">${p.part2Total} 題已做</div>
+        </div>
+        <div class="predict-item">
+          <div class="pi-label">Part 5 文法題</div>
+          <div class="pi-value">${pctFmt(p.p5Rate)}</div>
+          <div class="pi-sub">${p.part5Total} 題已做</div>
+        </div>
+        <div class="predict-item">
+          <div class="pi-label">單字掌握度</div>
+          <div class="pi-value">${pctFmt(p.vocabRate)}</div>
+          <div class="pi-sub">${p.vocabTotal} 個單字</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+          <span>預測信心度</span>
+          <span style="color:var(--text-dim)">${p.confidence}%（已完成 ${p.daysCompleted}/${p.totalDays} 天）</span>
+        </div>
+        <div class="confidence-bar">
+          <div class="fill" style="width:${p.confidence}%;background:${p.confidence >= 70 ? 'var(--correct)' : p.confidence >= 40 ? '#f59e0b' : 'var(--wrong)'};"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:8px;">
+          &#9432; 此預測基於 App 中已做的題目，僅涵蓋 Part 1、Part 2、Part 5。完成更多天數可提高準確度。實際成績還受 Part 3、4、6、7 影響。
+        </div>
+      </div>
+
+      ${p.totalScore < 450 ? `
+      <div style="margin-top:20px;padding:16px;background:rgba(245,158,11,0.08);border-radius:8px;border:1px solid rgba(245,158,11,0.2);">
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px;">&#128161; 提升建議</div>
+        <ul style="font-size:13px;color:var(--text-dim);line-height:1.8;padding-left:20px;margin:0;">
+          ${p.p5Rate < 0.7 ? '<li>Part 5 正確率偏低 → 多做<strong>文法測驗</strong>，熟記固定搭配</li>' : ''}
+          ${p.p2Rate < 0.7 ? '<li>Part 2 正確率偏低 → 注意<strong>問句類型辨識</strong>（Who/What/When/Where）</li>' : ''}
+          ${p.p1Rate < 0.7 ? '<li>Part 1 正確率偏低 → 加強<strong>圖片描述常用句型</strong></li>' : ''}
+          ${p.vocabRate < 0.7 ? '<li>單字掌握度不足 → 使用<strong>智慧複習</strong>每天複習舊單字</li>' : ''}
+          <li>每天堅持做 1-2 天的份量，考前 3 天用<strong>隨機總複習</strong>衝刺</li>
+        </ul>
+      </div>
+      ` : `
+      <div style="margin-top:20px;padding:16px;background:rgba(34,197,94,0.08);border-radius:8px;border:1px solid rgba(34,197,94,0.2);">
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px;">&#127775; 目前進度良好！</div>
+        <p style="font-size:13px;color:var(--text-dim);line-height:1.6;margin:0;">
+          預測分數已達標 450 分。繼續保持每日練習，考前多做總複習鞏固記憶。加油！
+        </p>
+      </div>
+      `}
+    </div>
+  `;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getAllQuestions() {
+  const all = [];
+  QUIZ_DATA.days.forEach(day => {
+    day.sections.forEach((sec, si) => {
+      sec.questions.forEach((q, qi) => {
+        all.push({ dayId: day.id, si, qi, sec, q });
+      });
+    });
+  });
+  return all;
+}
+
+function getWeakParts() {
+  const partStats = {};
+  Object.keys(wrongLog).forEach(key => {
+    const log = wrongLog[key];
+    const parts = key.split('-');
+    const dayId = parseInt(parts[0]);
+    const si = parseInt(parts[1]);
+    const day = QUIZ_DATA.days.find(d => d.id === dayId);
+    if (!day) return;
+    const sec = day.sections[si];
+    if (!sec) return;
+    if (!partStats[sec.type]) partStats[sec.type] = { type: sec.type, wrong: 0, total: 0 };
+    partStats[sec.type].wrong += log.wrongCount;
+    partStats[sec.type].total++;
+  });
+  return Object.values(partStats).sort((a, b) => b.wrong - a.wrong);
+}
+
+// --- Random Review ---
+function startRandomReview() {
+  const all = shuffle(getAllQuestions());
+  const picked = all.slice(0, 30);
+  reviewState = { mode: 'random', items: picked, answers: {}, submitted: false };
+  renderReviewQuiz('隨機總複習', '從 21 天題庫隨機抽出 30 題');
+}
+
+// --- Weak Review ---
+function startWeakReview() {
+  const weakParts = getWeakParts();
+  const all = getAllQuestions();
+
+  if (weakParts.length === 0) {
+    const picked = shuffle(all).slice(0, 30);
+    reviewState = { mode: 'weak', items: picked, answers: {}, submitted: false };
+    renderReviewQuiz('弱點練習', '尚無錯題紀錄，已隨機出題');
+    return;
+  }
+
+  const weakTypes = weakParts.map(p => p.type);
+  const weakQ = all.filter(item => weakTypes.includes(item.sec.type));
+  const otherQ = all.filter(item => !weakTypes.includes(item.sec.type));
+  const weakPick = shuffle(weakQ).slice(0, 20);
+  const otherPick = shuffle(otherQ).slice(0, 10);
+  const picked = shuffle([...weakPick, ...otherPick]).slice(0, 30);
+
+  reviewState = { mode: 'weak', items: picked, answers: {}, submitted: false };
+  renderReviewQuiz('弱點集中練習', `加強 ${weakTypes.join('、')}，共 ${picked.length} 題`);
+}
+
+function renderReviewQuiz(title, subtitle) {
+  const c = document.getElementById('reviewTab');
+  const items = reviewState.items;
+  const letters = ['A', 'B', 'C', 'D'];
+  const total = items.length;
+  const answered = Object.keys(reviewState.answers).length;
+  const isSubmitted = reviewState.submitted;
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:var(--accent-light)">${title}</h3>
+        <div style="font-size:13px;color:var(--text-dim)">${subtitle}</div>
+      </div>
+      <button class="btn btn-outline" onclick="renderReviewMenu()" style="font-size:13px;padding:8px 16px;">返回總複習</button>
+    </div>
+    <div class="progress-bar"><div class="fill" style="width:${(answered/total)*100}%"></div></div>
+  `;
+
+  items.forEach((item, idx) => {
+    const rKey = 'rv-' + idx;
+    const chosen = reviewState.answers[rKey];
+    const q = item.q;
+    let cardClass = '';
+    if (isSubmitted && chosen !== undefined) cardClass = chosen === q.answer ? 'correct' : 'wrong';
+
+    html += `<div class="q-card ${cardClass}">`;
+    html += `<div class="q-num"><span style="color:var(--text-dim);font-size:11px">Day ${item.dayId} · ${item.sec.type}</span> &nbsp; Q${idx + 1} / ${total}`;
+    if (isSubmitted && chosen !== undefined) {
+      html += chosen === q.answer
+        ? '<span class="result-tag correct-tag">&#10003; 正確</span>'
+        : '<span class="result-tag wrong-tag">&#10007; 錯誤</span>';
+    }
+    html += '</div>';
+    const stemText = q.stem.replace(/______/g, 'blank').replace(/【.*?】/g, '');
+    html += `<div class="q-stem">${formatStem(q.stem)} <button class="speak-btn-sm" onclick="speak(\`${stemText.replace(/`/g,'')}\`, this)">&#128264;</button></div>`;
+    html += '<div class="options">';
+    q.options.forEach((opt, oi) => {
+      let optClass = '';
+      if (chosen === oi) optClass += ' selected';
+      if (isSubmitted) {
+        optClass += ' locked';
+        if (oi === q.answer) optClass += ' show-correct';
+        else if (chosen === oi && chosen !== q.answer) optClass += ' show-wrong';
+      }
+      html += `
+        <div class="option${optClass}" onclick="selectReviewOption('${rKey}', ${oi})">
+          <div class="radio"></div>
+          <span class="letter">(${letters[oi]})</span>
+          <span>${opt}</span>
+          <button class="speak-btn-sm" onclick="event.stopPropagation(); speak('${opt.replace(/'/g,"\\'")}', this)" style="margin-left:auto">&#128264;</button>
+        </div>`;
+    });
+    html += '</div>';
+    if (isSubmitted) {
+      html += `<div class="explanation show"><strong>解析：</strong>${q.explanation}</div>`;
+    }
+    html += '</div>';
+  });
+
+  if (!isSubmitted) {
+    html += `<div class="btn-row">
+      <button class="btn btn-primary" onclick="submitReviewQuiz()" ${answered < total ? 'disabled' : ''}>交卷批改（${answered}/${total}）</button>
+    </div>`;
+  } else {
+    const correct = items.filter((item, idx) => reviewState.answers['rv-' + idx] === item.q.answer).length;
+    const pct = Math.round((correct / total) * 100);
+    html += `
+      <div style="text-align:center;padding:24px;margin:20px 0;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:48px;margin-bottom:12px;">${pct >= 80 ? '&#127881;' : pct >= 60 ? '&#128170;' : '&#128166;'}</div>
+        <h2 style="font-size:22px;">${pct >= 80 ? '太棒了！' : pct >= 60 ? '不錯喔！' : '再加把勁！'}</h2>
+        <p style="color:var(--text-dim);margin:8px 0 16px;">${total} 題中答對 ${correct} 題（${pct}%）</p>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="renderReviewMenu()">返回總複習</button>
+          <button class="btn btn-primary" onclick="${reviewState.mode === 'random' ? 'startRandomReview()' : 'startWeakReview()'}">再來一輪</button>
+        </div>
+      </div>`;
+  }
+
+  c.innerHTML = html;
+  c.scrollTop = 0;
+}
+
+function selectReviewOption(rKey, oi) {
+  if (reviewState.submitted) return;
+  reviewState.answers[rKey] = oi;
+  renderReviewQuiz(
+    reviewState.mode === 'random' ? '隨機總複習' : '弱點集中練習',
+    reviewState.mode === 'random' ? '從 21 天題庫隨機抽出 30 題' : '針對弱項題型加強練習'
+  );
+}
+
+function submitReviewQuiz() {
+  reviewState.submitted = true;
+  const today = `${new Date().getMonth()+1}/${new Date().getDate()}`;
+  reviewState.items.forEach((item, idx) => {
+    const rKey = 'rv-' + idx;
+    const chosen = reviewState.answers[rKey];
+    const q = item.q;
+    const key = `${item.dayId}-${item.si}-${item.qi}`;
+    if (chosen === q.answer) {
+      if (wrongLog[key]) {
+        wrongLog[key].correctCount = (wrongLog[key].correctCount || 0) + 1;
+        wrongLog[key].lastCorrect = today;
+      }
+    } else {
+      if (!wrongLog[key]) {
+        wrongLog[key] = { wrongCount: 0, correctCount: 0, firstWrong: today };
+      }
+      wrongLog[key].wrongCount++;
+      wrongLog[key].lastWrong = today;
+      wrongLog[key].yourPick = chosen;
+    }
+  });
+  saveState();
+  renderReviewQuiz(
+    reviewState.mode === 'random' ? '隨機總複習' : '弱點集中練習',
+    reviewState.mode === 'random' ? '從 21 天題庫隨機抽出 30 題' : '針對弱項題型加強練習'
+  );
+}
+
+// --- Review Vocab Quiz ---
+function startReviewVocabQuiz() {
+  const allVocab = [];
+  QUIZ_DATA.days.forEach(day => {
+    day.vocab.forEach(v => {
+      allVocab.push({ ...v, dayId: day.id });
+    });
+  });
+
+  const shuffled = shuffle(allVocab);
+  const picked = shuffled.slice(0, 30);
+  const items = picked.map(v => {
+    const wrongChoices = shuffle(allVocab.filter(w => w.meaning !== v.meaning)).slice(0, 3).map(w => w.meaning);
+    const options = shuffle([v.meaning, ...wrongChoices]);
+    return { word: v.word, pos: v.pos, meaning: v.meaning, example: v.example, dayId: v.dayId, options, answer: options.indexOf(v.meaning) };
+  });
+
+  reviewState = { mode: 'vocab', items, answers: {}, submitted: false };
+  renderReviewVocabQuiz();
+}
+
+function renderReviewVocabQuiz() {
+  const c = document.getElementById('reviewTab');
+  const items = reviewState.items;
+  const total = items.length;
+  const answered = Object.keys(reviewState.answers).length;
+  const isSubmitted = reviewState.submitted;
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:var(--accent-light)">&#128218; 單字總測驗</h3>
+        <div style="font-size:13px;color:var(--text-dim)">看英文選中文意思，共 ${total} 題</div>
+      </div>
+      <button class="btn btn-outline" onclick="renderReviewMenu()" style="font-size:13px;padding:8px 16px;">返回總複習</button>
+    </div>
+    <div class="progress-bar"><div class="fill" style="width:${(answered/total)*100}%"></div></div>
+  `;
+
+  items.forEach((item, idx) => {
+    const vKey = 'vq-' + idx;
+    const chosen = reviewState.answers[vKey];
+    const isCorrect = chosen === item.answer;
+
+    let borderStyle = '';
+    if (isSubmitted && chosen !== undefined) {
+      borderStyle = isCorrect ? 'border-color:var(--correct);background:var(--correct-bg);' : 'border-color:var(--wrong);background:var(--wrong-bg);';
+    }
+
+    html += `<div class="vocab-quiz-item" style="${borderStyle}">`;
+    html += `<div style="display:flex;align-items:center;justify-content:space-between;">`;
+    html += `<div><span class="vocab-quiz-word">${item.word}</span> <span class="vocab-quiz-pos">${item.pos}</span></div>`;
+    html += `<div style="display:flex;align-items:center;gap:8px;">`;
+    html += `<span style="font-size:11px;color:var(--text-dim)">Day ${item.dayId}</span>`;
+    html += `<button class="speak-btn-sm" onclick="speak('${item.word}', this)">&#128264;</button>`;
+    if (isSubmitted && chosen !== undefined) {
+      html += isCorrect
+        ? '<span class="result-tag correct-tag">&#10003;</span>'
+        : '<span class="result-tag wrong-tag">&#10007;</span>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="vocab-quiz-options">';
+    item.options.forEach((opt, oi) => {
+      let cls = '';
+      if (chosen === oi) cls += ' selected';
+      if (isSubmitted) {
+        cls += ' locked';
+        if (oi === item.answer) cls += ' show-correct';
+        else if (chosen === oi && !isCorrect) cls += ' show-wrong';
+      }
+      html += `<div class="vocab-quiz-opt${cls}" onclick="selectReviewVocabOption('${vKey}', ${oi})">${opt}</div>`;
+    });
+    html += '</div>';
+
+    if (isSubmitted) {
+      html += `<div style="margin-top:10px;font-size:13px;color:var(--text-dim);font-style:italic;">
+        <strong style="color:var(--text)">例句：</strong>${item.example}
+        <button class="speak-btn-sm" onclick="speak('${item.example.replace(/'/g,"\\'")}', this)" style="margin-left:4px;">&#128264;</button>
+      </div>`;
+    }
+    html += '</div>';
+  });
+
+  if (!isSubmitted) {
+    html += `<div class="btn-row">
+      <button class="btn btn-primary" onclick="submitReviewVocabQuiz()" ${answered < total ? 'disabled' : ''}>交卷批改（${answered}/${total}）</button>
+    </div>`;
+  } else {
+    const correct = items.filter((item, idx) => reviewState.answers['vq-' + idx] === item.answer).length;
+    const pct = Math.round((correct / total) * 100);
+    html += `
+      <div style="text-align:center;padding:24px;margin:20px 0;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:48px;margin-bottom:12px;">${pct >= 80 ? '&#127881;' : pct >= 60 ? '&#128170;' : '&#128166;'}</div>
+        <h2 style="font-size:22px;">${pct >= 80 ? '單字掌握得很好！' : pct >= 60 ? '再多複習幾次！' : '多看幾遍單字卡！'}</h2>
+        <p style="color:var(--text-dim);margin:8px 0 16px;">${total} 題中答對 ${correct} 題（${pct}%）</p>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="renderReviewMenu()">返回總複習</button>
+          <button class="btn btn-primary" onclick="startReviewVocabQuiz()">再測一輪</button>
+        </div>
+      </div>`;
+  }
+
+  c.innerHTML = html;
+  c.scrollTop = 0;
+}
+
+function selectReviewVocabOption(vKey, oi) {
+  if (reviewState.submitted) return;
+  reviewState.answers[vKey] = oi;
+  renderReviewVocabQuiz();
+}
+
+function submitReviewVocabQuiz() {
+  reviewState.submitted = true;
+  renderReviewVocabQuiz();
+}
+
+// =====================================================
+// EXTRA VOCAB BANK (單字補充庫)
+// =====================================================
+let extraVocabCat = 0;
+
+function renderExtraVocab() {
+  const c = document.getElementById('reviewTab');
+  const allExtra = getExtraVocabFlat();
+  const cats = EXTRA_VOCAB.map(c => c.cat);
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:var(--correct)">&#128214; 單字補充庫</h3>
+        <div style="font-size:13px;color:var(--text-dim)">共 ${allExtra.length} 個多益高頻補充單字</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="startExtraVocabQuiz()" style="font-size:13px;padding:8px 16px;">&#128221; 全部測驗</button>
+        <button class="btn btn-primary" onclick="startExtraVocabQuiz(extraVocabCat)" style="font-size:13px;padding:8px 16px;">&#128221; 本類測驗</button>
+        <button class="btn btn-outline" onclick="renderReviewMenu()" style="font-size:13px;padding:8px 16px;">返回總複習</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+      ${cats.map((cat, i) => `<div class="grammar-mode-tab ${i === extraVocabCat ? 'active' : ''}" onclick="extraVocabCat=${i};renderExtraVocab()" style="font-size:12px;padding:6px 12px;">${cat}</div>`).join('')}
+    </div>
+  `;
+
+  const catData = EXTRA_VOCAB[extraVocabCat];
+  const existing = new Set();
+  QUIZ_DATA.days.forEach(d => d.vocab.forEach(v => existing.add(v.word.toLowerCase())));
+  const words = catData.words.filter(w => !existing.has(w.word.toLowerCase()));
+
+  html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <span style="font-size:14px;font-weight:600;">${catData.cat}（${words.length} 個單字）</span>
+    <div style="display:flex;gap:6px;">
+      <button class="btn btn-outline" onclick="document.querySelectorAll('.vocab-item').forEach(el=>el.classList.add('revealed'))" style="font-size:12px;padding:5px 10px;">全部顯示</button>
+      <button class="btn btn-outline" onclick="document.querySelectorAll('.vocab-item').forEach(el=>el.classList.remove('revealed'))" style="font-size:12px;padding:5px 10px;">全部隱藏</button>
+    </div>
+  </div>`;
+
+  words.forEach((w, i) => {
+    const wc = vocabWrong[w.word] || 0;
+    html += `
+      <div class="vocab-item${wc > 0 ? ' has-wrong' : ''}" id="ev-${i}" onclick="document.getElementById('ev-${i}').classList.toggle('revealed')">
+        <div class="word-row">
+          <div class="word-left">
+            <span class="word">${w.word}</span>
+            <span class="pos">${w.pos}</span>
+            ${wc > 0 ? `<span class="vw-badge">&#10007;${wc}</span>` : ''}
+          </div>
+          <button class="speak-btn" onclick="event.stopPropagation(); speak('${w.word}', this)">&#128264;</button>
+        </div>
+        <div class="meaning">${w.meaning}</div>
+        <div class="example">${w.example} <button class="speak-btn-sm" onclick="event.stopPropagation(); speak(\`${w.example.replace(/`/g,'')}\`, this)">&#128264;</button></div>
+      </div>
+    `;
+  });
+
+  c.innerHTML = html;
+  c.scrollTop = 0;
+}
+
+function startExtraVocabQuiz(catIndex) {
+  const allExtra = getExtraVocabFlat();
+  if (allExtra.length < 4) return;
+
+  const pool = catIndex !== undefined
+    ? allExtra.filter(w => w.category === EXTRA_VOCAB[catIndex].cat)
+    : allExtra;
+
+  const shuffled = shuffle(pool);
+  const picked = shuffled.slice(0, Math.min(30, shuffled.length));
+  const items = picked.map(v => {
+    const wrongChoices = shuffle(allExtra.filter(w => w.meaning !== v.meaning)).slice(0, 3).map(w => w.meaning);
+    const options = shuffle([v.meaning, ...wrongChoices]);
+    return { word: v.word, pos: v.pos, meaning: v.meaning, example: v.example, category: v.category, options, answer: options.indexOf(v.meaning) };
+  });
+
+  reviewState = { mode: 'extra-vocab', items, answers: {}, submitted: false };
+  renderExtraVocabQuiz();
+}
+
+function renderExtraVocabQuiz() {
+  const c = document.getElementById('reviewTab');
+  const items = reviewState.items;
+  const total = items.length;
+  const answered = Object.keys(reviewState.answers).length;
+  const isSubmitted = reviewState.submitted;
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:var(--correct)">&#128221; 補充單字測驗</h3>
+        <div style="font-size:13px;color:var(--text-dim)">看英文選中文意思，共 ${total} 題</div>
+      </div>
+      <button class="btn btn-outline" onclick="renderExtraVocab()" style="font-size:13px;padding:8px 16px;">返回單字庫</button>
+    </div>
+    <div class="progress-bar"><div class="fill" style="width:${(answered/total)*100}%"></div></div>
+  `;
+
+  items.forEach((item, idx) => {
+    const vKey = 'ev-' + idx;
+    const chosen = reviewState.answers[vKey];
+    const isCorrect = chosen === item.answer;
+    let borderStyle = '';
+    if (isSubmitted && chosen !== undefined) {
+      borderStyle = isCorrect ? 'border-color:var(--correct);background:var(--correct-bg);' : 'border-color:var(--wrong);background:var(--wrong-bg);';
+    }
+
+    html += `<div class="vocab-quiz-item" style="${borderStyle}">`;
+    html += `<div style="display:flex;align-items:center;justify-content:space-between;">`;
+    html += `<div><span class="vocab-quiz-word">${item.word}</span> <span class="vocab-quiz-pos">${item.pos}</span></div>`;
+    html += `<div style="display:flex;align-items:center;gap:8px;">`;
+    html += `<span style="font-size:11px;color:var(--text-dim)">${item.category}</span>`;
+    html += `<button class="speak-btn-sm" onclick="speak('${item.word}', this)">&#128264;</button>`;
+    if (isSubmitted && chosen !== undefined) {
+      html += isCorrect ? '<span class="result-tag correct-tag">&#10003;</span>' : '<span class="result-tag wrong-tag">&#10007;</span>';
+    }
+    html += '</div></div>';
+    html += '<div class="vocab-quiz-options">';
+    item.options.forEach((opt, oi) => {
+      let cls = '';
+      if (chosen === oi) cls += ' selected';
+      if (isSubmitted) {
+        cls += ' locked';
+        if (oi === item.answer) cls += ' show-correct';
+        else if (chosen === oi && !isCorrect) cls += ' show-wrong';
+      }
+      html += `<div class="vocab-quiz-opt${cls}" onclick="selectExtraVocabOption('${vKey}', ${oi})">${opt}</div>`;
+    });
+    html += '</div>';
+    if (isSubmitted) {
+      html += `<div style="margin-top:10px;font-size:13px;color:var(--text-dim);font-style:italic;"><strong style="color:var(--text)">例句：</strong>${item.example}</div>`;
+    }
+    html += '</div>';
+  });
+
+  if (!isSubmitted) {
+    html += `<div class="btn-row"><button class="btn btn-primary" onclick="submitExtraVocabQuiz()" ${answered < total ? 'disabled' : ''}>交卷批改（${answered}/${total}）</button></div>`;
+  } else {
+    const correct = items.filter((item, idx) => reviewState.answers['ev-' + idx] === item.answer).length;
+    const pct = Math.round((correct / total) * 100);
+    html += `
+      <div style="text-align:center;padding:24px;margin:20px 0;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:48px;margin-bottom:12px;">${pct >= 80 ? '&#127881;' : pct >= 60 ? '&#128170;' : '&#128166;'}</div>
+        <h2 style="font-size:22px;">${pct >= 80 ? '補充單字掌握得很好！' : pct >= 60 ? '再多記幾次！' : '這些單字需要多看幾遍！'}</h2>
+        <p style="color:var(--text-dim);margin:8px 0 16px;">${total} 題中答對 ${correct} 題（${pct}%）</p>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="renderExtraVocab()">返回單字庫</button>
+          <button class="btn btn-primary" onclick="startExtraVocabQuiz()">再測一輪</button>
+        </div>
+      </div>`;
+  }
+  c.innerHTML = html;
+  c.scrollTop = 0;
+}
+
+function selectExtraVocabOption(vKey, oi) {
+  if (reviewState.submitted) return;
+  reviewState.answers[vKey] = oi;
+  renderExtraVocabQuiz();
+}
+
+function submitExtraVocabQuiz() {
+  reviewState.submitted = true;
+  reviewState.items.forEach((item, idx) => {
+    const chosen = reviewState.answers['ev-' + idx];
+    if (chosen !== item.answer) {
+      vocabWrong[item.word] = (vocabWrong[item.word] || 0) + 1;
+    }
+  });
+  saveState();
+  renderExtraVocabQuiz();
+}
+
 function renderStats() {
   let totalAnswered = 0, totalCorrect = 0, maxStreak = 0;
   QUIZ_DATA.days.forEach(day => {
@@ -3968,20 +5635,216 @@ function renderStats() {
 // =====================================================
 // GRAMMAR & PHRASE RENDERERS
 // =====================================================
+let grammarMode = 'rules';
+let grammarQuizState = null;
+
 function renderGrammar() {
   const c = document.getElementById('grammarTab');
-  c.innerHTML = `<div class="ref-container">${GRAMMAR_DATA.map((g, gi) => `
-    <div class="ref-section">
-      <div class="ref-title" onclick="this.parentElement.classList.toggle('open')">${gi+1}. ${g.title}<span class="ref-arrow">▸</span></div>
-      <div class="ref-body">${g.rules.map(r => `
-        <div class="ref-rule">
-          <div class="ref-rule-head">${r.rule}</div>
-          <div class="ref-examples">${r.examples.map(e => `<div class="ref-ex">${e}</div>`).join('')}</div>
-        </div>
-      `).join('')}</div>
+  let html = `<div class="grammar-mode-tabs">
+    <div class="grammar-mode-tab ${grammarMode === 'rules' ? 'active' : ''}" onclick="grammarMode='rules';renderGrammar()">文法規則</div>
+    <div class="grammar-mode-tab ${grammarMode === 'pp' ? 'active' : ''}" onclick="grammarMode='pp';renderGrammar()">不規則動詞 p.p.</div>
+    <div class="grammar-mode-tab ${grammarMode === 'colloc' ? 'active' : ''}" onclick="grammarMode='colloc';renderGrammar()">固定搭配</div>
+    <div class="grammar-mode-tab ${grammarMode === 'gquiz' ? 'active' : ''}" onclick="grammarMode='gquiz';renderGrammar()">文法測驗</div>
+  </div>`;
+
+  if (grammarMode === 'rules') {
+    html += `<div class="ref-container">${GRAMMAR_DATA.map((g, gi) => `
+      <div class="ref-section open">
+        <div class="ref-title" onclick="this.parentElement.classList.toggle('open')">${gi+1}. ${g.title}<span class="ref-arrow">▸</span></div>
+        <div class="ref-body">${g.rules.map(r => `
+          <div class="ref-rule">
+            <div class="ref-rule-head">${r.rule}</div>
+            <div class="ref-examples">${r.examples.map(e => `<div class="ref-ex">${e}</div>`).join('')}</div>
+          </div>
+        `).join('')}</div>
+      </div>
+    `).join('')}</div>`;
+  } else if (grammarMode === 'pp') {
+    html += renderPPTable();
+  } else if (grammarMode === 'colloc') {
+    html += renderCollocation();
+  } else if (grammarMode === 'gquiz') {
+    html += renderGrammarQuiz();
+  }
+  c.innerHTML = html;
+}
+
+function renderPPTable() {
+  return `
+    <input class="pp-search" type="text" placeholder="搜尋動詞（英文或中文）..." oninput="filterPPTable(this.value)" id="ppSearch">
+    <div style="overflow-x:auto;">
+    <table class="pp-table" id="ppTableBody">
+      <thead><tr><th>原形</th><th>過去式</th><th class="highlight">p.p.</th><th>中文</th></tr></thead>
+      <tbody>
+        ${PP_TABLE.map(v => `<tr>
+          <td>${v.base}</td>
+          <td>${v.past}</td>
+          <td class="highlight">${v.pp}</td>
+          <td>${v.meaning}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <button class="btn btn-primary" onclick="startPPQuiz()" style="padding:12px 28px;">測驗 p.p.（隨機 20 題）</button>
+    </div>`;
+}
+
+function filterPPTable(val) {
+  const rows = document.querySelectorAll('#ppTableBody tbody tr');
+  const q = val.toLowerCase();
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+function startPPQuiz() {
+  const shuffled = shuffle([...PP_TABLE]);
+  const picked = shuffled.slice(0, 20);
+  const items = picked.map(v => {
+    const wrongPPs = shuffle(PP_TABLE.filter(w => w.pp !== v.pp)).slice(0, 3).map(w => w.pp);
+    const options = shuffle([v.pp, ...wrongPPs]);
+    return { ...v, options, correctIdx: options.indexOf(v.pp) };
+  });
+  grammarQuizState = { mode: 'pp', items, answers: {}, submitted: false };
+  grammarMode = 'gquiz';
+  renderGrammar();
+}
+
+function renderCollocation() {
+  return `<div class="ref-container">${COLLOCATION_DATA.map(cat => `
+    <div class="ref-section open">
+      <div class="ref-title" onclick="this.parentElement.classList.toggle('open')">${cat.category}<span class="ref-arrow">▸</span></div>
+      <div class="ref-body">
+        ${cat.items.map(item => `
+          <div class="colloc-item">
+            <span class="colloc-word">${item.collocation}</span>
+            <span class="colloc-meaning">${item.meaning}</span>
+            <div class="colloc-ex">${item.example}</div>
+          </div>
+        `).join('')}
+      </div>
     </div>
   `).join('')}</div>`;
-  document.querySelectorAll('.ref-section').forEach(el => el.classList.add('open'));
+}
+
+function renderGrammarQuiz() {
+  if (!grammarQuizState) {
+    const shuffled = shuffle([...GRAMMAR_QUIZ_DATA]);
+    const picked = shuffled.slice(0, 30);
+    grammarQuizState = { mode: 'grammar', items: picked, answers: {}, submitted: false };
+  }
+
+  const { items, answers, submitted } = grammarQuizState;
+  const total = items.length;
+  const answered = Object.keys(answers).length;
+  const letters = ['A', 'B', 'C', 'D'];
+  const isPP = grammarQuizState.mode === 'pp';
+  const title = isPP ? '不規則動詞 p.p. 測驗' : '文法測驗';
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <h3 style="font-size:18px;font-weight:700;color:var(--accent-light)">${title}</h3>
+        <div style="font-size:13px;color:var(--text-dim)">共 ${total} 題</div>
+      </div>
+      <button class="btn btn-outline" onclick="grammarQuizState=null;grammarMode='${isPP ? 'pp' : 'rules'}';renderGrammar()" style="font-size:13px;padding:8px 16px;">返回</button>
+    </div>
+    <div class="progress-bar"><div class="fill" style="width:${(answered/total)*100}%"></div></div>`;
+
+  items.forEach((item, idx) => {
+    const gKey = 'gq-' + idx;
+    const chosen = answers[gKey];
+
+    if (isPP) {
+      const isCorrect = chosen === item.correctIdx;
+      let borderStyle = '';
+      if (submitted && chosen !== undefined) {
+        borderStyle = isCorrect ? 'border-color:var(--correct);' : 'border-color:var(--wrong);';
+      }
+      html += `<div class="vocab-quiz-item" style="${borderStyle}">`;
+      html += `<div class="vocab-quiz-word">${item.base}</div>`;
+      html += `<div class="vocab-quiz-pos">${item.meaning} · 過去式: ${item.past}</div>`;
+      html += `<div style="font-size:14px;font-weight:600;margin-bottom:8px;color:var(--text-dim);">請選 p.p.：</div>`;
+      html += '<div class="vocab-quiz-options">';
+      item.options.forEach((opt, oi) => {
+        let cls = '';
+        if (chosen === oi) cls += ' selected';
+        if (submitted) {
+          cls += ' locked';
+          if (oi === item.correctIdx) cls += ' show-correct';
+          else if (chosen === oi && !isCorrect) cls += ' show-wrong';
+        }
+        html += `<div class="vocab-quiz-opt${cls}" onclick="selectGrammarQuizOption('${gKey}', ${oi})">${opt}</div>`;
+      });
+      html += '</div></div>';
+    } else {
+      const isCorrect = chosen === item.answer;
+      let cardClass = '';
+      if (submitted && chosen !== undefined) cardClass = isCorrect ? 'correct' : 'wrong';
+      html += `<div class="q-card ${cardClass}">`;
+      html += `<div class="q-num">Q${idx+1} / ${total} <span style="font-size:11px;color:var(--text-dim);margin-left:8px;">${item.category}</span>`;
+      if (submitted && chosen !== undefined) {
+        html += isCorrect
+          ? '<span class="result-tag correct-tag">&#10003; 正確</span>'
+          : '<span class="result-tag wrong-tag">&#10007; 錯誤</span>';
+      }
+      html += '</div>';
+      html += `<div class="q-stem">${formatStem(item.stem)}</div>`;
+      html += '<div class="options">';
+      item.options.forEach((opt, oi) => {
+        let optClass = '';
+        if (chosen === oi) optClass += ' selected';
+        if (submitted) {
+          optClass += ' locked';
+          if (oi === item.answer) optClass += ' show-correct';
+          else if (chosen === oi && !isCorrect) optClass += ' show-wrong';
+        }
+        html += `<div class="option${optClass}" onclick="selectGrammarQuizOption('${gKey}', ${oi})">
+          <div class="radio"></div><span class="letter">(${letters[oi]})</span><span>${opt}</span>
+        </div>`;
+      });
+      html += '</div>';
+      if (submitted) {
+        html += `<div class="explanation show"><strong>解析：</strong>${item.explanation}</div>`;
+      }
+      html += '</div>';
+    }
+  });
+
+  if (!submitted) {
+    html += `<div class="btn-row">
+      <button class="btn btn-primary" onclick="submitGrammarQuiz()" ${answered < total ? 'disabled' : ''}>交卷批改（${answered}/${total}）</button>
+    </div>`;
+  } else {
+    const correctKey = isPP ? 'correctIdx' : 'answer';
+    const correct = items.filter((item, idx) => answers['gq-' + idx] === item[correctKey]).length;
+    const pct = Math.round((correct / total) * 100);
+    html += `
+      <div style="text-align:center;padding:24px;margin:20px 0;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);">
+        <div style="font-size:48px;margin-bottom:12px;">${pct >= 80 ? '&#127881;' : pct >= 60 ? '&#128170;' : '&#128166;'}</div>
+        <h2 style="font-size:22px;">${pct >= 80 ? '文法掌握得很好！' : pct >= 60 ? '再多複習幾次！' : '回去看看規則再來！'}</h2>
+        <p style="color:var(--text-dim);margin:8px 0 16px;">${total} 題中答對 ${correct} 題（${pct}%）</p>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="grammarQuizState=null;grammarMode='rules';renderGrammar()">返回文法</button>
+          <button class="btn btn-primary" onclick="grammarQuizState=null;${isPP ? 'startPPQuiz()' : "grammarMode='gquiz';renderGrammar()"}">再測一輪</button>
+        </div>
+      </div>`;
+  }
+  return html;
+}
+
+function selectGrammarQuizOption(gKey, oi) {
+  if (!grammarQuizState || grammarQuizState.submitted) return;
+  grammarQuizState.answers[gKey] = oi;
+  renderGrammar();
+}
+
+function submitGrammarQuiz() {
+  if (!grammarQuizState) return;
+  grammarQuizState.submitted = true;
+  renderGrammar();
 }
 
 function renderPhrase() {
