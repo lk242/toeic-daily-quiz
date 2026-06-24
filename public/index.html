@@ -6084,68 +6084,78 @@ function exitSpreadsheetMode() {
   document.getElementById('stealthSS').classList.remove('active');
 }
 
-// === Mini Mode ===
+// === Mini Mode (獨立視窗) ===
+let miniWin = null;
+
 function startMiniMode() {
   document.querySelector('.stealth-menu').classList.remove('show');
   buildStealthPool();
-  const el = document.getElementById('stealthMini');
-  el.classList.add('active');
-  if (!el.dataset.inited) {
-    el.dataset.inited = '1';
-    let dragging = false, dx = 0, dy = 0;
-    const bar = el.querySelector('.mini-titlebar');
-    bar.addEventListener('mousedown', e => {
-      dragging = true;
-      dx = e.clientX - el.offsetLeft;
-      dy = e.clientY - el.offsetTop;
-    });
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      el.style.left = (e.clientX - dx) + 'px';
-      el.style.top = (e.clientY - dy) + 'px';
-      el.style.right = 'auto';
-      el.style.bottom = 'auto';
-    });
-    document.addEventListener('mouseup', () => { dragging = false; });
-  }
-  renderMiniQuestion();
+  if (miniWin && !miniWin.closed) { miniWin.focus(); return; }
+  const w = 340, h = 360;
+  const left = screen.width - w - 30;
+  const top = screen.height - h - 100;
+  miniWin = window.open('', 'miniQuiz', `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`);
+  if (!miniWin) { alert('請允許彈出視窗'); return; }
+  miniWin.document.write(getMiniHTML());
+  miniWin.document.close();
+  miniWin.onload = () => renderMiniInWin();
 }
 
-function renderMiniQuestion() {
-  if (stealthIdx >= stealthPool.length) { stealthIdx = 0; }
+function getMiniHTML() {
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Quick Notes</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#2a2a2a; font-family:'Segoe UI',Arial,sans-serif; color:#d4d4d4; font-size:13px; overflow:hidden; }
+  .bar { background:#333; padding:6px 10px; display:flex; justify-content:space-between; align-items:center; font-size:11px; color:#999; border-bottom:1px solid #444; }
+  .body { padding:14px; }
+  .word { font-size:17px; font-weight:600; color:#e0e0e0; margin-bottom:10px; }
+  .word .pos { font-size:11px; font-weight:400; color:#888; margin-left:6px; }
+  .opts { display:flex; flex-direction:column; gap:5px; }
+  .opt { padding:8px 12px; border:1px solid #555; border-radius:4px; cursor:pointer; font-size:13px; background:#333; color:#d4d4d4; transition:all 0.15s; }
+  .opt:hover { background:#3e3e3e; border-color:#777; }
+  .opt.correct { background:#1a3a2a; border-color:#4ade80; color:#4ade80; }
+  .opt.wrong { background:#3a1a1a; border-color:#f87171; color:#f87171; }
+  .foot { padding:6px 10px; border-top:1px solid #444; font-size:10px; color:#777; display:flex; justify-content:space-between; position:fixed; bottom:0; left:0; right:0; background:#2a2a2a; }
+</style></head><body>
+<div class="bar"><span>&#128203; Quick Notes</span><span id="score"></span></div>
+<div class="body"><div class="word" id="word"></div><div class="opts" id="opts"></div></div>
+<div class="foot"><span id="prog"></span><span id="sc2"></span></div>
+</body></html>`;
+}
+
+function renderMiniInWin() {
+  if (!miniWin || miniWin.closed) return;
+  if (stealthIdx >= stealthPool.length) stealthIdx = 0;
   const q = stealthPool[stealthIdx];
   stealthAnswered = false;
-  document.getElementById('miniWord').innerHTML = `${q.word} <span class="mini-pos">${q.pos}</span>`;
-  const optsEl = document.getElementById('miniOpts');
-  optsEl.innerHTML = q.options.map((opt, oi) =>
-    `<div class="mini-opt" id="mini-opt-${oi}" onclick="miniAnswer(${oi})">${opt}</div>`
+  const doc = miniWin.document;
+  doc.getElementById('word').innerHTML = `${q.word}<span class="pos">${q.pos}</span>`;
+  doc.getElementById('opts').innerHTML = q.options.map((opt, oi) =>
+    `<div class="opt" id="opt-${oi}" onclick="window.opener.miniWinAnswer(${oi})">${opt}</div>`
   ).join('');
-  document.getElementById('miniProgress').textContent = `${stealthIdx + 1} / ${stealthPool.length}`;
-  document.getElementById('miniScore').textContent = `${stealthScore.correct} / ${stealthScore.total} 對`;
+  doc.getElementById('prog').textContent = `${stealthIdx + 1} / ${stealthPool.length}`;
+  doc.getElementById('sc2').textContent = `${stealthScore.correct} / ${stealthScore.total} 對`;
 }
 
-function miniAnswer(oi) {
-  if (stealthAnswered) return;
+function miniWinAnswer(oi) {
+  if (stealthAnswered || !miniWin || miniWin.closed) return;
   stealthAnswered = true;
   const q = stealthPool[stealthIdx];
   stealthScore.total++;
-  const el = document.getElementById(`mini-opt-${oi}`);
+  const doc = miniWin.document;
+  const el = doc.getElementById(`opt-${oi}`);
   if (oi === q.answer) {
     stealthScore.correct++;
-    el.classList.add('m-correct');
+    el.classList.add('correct');
   } else {
-    el.classList.add('m-wrong');
-    document.getElementById(`mini-opt-${q.answer}`).classList.add('m-correct');
+    el.classList.add('wrong');
+    doc.getElementById(`opt-${q.answer}`).classList.add('correct');
     if (!vocabWrong[q.word]) vocabWrong[q.word] = 0;
     vocabWrong[q.word]++;
     saveState();
   }
-  document.getElementById('miniScore').textContent = `${stealthScore.correct} / ${stealthScore.total} 對`;
-  setTimeout(() => { stealthIdx++; renderMiniQuestion(); }, 1000);
-}
-
-function exitMiniMode() {
-  document.getElementById('stealthMini').classList.remove('active');
+  doc.getElementById('sc2').textContent = `${stealthScore.correct} / ${stealthScore.total} 對`;
+  setTimeout(() => { stealthIdx++; renderMiniInWin(); }, 1000);
 }
 </script>
 
@@ -6172,21 +6182,7 @@ function exitMiniMode() {
   </div>
 </div>
 
-<!-- Stealth: Mini Floating Widget -->
-<div class="stealth-mini" id="stealthMini" style="bottom:80px;right:20px;">
-  <div class="mini-titlebar">
-    <span>&#128203; Quick Notes</span>
-    <span class="mini-close" onclick="exitMiniMode()">&#10005;</span>
-  </div>
-  <div class="mini-body">
-    <div class="mini-word" id="miniWord"></div>
-    <div class="mini-opts" id="miniOpts"></div>
-  </div>
-  <div class="mini-footer">
-    <span id="miniProgress"></span>
-    <span id="miniScore"></span>
-  </div>
-</div>
+<!-- Mini mode now opens as a separate popup window -->
 
 <!-- Stealth Entry Button -->
 <button class="stealth-btn" onclick="toggleStealthMenu()" title="上班偷練模式">&#128373;</button>
